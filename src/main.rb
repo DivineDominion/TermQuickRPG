@@ -62,10 +62,10 @@ end
 
 player = Player.new(5,5)
 
-ENTITIES = [
-  Item.new(8, 6, "♥"), 
-  player
-]
+ENTITIES = "The Adventure Begins ...".split("").map.with_index { |c, i| Item.new(2 + i, 2, c, c) }
+ENTITIES << Item.new(8, 6, "♥", "Heart")
+ENTITIES << Item.new(4, 3, "✝︎", "Holy Cross")
+ENTITIES << player
 
 def draw_entities(win)   
   ENTITIES.each { |e| e.draw(win) }
@@ -75,10 +75,7 @@ begin
   win = Curses::Window.new(Curses.lines - 3, Curses.cols - 2, 1, 1)
   win.box(?|, ?-)
   win.keypad(true)
-  
-  win.setpos(2, 2)
-  win.addstr("The mighty Adventure Begins ...")
-  
+    
   draw_entities(win)
   
   quit = false
@@ -99,13 +96,25 @@ begin
       win.setpos(old_y, old_x)
       win.addstr(" ")
 
-      player.move(direction)
+      if obj = player.would_collide?(ENTITIES, direction)
+        ENTITIES.delete(obj)
+        player.move(direction)
+        
+        show_message("Picked up #{obj.name}!")
+        win.clear
+        win.box(?|, ?-)
+        draw_entities(win)
+        win.refresh
+      else
+        player.move(direction)
+      end
+      
       player.draw(win)
     
     when -> (c) { ACTION_KEYS.keys.include?(c) }
       action = ACTION_KEYS[input]
       
-      show_message("Invalid Input", "Cannot interact with anything here.")
+      show_message("Cannot interact with anything here.")
       win.clear
       win.box(?|, ?-)
       draw_entities(win)

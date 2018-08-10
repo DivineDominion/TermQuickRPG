@@ -10,17 +10,22 @@ class Player
     @char = PLAYER_CHARACTER
   end
   
+  def project_movement(dir)
+    y = case dir
+        when :up then   @y - 1
+        when :down then @y + 1
+        else            @y
+        end
+    x = case dir
+        when :left then  @x - 1
+        when :right then @x + 1
+        else             @x
+        end
+    [x, y]
+  end
+  
   def move(dir)
-    @y = case dir
-         when :up then   @y -= 1
-         when :down then @y += 1
-         else            @y
-         end
-    @x = case dir
-         when :left then  @x -= 1
-         when :right then @x += 1
-         else             @x
-         end
+    @x, @y = project_movement(dir)
     [@x, @y]
   end
   
@@ -29,5 +34,17 @@ class Player
     win.setpos(@y, @x)
     win.addstr("#{@char}")
     win.setpos(old_y, old_x)
+  end
+  
+  def would_collide?(objects, dir)
+    x, y = project_movement(dir)
+    
+    objects.each do |obj|
+      if obj.x == x && obj.y == y
+        return obj
+      end
+    end
+    
+    false
   end
 end

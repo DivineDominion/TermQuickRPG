@@ -1,10 +1,8 @@
 class Item
-  attr_reader :x, :y
+  attr_reader :x, :y, :name
   
-  def initialize(x, y, char)
-    @x = x
-    @y = y
-    @char = char
+  def initialize(x, y, char, name)
+    @x, @y, @char, @name = x, y, char, name
   end
 
   def draw(win)
