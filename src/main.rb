@@ -3,6 +3,7 @@
 
 require 'curses'
 require_relative "player.rb"
+require_relative "item.rb"
 
 DIRECTION_KEYS = {
   ?w => :up,
@@ -59,6 +60,17 @@ def show_message(*lines)
   win.close
 end
 
+player = Player.new(5,5)
+
+ENTITIES = [
+  Item.new(8, 6, "♥"), 
+  player
+]
+
+def draw_entities(win)   
+  ENTITIES.each { |e| e.draw(win) }
+end
+
 begin
   win = Curses::Window.new(Curses.lines - 3, Curses.cols - 2, 1, 1)
   win.box(?|, ?-)
@@ -67,9 +79,8 @@ begin
   win.setpos(2, 2)
   win.addstr("The mighty Adventure Begins ...")
   
-  player = Player.new(5,5)
-  player.draw(win)
-    
+  draw_entities(win)
+  
   quit = false
 
   while !quit
@@ -97,7 +108,7 @@ begin
       show_message("Invalid Input", "Cannot interact with anything here.")
       win.clear
       win.box(?|, ?-)
-      player.draw(win)
+      draw_entities(win)
       win.refresh
     end
   end
