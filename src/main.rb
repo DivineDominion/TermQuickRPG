@@ -16,20 +16,23 @@ DIRECTIONS = {
 }
 
 Curses.init_screen
-Curses.cbreak
+Curses.start_color
+Curses.stdscr.keypad(true) # enable arrow keys
+Curses.cbreak # immediate key input
 Curses.curs_set(0)  # Invisible cursor
 Curses.noecho # Do not print keyboard input
 
-Curses.setpos(Curses.lines - 1, 0)
-Curses.addstr("TerminalQuickRPG by DivineDominion / 2018")
+# Spiffy game title
+TITLE = "TerminalQuickRPG by DivineDominion / 2018"
+Curses.setpos(Curses.lines - 1, (Curses.cols - TITLE.length) / 2)
+Curses.addstr(TITLE)
 Curses.refresh
 
 begin
-  
   win = Curses::Window.new(Curses.lines - 3, Curses.cols - 2, 1, 1)
   win.box(?|, ?-)
-  win.keypad(true) # enable arrow keys
-
+  win.keypad(true)
+  
   win.setpos(2, 2)
   win.addstr("The mighty Adventure Begins ...")
   
@@ -37,9 +40,10 @@ begin
   player.draw(win)
   
   quit = false
+  color = 1
   while !quit
     win.refresh
-    
+
     input = win.get_char
     
     case input
