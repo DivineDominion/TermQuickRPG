@@ -1,9 +1,10 @@
 #!/usr/bin/env ruby
 #encoding: utf-8
 
-require 'curses'
+require "curses"
 require_relative "player.rb"
 require_relative "item.rb"
+require_relative "dialogs.rb"
 
 DIRECTION_KEYS = {
   ?w => :up,
@@ -34,97 +35,6 @@ TITLE = "TerminalQuickRPG by DivineDominion / 2018"
 Curses.setpos(Curses.lines - 1, (Curses.cols - TITLE.length) / 2)
 Curses.addstr(TITLE)
 Curses.refresh
-
-def show_message(win, *lines)
-  show_options(win, "Continue", *lines)
-end
-
-def show_options(win, options, *lines)
-  raise "Options hash missing" if options.length == 0
-
-  # Wrap string options in hash
-  options = options.is_a?(Hash) ? options : {:close => options}
-
-  longest_option_length = options.values.sort { |a,b| a.length <=> b.length }[-1].length
-  longest_option_length += 2 # surrounding brackets
-  longest_line_length = lines.sort { |a,b| a.length <=> b.length }[-1].length
-  width = [longest_option_length, longest_line_length].max + 6
-  height = lines.length + 3 + options.count
-
-  top, left = (Curses.lines - height) / 2, (Curses.cols - width) / 2
-  dialog = win.subwin(height, width, top, left)
-  dialog.keypad(true)
-  dialog.box("|", "-", "+")
-
-  # Message
-  y =  1
-  lines.each do |line|
-    dialog.setpos(y, 3)
-    dialog.addstr(line)
-    y += 1
-  end
-
-  # Draw divider
-  dialog.setpos(y, 0)
-  dialog << "+"
-  (width - 2).times { dialog << "-" }
-  dialog << "+"
-  y += 1
-
-  # Option Buttons
-  options_start_y = y
-
-  draw_options = lambda do |y, selected_line|
-    # Center sole options
-    x = if options.count == 1
-          (width - options.values[0].length) / 2
-        else
-          3
-        end
-
-    options.values.each_with_index do |line, i|
-      if selected_line == i
-        dialog.attron(Curses::A_REVERSE)
-      end
-
-      dialog.setpos(y, x)
-      dialog.addstr("[#{line}]")
-      y += 1
-
-      if selected_line == i
-        dialog.attroff(Curses::A_REVERSE)
-      end
-    end
-  end
-
-  selection = 0
-  loop do
-    draw_options.call(options_start_y, selection)
-    dialog.refresh
-
-    input = win.get_char
-
-    case input
-    when -> (c) { DIRECTION_KEYS.keys.include?(c) }
-      case DIRECTION_KEYS[input]
-      when :up then selection -= 1
-      when :down then selection += 1
-      end
-
-      if selection < 0
-        selection = options.count - 1
-      elsif selection >= options.count
-        selection = 0
-      end
-
-    when -> (c) { ACTION_KEYS.keys.include?(c) }
-      if ACTION_KEYS[input] == :use
-        dialog.close
-        return options.keys[selection]
-      end
-    end
-  end
-end
 
 player = Player.new(5,5)
 
@@ -161,7 +71,7 @@ begin
       old_y, old_x = [player.y, player.x]
 
       if obj = player.would_collide_with(ENTITIES, direction)
-        choice = show_options(win, {:pick => "Pick up", :cancel => "Leave"}, "Found #{obj.name}!")
+        choice = show_options({:pick => "Pick up", :cancel => "Leave"}, "Found #{obj.name}!")
 
         if choice == :pick
           ENTITIES.delete(obj)
@@ -183,7 +93,7 @@ begin
     when -> (c) { ACTION_KEYS.keys.include?(c) }
       action = ACTION_KEYS[input]
 
-      show_message(win, "Cannot interact with anything here.")
+      show_message("Cannot interact with anything here.")
       win.clear
       win.box(?|, ?-)
       draw_entities(win)
