@@ -36,48 +36,21 @@ Curses.addstr(TITLE)
 Curses.refresh
 
 def show_message(win, *lines)
-  continue_msg = "[Continue]"
-  height = lines.length + 4
-  longest_line_length = lines.sort { |a,b| a.length <=> b.length }[-1].length
-  width = [continue_msg.length, longest_line_length].max + 6
-  top, left = (Curses.lines - height) / 2, (Curses.cols - width) / 2
-  dialog = win.subwin(height, width, top, left)
-  dialog.keypad(true)
-  dialog.box("|", "-", "+")
-
-  # Message
-  y =  1
-  lines.each do |line|
-    dialog.setpos(y, 3)
-    dialog.addstr(line)
-    y += 1
-  end
-
-  # Draw divider
-  dialog.setpos(y, 0)
-  dialog << "+"
-  (width - 2).times { dialog << "-" }
-  dialog << "+"
-
-  # Continue Button
-  y += 1
-  dialog.setpos(y, (width - continue_msg.length) / 2)
-  dialog.attron(Curses::A_REVERSE)
-  dialog.addstr(continue_msg)
-  dialog.attroff(Curses::A_REVERSE)
-
-  dialog.refresh
-  loop { break if ACTION_KEYS.keys.include?(dialog.getch) }
-  dialog.close
+  show_options(win, "Continue", *lines)
 end
 
 def show_options(win, options, *lines)
-  raise "Options hash missing" if options.count == 0
+  raise "Options hash missing" if options.length == 0
 
-  height = lines.length + 3 + options.count
-  longest_option_length = options.values.sort { |a,b| a.length <=> b.length }[-1].length + 2 # 2 surrounding brackets
+  # Wrap string options in hash
+  options = options.is_a?(Hash) ? options : {:close => options}
+
+  longest_option_length = options.values.sort { |a,b| a.length <=> b.length }[-1].length
+  longest_option_length += 2 # surrounding brackets
   longest_line_length = lines.sort { |a,b| a.length <=> b.length }[-1].length
   width = [longest_option_length, longest_line_length].max + 6
+  height = lines.length + 3 + options.count
+
   top, left = (Curses.lines - height) / 2, (Curses.cols - width) / 2
   dialog = win.subwin(height, width, top, left)
   dialog.keypad(true)
@@ -102,12 +75,19 @@ def show_options(win, options, *lines)
   options_start_y = y
 
   draw_options = lambda do |y, selected_line|
+    # Center sole options
+    x = if options.count == 1
+          (width - options.values[0].length) / 2
+        else
+          3
+        end
+
     options.values.each_with_index do |line, i|
       if selected_line == i
         dialog.attron(Curses::A_REVERSE)
       end
 
-      dialog.setpos(y, 3)
+      dialog.setpos(y, x)
       dialog.addstr("[#{line}]")
       y += 1
 
