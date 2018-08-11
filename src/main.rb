@@ -108,7 +108,7 @@ begin
       win.setpos(old_y, old_x)
       win.addstr(" ")
 
-      if obj = player.would_collide?(ENTITIES, direction)
+      if obj = player.would_collide_with(ENTITIES, direction)
         ENTITIES.delete(obj)
         player.move(direction)
         

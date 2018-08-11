@@ -36,7 +36,7 @@ class Player
     win.setpos(old_y, old_x)
   end
   
-  def would_collide?(objects, dir)
+  def would_collide_with(objects, dir)
     x, y = project_movement(dir)
     
     objects.each do |obj|
