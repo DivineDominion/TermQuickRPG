@@ -45,10 +45,10 @@ module Curses
 end
 
 def show_message(*lines)
-  show_options(*lines, "Continue")
+  show_options(*lines, "Continue", :single)
 end
 
-def show_options(*lines, options)
+def show_options(*lines, options, style)
   raise "Options hash missing" if options.length == 0
 
   # Wrap string options in hash
@@ -63,7 +63,7 @@ def show_options(*lines, options)
   top, left = (Curses.lines - height) / 2, (Curses.cols - width) / 2
   dialog = Curses::Window.new(height, width, top, left)
   dialog.keypad(true)
-  dialog.draw_box(:double)
+  dialog.draw_box(style)
 
   # Message
   y =  1
@@ -74,7 +74,7 @@ def show_options(*lines, options)
   end
 
   # Draw divider
-  dialog.draw_divider(:double, y)
+  dialog.draw_divider(style, y)
   y += 1
 
   # Option Buttons

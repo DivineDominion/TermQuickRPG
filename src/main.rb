@@ -77,14 +77,18 @@ begin
 
     case input
     when "q", Curses::Key::EXIT, Curses::Key::CANCEL, Curses::Key::BREAK
-      quit = true
+      quit = true # faster during dev
+      # case show_options("Quit?", { yes: "Yes", cancel: "No" }, :double)
+      # when :yes then quit = true
+      # else redraw_window.call
+      # end
 
     when DIRECTION_KEYS
       direction = DIRECTION_KEYS[input]
       old_y, old_x = [player.y, player.x]
 
       if obj = player.would_collide_with(ENTITIES, direction)
-        choice = show_options("Found #{obj.name}!", { pick: "Pick up", cancel: "Leave" })
+        choice = show_options("Found #{obj.name}!", { pick: "Pick up", cancel: "Leave" }, :single)
 
         if choice == :pick
           ENTITIES.delete(obj)
@@ -104,6 +108,10 @@ begin
       action = ACTION_KEYS[input]
 
       show_message("Cannot interact with anything here.")
+      redraw_window.call
+
+    else
+      show_message("got #{input} / #{input.ord}")
       redraw_window.call
     end
   end
