@@ -1,14 +1,58 @@
 require "curses"
 
-def show_message(*lines)
-  show_options("Continue", *lines)
+module Curses
+  class Window
+    STYLES = {
+      :single => %Q{┌─┐││└─┘├─┤},
+      :double => %Q{╔═╗║║╚═╝╟─╢},
+      :plusdash => %Q{+-+||+-++-+}
+    }
+
+    def draw_box(style)
+      style = STYLES[style]
+      raise "Style not found" if style.nil?
+
+      width, height = maxx, maxy
+
+      setpos(0, 0)
+      addstr(style[0])
+      (width - 2).times { addstr(style[1]) }
+      addstr(style[2])
+
+      (height - 2).times do |y|
+        setpos(y + 1, 0)
+        addstr(style[3])
+        setpos(y + 1, width - 1)
+        addstr(style[4])
+      end
+
+      setpos(height - 1, 0)
+      addstr(style[5])
+      (width - 2).times { addstr(style[6]) }
+      addstr(style[7])
+    end
+
+    def draw_divider(style, y)
+      style = STYLES[style]
+      raise "Style not found" if style.nil?
+
+      setpos(y, 0)
+      addstr(style[8])
+      (maxx - 2).times { addstr(style[9]) }
+      addstr(style[10])
+    end
+  end
 end
 
-def show_options(options, *lines)
+def show_message(*lines)
+  show_options(*lines, "Continue")
+end
+
+def show_options(*lines, options)
   raise "Options hash missing" if options.length == 0
 
   # Wrap string options in hash
-  options = options.is_a?(Hash) ? options : {:close => options}
+  options = options.is_a?(Hash) ? options : { close: options }
 
   longest_option_length = options.values.sort { |a,b| a.length <=> b.length }[-1].length
   longest_option_length += 2 # surrounding brackets
@@ -19,7 +63,7 @@ def show_options(options, *lines)
   top, left = (Curses.lines - height) / 2, (Curses.cols - width) / 2
   dialog = Curses::Window.new(height, width, top, left)
   dialog.keypad(true)
-  dialog.box("|", "-", "+")
+  dialog.draw_box(:double)
 
   # Message
   y =  1
@@ -30,10 +74,7 @@ def show_options(options, *lines)
   end
 
   # Draw divider
-  dialog.setpos(y, 0)
-  dialog << "+"
-  (width - 2).times { dialog << "-" }
-  dialog << "+"
+  dialog.draw_divider(:double, y)
   y += 1
 
   # Option Buttons

@@ -71,7 +71,7 @@ begin
       old_y, old_x = [player.y, player.x]
 
       if obj = player.would_collide_with(ENTITIES, direction)
-        choice = show_options({:pick => "Pick up", :cancel => "Leave"}, "Found #{obj.name}!")
+        choice = show_options("Found #{obj.name}!", { pick: "Pick up", cancel: "Leave" })
 
         if choice == :pick
           ENTITIES.delete(obj)
