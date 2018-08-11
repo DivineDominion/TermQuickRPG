@@ -44,19 +44,26 @@ ENTITIES << Item.new(8, 6, "♥", "Heart")
 ENTITIES << Item.new(4, 4, "¶", "Mace")
 ENTITIES << player
 
-def draw_entities(win)
-  ENTITIES.each { |e| e.draw(win) }
-end
 
 begin
   win = Curses::Window.new(Curses.lines - 3, Curses.cols - 2, 1, 1)
   win.box(?|, ?-)
   win.keypad(true)
 
-  draw_entities(win)
+  draw_entities = -> do
+    ENTITIES.each { |e| e.draw(win) }
+  end
+
+  redraw_window = -> do
+    win.clear
+    win.box(?|, ?-)
+    draw_entities.call
+    win.refresh
+  end
+
+  draw_entities.call
 
   quit = false
-
   while !quit
     win.refresh
 
@@ -78,10 +85,7 @@ begin
           player.move(direction)
         end
 
-        win.clear
-        win.box(?|, ?-)
-        draw_entities(win)
-        win.refresh
+        redraw_window.call
       else
         player.move(direction)
       end
@@ -94,10 +98,7 @@ begin
       action = ACTION_KEYS[input]
 
       show_message("Cannot interact with anything here.")
-      win.clear
-      win.box(?|, ?-)
-      draw_entities(win)
-      win.refresh
+      redraw_window.call
     end
   end
 
