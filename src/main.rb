@@ -64,7 +64,7 @@ player = Player.new(5,5)
 
 ENTITIES = "The Adventure Begins ...".split("").map.with_index { |c, i| Item.new(2 + i, 2, c, c) }
 ENTITIES << Item.new(8, 6, "♥", "Heart")
-ENTITIES << Item.new(4, 3, "✝︎", "Holy Cross")
+ENTITIES << Item.new(4, 4, "¶", "Mace")
 ENTITIES << player
 
 def draw_entities(win)   
