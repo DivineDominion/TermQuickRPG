@@ -44,6 +44,12 @@ ENTITIES << Item.new(8, 6, "♥", "Heart")
 ENTITIES << Item.new(4, 4, "¶", "Mace")
 ENTITIES << player
 
+class Hash
+  # case matching
+  def ===(element)
+    self.has_key?(element)
+  end
+end
 
 begin
   win = Curses::Window.new(Curses.lines - 3, Curses.cols - 2, 1, 1)
@@ -73,7 +79,7 @@ begin
     when "q", Curses::Key::EXIT, Curses::Key::CANCEL, Curses::Key::BREAK
       quit = true
 
-    when -> (c) { DIRECTION_KEYS.keys.include?(c) }
+    when DIRECTION_KEYS
       direction = DIRECTION_KEYS[input]
       old_y, old_x = [player.y, player.x]
 
@@ -94,7 +100,7 @@ begin
       win.addstr(" ")
       player.draw(win)
 
-    when -> (c) { ACTION_KEYS.keys.include?(c) }
+    when ACTION_KEYS
       action = ACTION_KEYS[input]
 
       show_message("Cannot interact with anything here.")

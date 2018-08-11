@@ -111,7 +111,7 @@ def show_options(*lines, options)
     input = Curses.get_char
 
     case input
-    when -> (c) { DIRECTION_KEYS.keys.include?(c) }
+    when DIRECTION_KEYS
       case DIRECTION_KEYS[input]
       when :up then selection -= 1
       when :down then selection += 1
@@ -123,7 +123,7 @@ def show_options(*lines, options)
         selection = 0
       end
 
-    when -> (c) { ACTION_KEYS.keys.include?(c) }
+    when ACTION_KEYS
       if ACTION_KEYS[input] == :use
         dialog.close
         return options.keys[selection]
