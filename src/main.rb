@@ -35,29 +35,40 @@ Curses.setpos(Curses.lines - 1, (Curses.cols - TITLE.length) / 2)
 Curses.addstr(TITLE)
 Curses.refresh
 
-def show_message(*lines)
-  continue_msg = "[Press Any Key]"
-  height = lines.length + 3
+def show_message(win, *lines)
+  continue_msg = "[Continue]"
+  height = lines.length + 4
   longest_line_length = lines.sort { |a,b| a.length <=> b.length }[-1].length
   width = [continue_msg.length, longest_line_length].max + 6
   top, left = (Curses.lines - height) / 2, (Curses.cols - width) / 2
-  win = Curses::Window.new(height, width, top, left)
-  win.keypad(true)
-  win.box("|", "-", "+")
-  
-  y = 1
+  dialog = win.subwin(height, width, top, left)
+  dialog.keypad(true)
+  dialog.box("|", "-", "+")
+
+  # Message
+  y =  1
   lines.each do |line|
-    win.setpos(y, 3)
-    win.addstr(line)
+    dialog.setpos(y, 3)
+    dialog.addstr(line)
     y += 1
   end
   
-  win.setpos(y, (width - continue_msg.length) / 2)
-  win.addstr(continue_msg)
+  # Draw divider
+  dialog.setpos(y, 0)
+  dialog << "+"
+  (width - 2).times { dialog << "-" }
+  dialog << "+"
   
-  win.refresh
-  win.getch
-  win.close
+  # Continue Button
+  y += 1
+  dialog.setpos(y, (width - continue_msg.length) / 2)
+  dialog.attron(Curses::A_REVERSE)
+  dialog.addstr(continue_msg)
+  dialog.attroff(Curses::A_REVERSE)
+
+  dialog.refresh
+  loop { break if ACTION_KEYS.keys.include?(dialog.getch) }
+  dialog.close
 end
 
 player = Player.new(5,5)
@@ -101,7 +112,7 @@ begin
         ENTITIES.delete(obj)
         player.move(direction)
         
-        show_message("Picked up #{obj.name}!")
+        show_message(win, "Picked up #{obj.name}!")
         win.clear
         win.box(?|, ?-)
         draw_entities(win)
@@ -115,7 +126,7 @@ begin
     when -> (c) { ACTION_KEYS.keys.include?(c) }
       action = ACTION_KEYS[input]
       
-      show_message("Cannot interact with anything here.")
+      show_message(win, "Cannot interact with anything here.")
       win.clear
       win.box(?|, ?-)
       draw_entities(win)
