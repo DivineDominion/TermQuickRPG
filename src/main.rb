@@ -26,7 +26,8 @@ ACTION_KEYS = {
 Curses.init_screen
 Curses.start_color
 Curses.stdscr.keypad(true) # enable arrow keys
-Curses.cbreak # immediate key input
+Curses.cbreak # no line buffering / immediate key input
+Curses.ESCDELAY = 0
 Curses.curs_set(0)  # Invisible cursor
 Curses.noecho # Do not print keyboard input
 
@@ -76,7 +77,7 @@ begin
     input = win.get_char
 
     case input
-    when "q", Curses::Key::EXIT, Curses::Key::CANCEL, Curses::Key::BREAK
+    when "q", "\e", Curses::Key::EXIT, Curses::Key::CANCEL, Curses::Key::BREAK
       quit = true # faster during dev
       # case show_options("Quit?", { yes: "Yes", cancel: "No" }, :double)
       # when :yes then quit = true
