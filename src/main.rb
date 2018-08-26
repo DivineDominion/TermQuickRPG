@@ -5,6 +5,8 @@ require "curses"
 require_relative "player.rb"
 require_relative "item.rb"
 require_relative "dialogs.rb"
+require_relative "map.rb"
+require_relative "map_view.rb"
 
 DIRECTION_KEYS = {
   ?w => :up,
@@ -52,13 +54,16 @@ class Hash
   end
 end
 
+BORDERS_WIDTH = 2
 begin
-  win = Curses::Window.new(Curses.lines - 3, Curses.cols - 2, 1, 1)
+  map = Map.new(Curses.cols - 2 - BORDERS_WIDTH, Curses.lines - 3 - BORDERS_WIDTH)
+  map_view = MapView.new(map, 1, 1)
+  win = map_view.window
   win.box(?|, ?-)
   win.keypad(true)
 
   draw_entities = -> do
-    ENTITIES.each { |e| e.draw(win) }
+    ENTITIES.each { |e| e.draw(map_view) }
   end
 
   redraw_window = -> do
@@ -86,7 +91,7 @@ begin
 
     when DIRECTION_KEYS
       direction = DIRECTION_KEYS[input]
-      old_y, old_x = [player.y, player.x]
+      old_x, old_y = player.x, player.y
 
       if obj = player.would_collide_with(ENTITIES, direction)
         choice = show_options("Found #{obj.name}!", { pick: "Pick up", cancel: "Leave" }, :single)
@@ -97,13 +102,12 @@ begin
         end
 
         redraw_window.call
-      else
+      elsif player.would_fit_into_map(map, direction)
         player.move(direction)
       end
 
-      win.setpos(old_y, old_x)
-      win.addstr(" ")
-      player.draw(win)
+      map_view.undraw(old_x, old_y)
+      player.draw(map_view)
 
     when ACTION_KEYS
       action = ACTION_KEYS[input]

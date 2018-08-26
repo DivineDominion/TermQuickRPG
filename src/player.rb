@@ -1,15 +1,17 @@
+require_relative "map_view.rb"
+
 PLAYER_CHARACTER = "☺"
 
 class Player
   attr_reader :x, :y
   attr_reader :char
-  
+
   def initialize(x, y)
     @x = x
     @y = y
     @char = PLAYER_CHARACTER
   end
-  
+
   def project_movement(dir)
     y = case dir
         when :up then   @y - 1
@@ -23,28 +25,30 @@ class Player
         end
     [x, y]
   end
-  
+
   def move(dir)
     @x, @y = project_movement(dir)
     [@x, @y]
   end
-  
-  def draw(win)
-    old_y, old_x = [win.cury, win.curx]
-    win.setpos(@y, @x)
-    win.addstr("#{@char}")
-    win.setpos(old_y, old_x)
+
+  def draw(map_view)
+    map_view.draw("#{@char}", @x, @y)
   end
-  
+
+  def would_fit_into_map(map, dir)
+    x, y = project_movement(dir)
+    map.contains(x, y)
+  end
+
   def would_collide_with(objects, dir)
     x, y = project_movement(dir)
-    
+
     objects.each do |obj|
       if obj.x == x && obj.y == y
         return obj
       end
     end
-    
+
     false
   end
 end
