@@ -3,6 +3,11 @@ require "termquickrpg/ext/curses/window-draw_box"
 
 module TermQuickRPG
   module UI
+    def self.cleanup_after_dialog
+      Curses.clear
+      Curses.refresh
+    end
+
     def self.show_message(*lines)
       show_options(*lines, "Continue", :single)
     end

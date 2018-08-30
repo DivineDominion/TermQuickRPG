@@ -123,9 +123,7 @@ module TermQuickRPG
                 map.entities.delete(obj)
               end
 
-              # Clean up after dialog
-              Curses.clear
-              Curses.refresh
+              UI::cleanup_after_dialog
             elsif player.would_fit_into_map(map, direction)
               player.move(direction)
             end
@@ -134,10 +132,7 @@ module TermQuickRPG
             action = ACTION_KEYS[input]
 
             UI::show_message("Cannot interact with anything here.")
-
-            # Clean up after dialog
-            Curses.clear
-            Curses.refresh
+            UI::cleanup_after_dialog
 
           else
             unless input.nil?
