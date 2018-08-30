@@ -11,7 +11,14 @@ class Map
     x >= 0 && y >= 0 && x < width && y < height
   end
 
-  def draw(canvas)
-    @entities.each { |e| e.draw(canvas) }
+  def draw(canvas, start_x, start_y, width, height)
+    @entities
+      .select { |e| entity_is_visible(e, start_x, start_y, width, height) }
+      .each { |e| e.draw(canvas, -start_x, -start_y) }
+  end
+
+  def entity_is_visible(entity, start_x, start_y, width, height)
+    return entity.x >= start_x && entity.x < start_x + width \
+        && entity.y >= start_y && entity.y < start_y + height
   end
 end

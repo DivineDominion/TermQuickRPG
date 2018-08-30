@@ -7,7 +7,7 @@ class Item
     @x, @y, @char, @name = x, y, char, name
   end
 
-  def draw(canvas)
-    canvas.draw("#{@char}", @x, @y)
+  def draw(canvas, offset_x, offset_y)
+    canvas.draw("#{@char}", @x + offset_x, @y + offset_y)
   end
 end

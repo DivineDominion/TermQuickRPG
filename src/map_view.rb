@@ -1,35 +1,30 @@
 require "curses"
 
 class MapView
-  attr_reader :offset_x, :offset_y
+  attr_reader :viewport
   attr_reader :map
-  attr_reader :window
 
-  def initialize(map, offset_x, offset_y)
-    @offset_x, @offset_y = offset_x, offset_y
-    @map = map
-    @window = Curses::Window.new(map.height + 2, map.width + 2, offset_y, offset_x)
+  def initialize(map, viewport)
+    @viewport, @map = viewport, map
+    viewport.add_listener(self)
   end
 
-  def offset(x, y)
-    [x + offset_x, y + offset_y]
+  def window
+    @viewport.window
   end
 
   def display
-    @window.clear
-    @window.box(?|, ?-)
-
-    @map.draw(self)
-
-    @window.refresh
+    viewport.display do |start_x, start_y, width, height|
+      @map.draw(self, start_x, start_y, width, height)
+    end
   end
 
   def draw(char, map_x, map_y)
-    x, y = offset(map_x, map_y)
-    old_y, old_x = [@window.cury, @window.curx]
-    @window.setpos(y, x)
-    @window.addstr("#{char}")
-    @window.setpos(old_y, old_x)
+    x, y = [map_x + 1, map_y + 1] # window border
+    old_y, old_x = [window.cury, window.curx]
+    window.setpos(y, x)
+    window.addstr("#{char}")
+    window.setpos(old_y, old_x)
   end
 
   def undraw(map_x, map_y)
@@ -38,9 +33,11 @@ class MapView
 
   # Event listener
   def screen_size_did_change(screen, size)
-    @window.erase
-    @window.close
-    @window = Curses::Window.new(size[:height] - offset_y, size[:width] - offset_x, offset_y, offset_x)
+    viewport.adjust_to_screen_size(size[:width], size[:height])
+    display
+  end
+
+  def viewport_did_scroll(viewport)
     display
   end
 end

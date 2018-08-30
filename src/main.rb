@@ -8,6 +8,9 @@ require_relative "item.rb"
 require_relative "dialogs.rb"
 require_relative "map.rb"
 require_relative "map_view.rb"
+require_relative "viewport.rb"
+
+include TermQuickRPG # more conveniently use module namespace
 
 DIRECTION_KEYS = {
   ?w => :up,
@@ -55,18 +58,22 @@ class Hash
   end
 end
 
-include TermQuickRPG # more conveniently use module namespace
-
-BORDERS_WIDTH = 2
 begin
   screen = Screen.new
-  map = Map.new(screen.size[:width] - 2 - BORDERS_WIDTH, screen.size[:height] - 3 - BORDERS_WIDTH, ENTITIES)
-  map_view = MapView.new(map, 1, 1)
+  viewport = Viewport.new(40, 8, 20, 10)
+  player.add_listener(viewport)
+  map = Map.new(30, 30, ENTITIES)
+  map_view = MapView.new(map, viewport)
   screen.add_listener(map_view)
   map_view.window.keypad(true)
 
   quit = false
   while !quit
+    Curses.setpos(0, 0)
+    Curses.addstr(  "player pos: #{player.x}, #{player.y}")
+    Curses.addstr("\nviewport at #{viewport.x}, #{viewport.y}; #{viewport.width}x#{viewport.height}, scroll: #{viewport.scroll_x}, #{viewport.scroll_y}")
+    Curses.addstr("\nscr #{screen.width}x#{screen.height} 0 #{viewport.max_x},#{viewport.max_y}")
+
     map_view.display
 
     input = Curses.get_char
@@ -78,6 +85,9 @@ begin
       # when :yes then quit = true
       # else redraw_window.call
       # end
+
+    when "r"
+      map_view.screen_size_did_change(nil, {width: 40, height: 20})
 
     when DIRECTION_KEYS
       direction = DIRECTION_KEYS[input]
@@ -101,7 +111,7 @@ begin
 
     else
       unless input.nil?
-        show_message("got #{input} / #{input.ord}")
+        # show_message("got #{input} / #{input.ord}")
       end
     end
   end
