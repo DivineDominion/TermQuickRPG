@@ -2,13 +2,13 @@
 #encoding: utf-8
 
 require "curses"
-require_relative "screen.rb"
-require_relative "player.rb"
-require_relative "item.rb"
-require_relative "dialogs.rb"
-require_relative "map.rb"
-require_relative "map_view.rb"
-require_relative "viewport.rb"
+require_relative "TermQuickRPG/screen.rb"
+require_relative "TermQuickRPG/player.rb"
+require_relative "TermQuickRPG/item.rb"
+require_relative "TermQuickRPG/dialogs.rb"
+require_relative "TermQuickRPG/map.rb"
+require_relative "TermQuickRPG/map_view.rb"
+require_relative "TermQuickRPG/viewport.rb"
 
 include TermQuickRPG # more conveniently use module namespace
 
@@ -65,13 +65,12 @@ begin
   map = Map.new(30, 30, ENTITIES)
   map_view = MapView.new(map, viewport)
   screen.add_listener(map_view)
-  map_view.window.keypad(true)
 
   quit = false
   while !quit
     Curses.setpos(0, 0)
-    Curses.addstr(  "player pos: #{player.x}, #{player.y}")
-    Curses.addstr("\nviewport at #{viewport.x}, #{viewport.y}; #{viewport.width}x#{viewport.height}, scroll: #{viewport.scroll_x}, #{viewport.scroll_y}")
+    Curses.addstr(  "player: #{player.x}, #{player.y}")
+    Curses.addstr("\nviewport: #{viewport.x}, #{viewport.y}; #{viewport.width}x#{viewport.height}; scroll: #{viewport.scroll_x}, #{viewport.scroll_y}")
     Curses.addstr("\nscr #{screen.width}x#{screen.height} 0 #{viewport.max_x},#{viewport.max_y}")
 
     map_view.display
@@ -85,9 +84,6 @@ begin
       # when :yes then quit = true
       # else redraw_window.call
       # end
-
-    when "r"
-      map_view.screen_size_did_change(nil, {width: 40, height: 20})
 
     when DIRECTION_KEYS
       direction = DIRECTION_KEYS[input]
