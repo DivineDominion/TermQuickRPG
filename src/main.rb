@@ -4,6 +4,7 @@
 require "curses"
 require_relative "TermQuickRPG/curses+resize"
 
+require_relative "TermQuickRPG/run_loop"
 require_relative "TermQuickRPG/screen"
 require_relative "TermQuickRPG/player"
 require_relative "TermQuickRPG/item"
@@ -69,63 +70,66 @@ begin
   Curses.refresh
 
   quit = false
-  while !quit
-    Curses.setpos(0, 0)
-    Curses.addstr(  "player: #{player.x}, #{player.y}")
-    Curses.addstr("\nviewport: #{viewport.x}, #{viewport.y}; #{viewport.width}x#{viewport.height}; scroll: #{viewport.scroll_x}, #{viewport.scroll_y}")
-    Curses.addstr("\nc #{Curses.cols}x#{Curses.lines}; scr #{screen.width}x#{screen.height} : #{viewport.max_x},#{viewport.max_y} = #{screen.width-viewport.max_x}x#{screen.height-viewport.max_y}")
+  RunLoop.main.run do
+    while !quit
+      Curses.setpos(0, 0)
+      Curses.addstr(  "player: #{player.x}, #{player.y}")
+      Curses.addstr("\nviewport: #{viewport.x}, #{viewport.y}; #{viewport.width}x#{viewport.height}; scroll: #{viewport.scroll_x}, #{viewport.scroll_y}")
+      Curses.addstr("\nc #{Curses.cols}x#{Curses.lines}; scr #{screen.width}x#{screen.height} : #{viewport.max_x},#{viewport.max_y} = #{screen.width-viewport.max_x}x#{screen.height-viewport.max_y}")
 
-    Curses.setpos(Curses.lines - 1, (Curses.cols - TITLE.length) / 2)
-    Curses.addstr(TITLE)
+      Curses.setpos(Curses.lines - 1, (Curses.cols - TITLE.length) / 2)
+      Curses.addstr(TITLE)
 
-    map_view.display
+      map_view.display
 
-    input = Curses.get_char
+      input = Curses.get_char
 
-    case input
-    when "q", "\e", Curses::Key::EXIT, Curses::Key::CANCEL, Curses::Key::BREAK
-      quit = true # faster during dev
-      # case show_options("Quit?", { yes: "Yes", cancel: "No" }, :double)
-      # when :yes then quit = true
-      # else redraw_window.call
-      # end
+      case input
+      when "q", "\e", Curses::Key::EXIT, Curses::Key::CANCEL, Curses::Key::BREAK
+        quit = true # faster during dev
+        # case show_options("Quit?", { yes: "Yes", cancel: "No" }, :double)
+        # when :yes then quit = true
+        # else redraw_window.call
+        # end
 
-    when DIRECTION_KEYS
-      direction = DIRECTION_KEYS[input]
-      old_x, old_y = player.x, player.y
+      when DIRECTION_KEYS
+        direction = DIRECTION_KEYS[input]
+        old_x, old_y = player.x, player.y
 
-      if obj = player.would_collide_with(ENTITIES, direction)
-        player.move(direction)
-        map_view.display # display new player position immediately
+        if obj = player.would_collide_with(ENTITIES, direction)
+          player.move(direction)
+          map_view.display # display new player position immediately
 
-        choice = show_options("Found #{obj.name}!", { pick: "Pick up", cancel: "Leave" }, :single)
+          choice = show_options("Found #{obj.name}!", { pick: "Pick up", cancel: "Leave" }, :single)
 
-        if choice == :pick
-          ENTITIES.delete(obj)
+          if choice == :pick
+            ENTITIES.delete(obj)
+          end
+
+          # Clean up after dialog
+          Curses.clear
+          Curses.refresh
+        elsif player.would_fit_into_map(map, direction)
+          player.move(direction)
         end
+
+      when ACTION_KEYS
+        action = ACTION_KEYS[input]
+
+        show_message("Cannot interact with anything here.")
 
         # Clean up after dialog
         Curses.clear
         Curses.refresh
-      elsif player.would_fit_into_map(map, direction)
-        player.move(direction)
-      end
 
-    when ACTION_KEYS
-      action = ACTION_KEYS[input]
-
-      show_message("Cannot interact with anything here.")
-
-      # Clean up after dialog
-      Curses.clear
-      Curses.refresh
-
-    else
-      unless input.nil?
-        # show_message("got #{input} / #{input.ord}")
+      else
+        unless input.nil?
+          # show_message("got #{input} / #{input.ord}")
+        end
       end
     end
   end
+
 
   Curses.close_screen
 

@@ -1,5 +1,6 @@
 require "terminal-size"
 require_relative "observable"
+require_relative "run_loop"
 
 module TermQuickRPG
   class Screen
@@ -30,7 +31,7 @@ module TermQuickRPG
 
     def update_screen_size
       @size = Terminal.size
-      notify_listeners(SCREEN_SIZE_DID_CHANGE_EVENT, width, height)
+      RunLoop.main.enqueue { notify_listeners(SCREEN_SIZE_DID_CHANGE_EVENT, width, height) }
     end
   end
 end
