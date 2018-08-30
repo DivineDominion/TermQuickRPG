@@ -95,12 +95,18 @@ begin
       old_x, old_y = player.x, player.y
 
       if obj = player.would_collide_with(ENTITIES, direction)
+        player.move(direction)
+        map_view.display # display new player position immediately
+
         choice = show_options("Found #{obj.name}!", { pick: "Pick up", cancel: "Leave" }, :single)
 
         if choice == :pick
           ENTITIES.delete(obj)
-          player.move(direction)
         end
+
+        # Clean up after dialog
+        Curses.clear
+        Curses.refresh
       elsif player.would_fit_into_map(map, direction)
         player.move(direction)
       end
@@ -109,6 +115,8 @@ begin
       action = ACTION_KEYS[input]
 
       show_message("Cannot interact with anything here.")
+
+      # Clean up after dialog
       Curses.clear
       Curses.refresh
 
