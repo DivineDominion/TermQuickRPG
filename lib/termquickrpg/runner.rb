@@ -23,11 +23,11 @@ module TermQuickRPG
   TITLE = "TerminalQuickRPG by DivineDominion / 2018"
 
   class Runner
-    attr_reader :screen
-
     include World
     include UI
     include Util
+
+    def screen; Screen.main; end
 
     def run
       bootstrap
@@ -43,6 +43,9 @@ module TermQuickRPG
 
     private
 
+    attr_reader :player, :map
+    attr_reader :map_views
+
     def bootstrap
       Curses.init_screen
       Curses.start_color
@@ -55,12 +58,30 @@ module TermQuickRPG
       screen.add_listener(Curses)
     end
 
-    def screen
-      Screen.main
-    end
-
     def teardown
       Curses.close_screen
+    end
+
+    def run_loop
+      @map, @player = load_map
+
+      viewport = Viewport.new(width: 30, height: 15, y: 2, borders_inclusive: true,
+                              centered: [:horizontal])
+      viewport.scroll_to_visible(player.x, player.y)
+      player.add_listener(viewport) # scroll on move
+
+      @map_views ||= []
+      @map_views << MapView.new(map, viewport, screen)
+
+      Curses.refresh
+
+      @keep_running = true
+      while @keep_running
+        RunLoop.main.run do
+          draw
+          handle_input(player)
+        end
+      end
     end
 
     def load_map
@@ -78,71 +99,79 @@ module TermQuickRPG
       [map, player]
     end
 
-    def run_loop
-      map, player = load_map
+    def draw
+      draw_help
+      display_map_views
+    end
 
-      viewport = Viewport.new(centered: [:horizontal, :vertical], width: 30, height: 15, borders_inclusive: true)
-      player.add_listener(viewport) # scroll on move
+    def draw_help
+      # Curses.setpos(0, 0)
+#       Curses.addstr(  "player: #{player.x}, #{player.y}")
+#       Curses.addstr("\nviewport: #{viewport.x}, #{viewport.y}; #{viewport.width}x#{viewport.height}; scroll: #{viewport.scroll_x}, #{viewport.scroll_y}")
+#       Curses.addstr("\nc #{Curses.cols}x#{Curses.lines}; scr #{screen.width}x#{screen.height} : #{viewport.max_x},#{viewport.max_y} = #{screen.width-viewport.max_x}x#{screen.height-viewport.max_y}")
 
-      map_view = MapView.new(map, viewport)
-      screen.add_listener(map_view) # forward screen resizing
+      Curses.setpos(Curses.lines - 2, (Curses.cols - TITLE.length) / 2)
+      Curses.addstr(TITLE)
 
-      Curses.refresh
+      help = "W,A,S,D to move  [Q]uit"
+      Curses.setpos(Curses.lines - 1, (Curses.cols - help.length) / 2)
+      Curses.addstr(help)
+    end
 
-      quit = false
-      while !quit
-        RunLoop.main.run do
-          Curses.setpos(0, 0)
-          Curses.addstr(  "player: #{player.x}, #{player.y}")
-          Curses.addstr("\nviewport: #{viewport.x}, #{viewport.y}; #{viewport.width}x#{viewport.height}; scroll: #{viewport.scroll_x}, #{viewport.scroll_y}")
-          Curses.addstr("\nc #{Curses.cols}x#{Curses.lines}; scr #{screen.width}x#{screen.height} : #{viewport.max_x},#{viewport.max_y} = #{screen.width-viewport.max_x}x#{screen.height-viewport.max_y}")
+    def display_map_views
+      @map_views.each do |map_view|
+        map_view.display
+      end
+    end
 
-          Curses.setpos(Curses.lines - 1, (Curses.cols - TITLE.length) / 2)
-          Curses.addstr(TITLE)
+    def handle_input(player)
+      input = Curses.get_char
 
-          map_view.display
+      case input
+      when "q", "Q", "\e", Curses::Key::EXIT, Curses::Key::CANCEL, Curses::Key::BREAK
+        @keep_running = false # faster during dev
+        # case show_options("Quit?", { yes: "Yes", cancel: "No" }, :double)
+        # when :yes then @keep_running = false
+        # else redraw_window.call
+        # end
 
-          input = Curses.get_char
+      when "I", "i"
+        UI::show_message "Inventory"
+        UI::cleanup_after_dialog
 
-          case input
-          when "q", "Q", "\e", Curses::Key::EXIT, Curses::Key::CANCEL, Curses::Key::BREAK
-            quit = true # faster during dev
-            # case show_options("Quit?", { yes: "Yes", cancel: "No" }, :double)
-            # when :yes then quit = true
-            # else redraw_window.call
-            # end
+      when DIRECTION_KEYS
+        direction = DIRECTION_KEYS[input]
+        handle_move_player(player, direction)
 
-          when DIRECTION_KEYS
-            direction = DIRECTION_KEYS[input]
-            old_x, old_y = player.x, player.y
+      when ACTION_KEYS
+        action = ACTION_KEYS[input]
 
-            if obj = player.would_collide_with_entities(map.entities, direction)
-              player.move(direction)
-              map_view.display # display new player position immediately
+        UI::show_message("Cannot interact with anything here.")
+        UI::cleanup_after_dialog
 
-              choice = UI::show_options("Found #{obj.name}!", { pick: "Pick up", cancel: "Leave" }, :single)
-
-              if choice == :pick
-                map.entities.delete(obj)
-              end
-
-              UI::cleanup_after_dialog
-            elsif player.would_fit_into_map(map, direction)
-              player.move(direction)
-            end
-
-          when ACTION_KEYS
-            action = ACTION_KEYS[input]
-
-            UI::show_message("Cannot interact with anything here.")
-            UI::cleanup_after_dialog
-
-          else
-            unless input.nil?
-              # show_message("got #{input} / #{input.ord}")
-            end
-          end
+      else
+        unless input.nil?
+          # show_message("got #{input} / #{input.ord}")
         end
+      end
+    end
+
+    def handle_move_player(player, direction)
+      old_x, old_y = player.x, player.y
+
+      if obj = player.would_collide_with_entities(map.entities, direction)
+        player.move(direction)
+        display_map_views # display new player position immediately
+
+        choice = UI::show_options("Found #{obj.name}!", { pick: "Pick up", cancel: "Leave" }, :single)
+
+        if choice == :pick
+          map.entities.delete(obj)
+        end
+
+        UI::cleanup_after_dialog
+      elsif player.would_fit_into_map(map, direction)
+        player.move(direction)
       end
     end
   end
