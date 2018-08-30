@@ -2,6 +2,7 @@
 #encoding: utf-8
 
 require "curses"
+require_relative "screen.rb"
 require_relative "player.rb"
 require_relative "item.rb"
 require_relative "dialogs.rb"
@@ -54,9 +55,12 @@ class Hash
   end
 end
 
+include TermQuickRPG # more conveniently use module namespace
+
 BORDERS_WIDTH = 2
 begin
-  map = Map.new(Curses.cols - 2 - BORDERS_WIDTH, Curses.lines - 3 - BORDERS_WIDTH)
+  screen = Screen.new
+  map = Map.new(screen.size[:width] - 2 - BORDERS_WIDTH, screen.size[:height] - 3 - BORDERS_WIDTH)
   map_view = MapView.new(map, 1, 1)
   win = map_view.window
   win.box(?|, ?-)
