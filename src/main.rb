@@ -44,7 +44,7 @@ TITLE = "TerminalQuickRPG by DivineDominion / 2018"
 
 player = Player.new(5,5)
 
-ENTITIES = "The Adventure Begins ...".split("").map.with_index { |c, i| Item.new(2 + i, 2, c, c) }
+ENTITIES = "The Adventure Begins ... Now".split("").map.with_index { |c, i| Item.new(2 + i, 2, c, c) }
 ENTITIES.delete_if { |e| e.name == " " }
 ENTITIES << Item.new(8, 6, "♥", "Heart")
 ENTITIES << Item.new(4, 4, "¶", "Mace")
@@ -59,8 +59,8 @@ end
 
 begin
   screen = Screen.new(post_initial_size: true)
-  viewport = Viewport.new(40, 8, 20, 10, borders_inclusive: true)
-  map = Map.new(30, 30, ENTITIES)
+  viewport = Viewport.new(10, 6, 28, 10, borders_inclusive: true)
+  map = Map.new(34, 30, ENTITIES)
   map_view = MapView.new(map, viewport)
   player.add_listener(viewport)
   screen.add_listener(Curses)
