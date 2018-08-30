@@ -2,6 +2,8 @@
 #encoding: utf-8
 
 require "curses"
+require_relative "TermQuickRPG/curses+resize.rb"
+
 require_relative "TermQuickRPG/screen.rb"
 require_relative "TermQuickRPG/player.rb"
 require_relative "TermQuickRPG/item.rb"
@@ -39,9 +41,6 @@ Curses.noecho # Do not print keyboard input
 
 # Spiffy game title
 TITLE = "TerminalQuickRPG by DivineDominion / 2018"
-Curses.setpos(Curses.lines - 1, (Curses.cols - TITLE.length) / 2)
-Curses.addstr(TITLE)
-Curses.refresh
 
 player = Player.new(5,5)
 
@@ -64,14 +63,20 @@ begin
   player.add_listener(viewport)
   map = Map.new(30, 30, ENTITIES)
   map_view = MapView.new(map, viewport)
+  screen.add_listener(Curses)
   screen.add_listener(map_view)
+
+  Curses.refresh
 
   quit = false
   while !quit
     Curses.setpos(0, 0)
     Curses.addstr(  "player: #{player.x}, #{player.y}")
     Curses.addstr("\nviewport: #{viewport.x}, #{viewport.y}; #{viewport.width}x#{viewport.height}; scroll: #{viewport.scroll_x}, #{viewport.scroll_y}")
-    Curses.addstr("\nscr #{screen.width}x#{screen.height} 0 #{viewport.max_x},#{viewport.max_y}")
+    Curses.addstr("\nc #{Curses.cols}x#{Curses.lines}; scr #{screen.width}x#{screen.height} : #{viewport.max_x},#{viewport.max_y} = #{screen.width-viewport.max_x}x#{screen.height-viewport.max_y}")
+
+    Curses.setpos(Curses.lines - 1, (Curses.cols - TITLE.length) / 2)
+    Curses.addstr(TITLE)
 
     map_view.display
 
