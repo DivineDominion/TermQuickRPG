@@ -11,6 +11,7 @@ module TermQuickRPG
 
       attr_reader :x, :y, :width, :height
       attr_accessor :centered
+      attr_accessor :margin_bottom
       attr_reader :scroll_x, :scroll_y
       attr_reader :window
 
@@ -21,10 +22,12 @@ module TermQuickRPG
           width: 10,
           height: 10,
           borders_inclusive: false,
-          centered: false
+          centered: false,
+          margin: {}
         }.merge(attrs)
 
         @centered = [*attrs[:centered]]
+        @margin_bottom = attrs[:margin][:bottom] || 0
 
         border_delta = attrs[:borders_inclusive] ? BORDERS_WIDTH : 0
         @width, @height = attrs[:width] - border_delta, attrs[:height] - border_delta
@@ -39,14 +42,6 @@ module TermQuickRPG
       def recenter_position(screen_width, screen_height)
         @x = @centered.include?(:horizontal) ? (Screen.width - @width) / 2   : @x
         @y = @centered.include?(:vertical)   ? (Screen.height - @height) / 2 : @y
-      end
-
-      def max_x
-        x + width + BORDERS_WIDTH
-      end
-
-      def max_y
-        y + height + BORDERS_WIDTH
       end
 
       def replace_window
@@ -119,6 +114,10 @@ module TermQuickRPG
         end
       end
 
+      def max_x
+        x + width + BORDERS_WIDTH
+      end
+
       def move_to_fit_height(height)
         while (height - max_y) < 0
           if @y > 0
@@ -127,6 +126,10 @@ module TermQuickRPG
             @height -= 1
           end
         end
+      end
+
+      def max_y
+        y + height + BORDERS_WIDTH + margin_bottom
       end
     end
   end

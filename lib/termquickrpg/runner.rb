@@ -66,6 +66,7 @@ module TermQuickRPG
       @map, @player = load_map
 
       viewport = Viewport.new(width: 30, height: 15, y: 2, borders_inclusive: true,
+                              margin: {bottom: 2}, # bottom screen help lines
                               centered: [:horizontal])
       viewport.scroll_to_visible(player.x, player.y)
       player.add_listener(viewport) # scroll on move
