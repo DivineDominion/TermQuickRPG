@@ -1,6 +1,7 @@
 require "curses"
+require "termquickrpg/ext/curses/curses-resize"
+
 require "termquickrpg/util/run_loop"
-require "termquickrpg/ui/curses+resize"
 require "termquickrpg/ui/screen"
 require "termquickrpg/ui/dialogs"
 require "termquickrpg/ui/map_view"
@@ -23,6 +24,10 @@ module TermQuickRPG
 
   class Runner
     attr_reader :screen
+
+    include World
+    include UI
+    include Util
 
     def run
       bootstrap
