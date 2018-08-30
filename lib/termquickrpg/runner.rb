@@ -87,8 +87,8 @@ module TermQuickRPG
       Curses.refresh
 
       quit = false
-      RunLoop.main.run do
-        while !quit
+      while !quit
+        RunLoop.main.run do
           Curses.setpos(0, 0)
           Curses.addstr(  "player: #{player.x}, #{player.y}")
           Curses.addstr("\nviewport: #{viewport.x}, #{viewport.y}; #{viewport.width}x#{viewport.height}; scroll: #{viewport.scroll_x}, #{viewport.scroll_y}")
