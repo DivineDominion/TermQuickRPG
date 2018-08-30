@@ -69,17 +69,33 @@ module TermQuickRPG
       end
 
       def player_did_move(player, x, y)
-        if x < @scroll_x
+        scroll_to_visible(x, y)
+      end
+
+      def scroll_to_visible(x, y)
+        did_scroll = false
+
+        while x < @scroll_x
           @scroll_x -= 1
-          notify_listeners(VIEWPORT_DID_SCROLL)
-        elsif y < @scroll_y
+          did_scroll = true
+        end
+
+        while y < @scroll_y
           @scroll_y -= 1
-          notify_listeners(VIEWPORT_DID_SCROLL)
-        elsif x >= @scroll_x + @width
+          did_scroll = true
+        end
+
+        while x >= @scroll_x + @width
           @scroll_x += 1
-          notify_listeners(VIEWPORT_DID_SCROLL)
-        elsif y >= @scroll_y + @height
+          did_scroll = true
+        end
+
+        while y >= @scroll_y + @height
           @scroll_y += 1
+          did_scroll = true
+        end
+
+        if did_scroll
           notify_listeners(VIEWPORT_DID_SCROLL)
         end
       end
