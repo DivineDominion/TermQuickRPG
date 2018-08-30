@@ -65,11 +65,9 @@ begin
   screen.add_listener(map_view)
   map_view.window.keypad(true)
 
-  map_view.display
-
   quit = false
   while !quit
-    map_view.window.refresh
+    map_view.display
 
     input = Curses.get_char
 
@@ -92,25 +90,18 @@ begin
           ENTITIES.delete(obj)
           player.move(direction)
         end
-
-        map_view.display
       elsif player.would_fit_into_map(map, direction)
         player.move(direction)
       end
-
-      map_view.undraw(old_x, old_y)
-      player.draw(map_view)
 
     when ACTION_KEYS
       action = ACTION_KEYS[input]
 
       show_message("Cannot interact with anything here.")
-      map_view.display
 
     else
       unless input.nil?
         show_message("got #{input} / #{input.ord}")
-        map_view.display
       end
     end
   end
