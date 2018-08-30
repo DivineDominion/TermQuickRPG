@@ -2,15 +2,15 @@
 #encoding: utf-8
 
 require "curses"
-require_relative "TermQuickRPG/curses+resize.rb"
+require_relative "TermQuickRPG/curses+resize"
 
-require_relative "TermQuickRPG/screen.rb"
-require_relative "TermQuickRPG/player.rb"
-require_relative "TermQuickRPG/item.rb"
-require_relative "TermQuickRPG/dialogs.rb"
-require_relative "TermQuickRPG/map.rb"
-require_relative "TermQuickRPG/map_view.rb"
-require_relative "TermQuickRPG/viewport.rb"
+require_relative "TermQuickRPG/screen"
+require_relative "TermQuickRPG/player"
+require_relative "TermQuickRPG/item"
+require_relative "TermQuickRPG/dialogs"
+require_relative "TermQuickRPG/map"
+require_relative "TermQuickRPG/map_view"
+require_relative "TermQuickRPG/viewport"
 
 include TermQuickRPG # more conveniently use module namespace
 

@@ -1,4 +1,4 @@
-require_relative "observable.rb"
+require_relative "observable"
 
 PLAYER_CHARACTER = "☺"
 

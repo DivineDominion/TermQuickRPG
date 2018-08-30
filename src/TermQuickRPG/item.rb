@@ -1,4 +1,4 @@
-require_relative "map_view.rb"
+require_relative "map_view"
 
 module TermQuickRPG
   class Item

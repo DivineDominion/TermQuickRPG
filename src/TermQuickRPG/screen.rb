@@ -1,5 +1,5 @@
 require "terminal-size"
-require_relative "observable.rb"
+require_relative "observable"
 
 module TermQuickRPG
   class Screen
