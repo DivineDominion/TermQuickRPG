@@ -5,6 +5,17 @@ require "termquickrpg/util/run_loop"
 module TermQuickRPG
   module UI
     class Screen
+      class << self
+        def main
+          @@main ||= Screen.new(post_initial_size: true)
+        end
+
+        def width;  main.width;  end
+        def height; main.height; end
+      end
+
+      private :initialize
+
       include Observable
       SCREEN_SIZE_DID_CHANGE_EVENT = :screen_size_did_change
 

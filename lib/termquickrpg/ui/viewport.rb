@@ -10,14 +10,38 @@ module TermQuickRPG
       BORDERS_WIDTH = 2 * BORDER_WIDTH
 
       attr_reader :x, :y, :width, :height
+      attr_accessor :keep_centered
       attr_reader :scroll_x, :scroll_y
       attr_reader :window
 
-      def initialize(x, y, width, height, **args)
-        border_delta = args[:borders_inclusive] ? BORDERS_WIDTH : 0
-        @x, @y, @width, @height = x, y, width - border_delta, height - border_delta
+      def initialize(**attrs)
+        attrs = {
+          x: 0,
+          y: 0,
+          width: 10,
+          height: 10,
+          borders_inclusive: false,
+          keep_centered: false
+        }.merge(attrs)
+
+        @keep_centered = attrs[:keep_centered]
+
+        border_delta = attrs[:borders_inclusive] ? BORDERS_WIDTH : 0
+        @width, @height = attrs[:width] - border_delta, attrs[:height] - border_delta
+        @x, @y = attrs[:x], attrs[:y]
+
         @scroll_x, @scroll_y = 0, 0
+
+        if @keep_centered
+          recenter_position(Screen.width, Screen.height)
+        end
+
         @window = replace_window
+      end
+
+      def recenter_position(screen_width, screen_height)
+        @x = @keep_centered ? (Screen.width - @width) / 2 : @x
+        @y = @keep_centered ? (Screen.height - @height) / 2 : @y
       end
 
       def max_x
@@ -66,6 +90,7 @@ module TermQuickRPG
       def adjust_to_screen_size(width, height)
         move_to_fit_width(width)
         move_to_fit_height(height)
+        recenter_position(width, height)
         replace_window
       end
 

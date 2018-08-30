@@ -52,8 +52,11 @@ module TermQuickRPG
       Curses.curs_set(0) # Invisible cursor
       Curses.noecho # Do not print keyboard input
 
-      @screen = Screen.new(post_initial_size: true)
       screen.add_listener(Curses)
+    end
+
+    def screen
+      Screen.main
     end
 
     def teardown
@@ -78,7 +81,7 @@ module TermQuickRPG
     def run_loop
       map, player = load_map
 
-      viewport = Viewport.new(10, 6, 28, 10, borders_inclusive: true)
+      viewport = Viewport.new(width: 30, height: 15, borders_inclusive: true, keep_centered: true)
       player.add_listener(viewport) # scroll on move
 
       map_view = MapView.new(map, viewport)
