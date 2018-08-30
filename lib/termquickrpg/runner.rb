@@ -64,15 +64,21 @@ module TermQuickRPG
 
     def run_loop
       @map, @player = load_map
+      @map_views ||= []
 
       viewport = Viewport.new(width: 30, height: 15, y: 2, borders_inclusive: true,
                               margin: {bottom: 2}, # bottom screen help lines
                               centered: [:horizontal])
       viewport.scroll_to_visible(player.x, player.y)
       player.add_listener(viewport) # scroll on move
-
-      @map_views ||= []
       @map_views << MapView.new(map, viewport, screen)
+
+      ## Demo dual views
+      # viewport2 = Viewport.new(width: 8, height: 5, x: 100, borders_inclusive: true,
+      #                         centered: [:vertical])
+      # viewport2.scroll_to_visible(player.x, player.y)
+      # player.add_listener(viewport2)
+      # @map_views << MapView.new(map, viewport2, screen)
 
       Curses.refresh
 
