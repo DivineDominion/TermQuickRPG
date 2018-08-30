@@ -81,7 +81,7 @@ module TermQuickRPG
     def run_loop
       map, player = load_map
 
-      viewport = Viewport.new(width: 30, height: 15, borders_inclusive: true, keep_centered: true)
+      viewport = Viewport.new(centered: [:horizontal, :vertical], width: 30, height: 15, borders_inclusive: true)
       player.add_listener(viewport) # scroll on move
 
       map_view = MapView.new(map, viewport)

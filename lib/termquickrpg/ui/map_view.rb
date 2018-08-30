@@ -6,9 +6,15 @@ module TermQuickRPG
       attr_reader :viewport
       attr_reader :map
 
-      def initialize(map, viewport)
+      def initialize(map, viewport, *args)
         @viewport, @map = viewport, map
         viewport.add_listener(self)
+
+        # forward screen resizing
+        screen = args.pop
+        if screen
+          screen.add_listener(self)
+        end
       end
 
       def window
