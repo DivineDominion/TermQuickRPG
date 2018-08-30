@@ -16,6 +16,8 @@ module TermQuickRPG
     ACTION_KEYS = {
       ?e => :use,
       " " => :use,
+      "\n" => :use,
+      "\r" => :use,
       Curses::Key::ENTER => :use,
     }
   end
