@@ -58,11 +58,11 @@ class Hash
 end
 
 begin
-  viewport = Viewport.new(40, 8, 20, 10)
-  player.add_listener(viewport)
   screen = Screen.new(post_initial_size: true)
+  viewport = Viewport.new(40, 8, 20, 10, borders_inclusive: true)
   map = Map.new(30, 30, ENTITIES)
   map_view = MapView.new(map, viewport)
+  player.add_listener(viewport)
   screen.add_listener(Curses)
   screen.add_listener(map_view)
 

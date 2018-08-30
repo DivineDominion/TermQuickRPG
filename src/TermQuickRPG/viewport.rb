@@ -5,75 +5,41 @@ module TermQuickRPG
   class Viewport
     include Observable
     VIEWPORT_DID_SCROLL = :viewport_did_scroll
-    BORDERS_WIDTH = 2
+    BORDER_WIDTH = 1
+    BORDERS_WIDTH = 2 * BORDER_WIDTH
 
     attr_reader :x, :y, :width, :height
     attr_reader :scroll_x, :scroll_y
     attr_reader :window
 
-    def initialize(x, y, width, height)
-      @x, @y, @width, @height = x, y, width, height
+    def initialize(x, y, width, height, **args)
+      border_delta = args[:borders_inclusive] ? BORDERS_WIDTH : 0
+      @x, @y, @width, @height = x, y, width - border_delta, height - border_delta
       @scroll_x, @scroll_y = 0, 0
-      @window = create_window
+      @window = replace_window
     end
 
     def max_x
-      x + width + 2 * border_width
+      x + width + BORDERS_WIDTH
     end
 
     def max_y
-      y + height + 2 * border_width
+      y + height + BORDERS_WIDTH
     end
 
-    def border_width
-      1
-    end
-
-    def adjust_to_screen_size(width, height)
-      did_change = false
-
-      diff_x = width - max_x
-      if diff_x < 0
-        while diff_x < 0
-          if @x > 0
-            @x -= 1
-          else
-            @width -= 1
-          end
-          diff_x += 1
-        end
-        did_change = true
-      end
-
-      diff_y = height - max_y
-      if diff_y < 0
-        while diff_y < 0
-          if @y > 0
-            @y -= 1
-          else
-            @height -= 1
-          end
-          diff_y += 1
-        end
-        did_change = true
-      end
-
-      if did_change
-        create_window
-      end
-    end
-
-    def create_window
+    def replace_window
       unless @window.nil?
         @window.erase
         @window.close
       end
-      @window = Curses::Window.new(@height + 2 * border_width, @width + 2 * border_width, @y, @x)
+      @window = Curses::Window.new(@height + BORDERS_WIDTH, @width + BORDERS_WIDTH, @y, @x)
     end
 
     def display
+      return if Curses.closed?
+
       @window.clear
-      @window.box(?|, ?-)
+      @window.draw_box(:double)
 
       yield @scroll_x, @scroll_y, @width, @height
 
@@ -93,6 +59,34 @@ module TermQuickRPG
       elsif y >= @scroll_y + @height
         @scroll_y += 1
         notify_listeners(VIEWPORT_DID_SCROLL)
+      end
+    end
+
+    def adjust_to_screen_size(width, height)
+      move_to_fit_width(width)
+      move_to_fit_height(height)
+      replace_window
+    end
+
+    private
+
+    def move_to_fit_width(width)
+      while (width - max_x) < 0
+        if @x > 0
+          @x -= 1
+        else
+          @width -= 1
+        end
+      end
+    end
+
+    def move_to_fit_height(height)
+      while (height - max_y) < 0
+        if @y > 0
+          @y -= 1
+        else
+          @height -= 1
+        end
       end
     end
   end
