@@ -102,7 +102,7 @@ module TermQuickRPG
           input = Curses.get_char
 
           case input
-          when "q", "\e", Curses::Key::EXIT, Curses::Key::CANCEL, Curses::Key::BREAK
+          when "q", "Q", "\e", Curses::Key::EXIT, Curses::Key::CANCEL, Curses::Key::BREAK
             quit = true # faster during dev
             # case show_options("Quit?", { yes: "Yes", cancel: "No" }, :double)
             # when :yes then quit = true
