@@ -45,10 +45,11 @@ module TermQuickRPG
       map.contains(x, y)
     end
 
-    def would_collide_with(objects, dir)
+    def would_collide_with_entities(objects, dir)
       x, y = project_movement(dir)
 
       objects.each do |obj|
+        next if obj == self
         if obj.x == x && obj.y == y
           return obj
         end
