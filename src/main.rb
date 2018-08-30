@@ -109,6 +109,8 @@ begin
       action = ACTION_KEYS[input]
 
       show_message("Cannot interact with anything here.")
+      Curses.clear
+      Curses.refresh
 
     else
       unless input.nil?
