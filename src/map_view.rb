@@ -8,7 +8,7 @@ class MapView
   def initialize(map, offset_x, offset_y)
     @offset_x, @offset_y = offset_x, offset_y
     @map = map
-    @window = Curses::Window.new(map.height + 2, map.width + 2, offset_x, offset_y)
+    @window = Curses::Window.new(map.height + 2, map.width + 2, offset_y, offset_x)
   end
 
   def offset(x, y)
