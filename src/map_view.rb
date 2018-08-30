@@ -15,6 +15,15 @@ class MapView
     [x + offset_x, y + offset_y]
   end
 
+  def display
+    @window.clear
+    @window.box(?|, ?-)
+
+    @map.draw(self)
+
+    @window.refresh
+  end
+
   def draw(char, map_x, map_y)
     x, y = offset(map_x, map_y)
     old_y, old_x = [@window.cury, @window.curx]

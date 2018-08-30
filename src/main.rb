@@ -60,30 +60,17 @@ include TermQuickRPG # more conveniently use module namespace
 BORDERS_WIDTH = 2
 begin
   screen = Screen.new
-  map = Map.new(screen.size[:width] - 2 - BORDERS_WIDTH, screen.size[:height] - 3 - BORDERS_WIDTH)
+  map = Map.new(screen.size[:width] - 2 - BORDERS_WIDTH, screen.size[:height] - 3 - BORDERS_WIDTH, ENTITIES)
   map_view = MapView.new(map, 1, 1)
-  win = map_view.window
-  win.box(?|, ?-)
-  win.keypad(true)
+  map_view.window.keypad(true)
 
-  draw_entities = -> do
-    ENTITIES.each { |e| e.draw(map_view) }
-  end
-
-  redraw_window = -> do
-    win.clear
-    win.box(?|, ?-)
-    draw_entities.call
-    win.refresh
-  end
-
-  draw_entities.call
+  map_view.display
 
   quit = false
   while !quit
-    win.refresh
+    map_view.window.refresh
 
-    input = win.get_char
+    input = Curses.get_char
 
     case input
     when "q", "\e", Curses::Key::EXIT, Curses::Key::CANCEL, Curses::Key::BREAK
@@ -105,7 +92,7 @@ begin
           player.move(direction)
         end
 
-        redraw_window.call
+        map_view.display
       elsif player.would_fit_into_map(map, direction)
         player.move(direction)
       end
@@ -117,11 +104,11 @@ begin
       action = ACTION_KEYS[input]
 
       show_message("Cannot interact with anything here.")
-      redraw_window.call
+      map_view.display
 
     else
       show_message("got #{input} / #{input.ord}")
-      redraw_window.call
+        map_view.display
     end
   end
 

@@ -31,8 +31,8 @@ class Player
     [@x, @y]
   end
 
-  def draw(map_view)
-    map_view.draw("#{@char}", @x, @y)
+  def draw(canvas)
+    canvas.draw("#{@char}", @x, @y)
   end
 
   def would_fit_into_map(map, dir)
