@@ -1,4 +1,4 @@
-require_relative "observable"
+require "termquickrpg/util/observable"
 
 PLAYER_CHARACTER = "☺"
 

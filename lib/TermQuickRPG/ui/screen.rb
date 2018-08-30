@@ -1,6 +1,6 @@
 require "terminal-size"
-require_relative "observable"
-require_relative "run_loop"
+require "termquickrpg/util/observable"
+require "termquickrpg/util/run_loop"
 
 module TermQuickRPG
   class Screen

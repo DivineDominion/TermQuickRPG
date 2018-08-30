@@ -1,16 +1,15 @@
 require "curses"
-require_relative "curses+resize"
+require "termquickrpg/util/run_loop"
+require "termquickrpg/ui/curses+resize"
+require "termquickrpg/ui/screen"
+require "termquickrpg/ui/dialogs"
+require "termquickrpg/ui/map_view"
+require "termquickrpg/ui/viewport"
+require "termquickrpg/ui/default_keys"
+require "termquickrpg/world/player"
+require "termquickrpg/world/item"
+require "termquickrpg/world/map"
 
-require_relative "run_loop"
-require_relative "screen"
-require_relative "player"
-require_relative "item"
-require_relative "dialogs"
-require_relative "map"
-require_relative "map_view"
-require_relative "viewport"
-
-require_relative "default_keys"
 
 class Hash
   # case matching

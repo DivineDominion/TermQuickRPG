@@ -1,8 +1,6 @@
-# frozen_string_literal: true
-
 source "https://rubygems.org"
 
-git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
+git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 
-gem "curses", "~> 1.2.4"
-gem 'terminal-size'
+# Specify your gem's dependencies in termquickrpg.gemspec
+gemspec
