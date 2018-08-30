@@ -10,11 +10,21 @@ module TermQuickRPG
 
       attr_reader :x, :y
       attr_reader :char
+      attr_reader :inventory
 
       def initialize(x, y)
         @x = x
         @y = y
         @char = PLAYER_CHARACTER
+        @inventory = []
+      end
+
+      def name
+        "You"
+      end
+
+      def take(item)
+        @inventory << item
       end
 
       def project_movement(dir)

@@ -73,12 +73,12 @@ module TermQuickRPG
       player.add_listener(viewport) # scroll on move
       @map_views << MapView.new(map, viewport, screen)
 
-      ## Demo dual views
-      # viewport2 = Viewport.new(width: 8, height: 5, x: 100, borders_inclusive: true,
-      #                         centered: [:vertical])
-      # viewport2.scroll_to_visible(player.x, player.y)
-      # player.add_listener(viewport2)
-      # @map_views << MapView.new(map, viewport2, screen)
+      # Demo dual views
+      viewport2 = Viewport.new(width: 8, height: 5, x: 100, borders_inclusive: true,
+                              centered: [:vertical])
+      viewport2.scroll_to_visible(player.x, player.y)
+      player.add_listener(viewport2)
+      @map_views << MapView.new(map, viewport2, screen)
 
       Curses.refresh
 
@@ -95,10 +95,12 @@ module TermQuickRPG
       # Map contents
       player = Player.new(5,5)
 
-      entities = "The Adventure Begins ... Now".split("").map.with_index { |c, i| Item.new(2 + i, 2, c, c) }
-      entities.delete_if { |e| e.name == " " }
-      entities << Item.new(8, 6, "♥", "Heart")
-      entities << Item.new(4, 4, "¶", "Mace")
+      entities = "The Adventure Begins ... Now"
+        .split("")
+        .map.with_index { |char, i| Item.new(2 + i, 2, char, "Letter #{char}") }
+        .delete_if { |e| e.char == " " }
+      entities << Item.new(8, 6, "♥", "Heart", "%s healed %s!")
+      entities << Item.new(4, 4, "¶", "Mace", "You hit with a %s!")
       entities << player
 
       map = Map.new(34, 30, entities)
@@ -120,7 +122,7 @@ module TermQuickRPG
       Curses.setpos(Curses.lines - 2, (Curses.cols - TITLE.length) / 2)
       Curses.addstr(TITLE)
 
-      help = "W,A,S,D to move  [Q]uit"
+      help = "W,A,S,D to move  [Q]uit [I]nventory"
       Curses.setpos(Curses.lines - 1, (Curses.cols - help.length) / 2)
       Curses.addstr(help)
     end
@@ -143,8 +145,7 @@ module TermQuickRPG
         # end
 
       when "I", "i"
-        UI::show_message "Inventory"
-        UI::cleanup_after_dialog
+        show_inventory(player)
 
       when DIRECTION_KEYS
         direction = DIRECTION_KEYS[input]
@@ -174,6 +175,7 @@ module TermQuickRPG
 
         if choice == :pick
           map.entities.delete(obj)
+          player.take(obj)
         end
 
         UI::cleanup_after_dialog
@@ -181,5 +183,25 @@ module TermQuickRPG
         player.move(direction)
       end
     end
-  end
+
+    def show_inventory(player)
+      if player.inventory.empty?
+        UI::show_message("Inventory is empty.")
+      else
+        items = player.inventory.map { |item| "#{item.char}   #{item.name}" }
+        choice = UI::show_options("Inventory", ["Cancel", *items], :single)
+
+        if choice > 0
+          item_index = choice - 1 # "Cancel" offset
+          item = player.inventory.delete_at(item_index)
+          effect = item.apply(player)
+          if effect
+            UI::show_message(effect)
+          end
+        end
+      end
+
+      UI::cleanup_after_dialog
+    end
+  end # Runner
 end

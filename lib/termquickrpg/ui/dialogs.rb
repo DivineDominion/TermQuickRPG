@@ -1,6 +1,17 @@
 require "curses"
 require "termquickrpg/ext/curses/window-draw_box"
 
+module Curses
+  class Window
+    def with_attrs(*attrs)
+      attrs.flatten!
+      attrs.each { |a| attron(a) }
+      yield
+      attrs.each { |a| attroff(a) }
+    end
+  end
+end
+
 module TermQuickRPG
   module UI
     def self.cleanup_after_dialog
@@ -15,8 +26,14 @@ module TermQuickRPG
     def self.show_options(*lines, options, style)
       raise "Options hash missing" if options.length == 0
 
-      # Wrap string options in hash
-      options = options.is_a?(Hash) ? options : { close: options }
+      options = if options.is_a?(Hash)
+                  options
+                elsif options.is_a?(Array)
+                  options.map.with_index { |opt, i| [i, opt] }.to_h
+                else
+                  # Wrap single string option in hash
+                  { close: options }
+                end
 
       longest_option_length = options.values.sort { |a,b| a.length <=> b.length }[-1].length
       longest_option_length += 2 # surrounding brackets
@@ -45,24 +62,19 @@ module TermQuickRPG
       options_start_y = y
 
       draw_options = ->(y, selected_line) do
-        # Center sole options
         x = if options.count == 1
+              # Center sole options
               (width - options.values[0].length) / 2
             else
+              # Nudge in regular option
               3
             end
 
         options.values.each_with_index do |line, i|
-          if selected_line == i
-            dialog.attron(Curses::A_REVERSE)
-          end
-
-          dialog.setpos(y, x)
-          dialog.addstr("[#{line}]")
-          y += 1
-
-          if selected_line == i
-            dialog.attroff(Curses::A_REVERSE)
+          dialog.with_attrs(selected_line == i ? Curses::A_STANDOUT : []) do
+            dialog.setpos(y, x)
+            dialog.addstr("[#{line}]")
+            y += 1
           end
         end
       end
