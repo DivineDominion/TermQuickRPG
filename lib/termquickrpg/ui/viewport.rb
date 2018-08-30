@@ -9,6 +9,7 @@ module TermQuickRPG
       BORDER_WIDTH = 1
       BORDERS_WIDTH = 2 * BORDER_WIDTH
 
+      attr_reader :original_x, :original_y, :original_width, :original_height
       attr_reader :x, :y, :width, :height
       attr_accessor :centered
       attr_accessor :margin_bottom
@@ -31,7 +32,10 @@ module TermQuickRPG
 
         border_delta = attrs[:borders_inclusive] ? BORDERS_WIDTH : 0
         @width, @height = attrs[:width] - border_delta, attrs[:height] - border_delta
+        @original_width, @original_height = @width, @height
+
         @x, @y = attrs[:x], attrs[:y]
+        @original_x, @original_y = @x, @y
         recenter_position(Screen.width, Screen.height)
 
         @scroll_x, @scroll_y = 0, 0
@@ -96,15 +100,25 @@ module TermQuickRPG
       end
 
       def adjust_to_screen_size(width, height)
-        move_to_fit_width(width)
-        move_to_fit_height(height)
+        # grow back when enlarging
+        restore_original_dimension
+
+        # fit to screen
+        frame_to_fit_width(width)
+        frame_to_fit_height(height)
+
         recenter_position(width, height)
         replace_window
       end
 
       private
 
-      def move_to_fit_width(width)
+      def restore_original_dimension
+        @width, @height = @original_width, @original_height
+        @x, @y = @original_x, @original_y
+      end
+
+      def frame_to_fit_width(width)
         while (width - max_x) < 0
           if @x > 0
             @x -= 1
@@ -118,7 +132,7 @@ module TermQuickRPG
         x + width + BORDERS_WIDTH
       end
 
-      def move_to_fit_height(height)
+      def frame_to_fit_height(height)
         while (height - max_y) < 0
           if @y > 0
             @y -= 1
