@@ -1,5 +1,5 @@
 require "curses"
-require_relative "observable.rb"
+require_relative "observable"
 
 module TermQuickRPG
   class Viewport
