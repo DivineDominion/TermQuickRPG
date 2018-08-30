@@ -7,6 +7,12 @@ module TermQuickRPG
       ?s => :down,
       ?a => :left,
       ?d => :right,
+
+      ?W => :up,
+      ?S => :down,
+      ?A => :left,
+      ?D => :right,
+
       Curses::Key::UP => :up,
       Curses::Key::DOWN => :down,
       Curses::Key::LEFT => :left,
@@ -15,10 +21,11 @@ module TermQuickRPG
 
     ACTION_KEYS = {
       ?e => :use,
+      ?E => :use,
       " " => :use,
       "\n" => :use,
       "\r" => :use,
-      Curses::Key::ENTER => :use,
+      Curses::Key::ENTER => :use
     }
   end
 end
