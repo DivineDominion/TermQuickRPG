@@ -35,4 +35,12 @@ class MapView
   def undraw(map_x, map_y)
     draw(" ", map_x, map_y)
   end
+
+  # Event listener
+  def screen_size_did_change(screen, size)
+    @window.erase
+    @window.close
+    @window = Curses::Window.new(size[:height] - offset_y, size[:width] - offset_x, offset_y, offset_x)
+    display
+  end
 end

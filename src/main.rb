@@ -62,6 +62,7 @@ begin
   screen = Screen.new
   map = Map.new(screen.size[:width] - 2 - BORDERS_WIDTH, screen.size[:height] - 3 - BORDERS_WIDTH, ENTITIES)
   map_view = MapView.new(map, 1, 1)
+  screen.add_listener(map_view)
   map_view.window.keypad(true)
 
   map_view.display
@@ -107,8 +108,10 @@ begin
       map_view.display
 
     else
-      show_message("got #{input} / #{input.ord}")
+      unless input.nil?
+        show_message("got #{input} / #{input.ord}")
         map_view.display
+      end
     end
   end
 

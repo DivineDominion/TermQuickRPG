@@ -1,9 +1,11 @@
 require "curses"
+require_relative "observable.rb"
 
 module TermQuickRPG
   class Screen
     SCREEN_SIZE_DID_CHANGE_EVENT = :screen_size_did_change
     attr_reader :size
+    include Observable
 
     def initialize
       Signal.trap('SIGWINCH') { update_screen_size }
@@ -12,6 +14,7 @@ module TermQuickRPG
 
     def update_screen_size
       @size = Screen.current_screen_size
+      notify_listeners(SCREEN_SIZE_DID_CHANGE_EVENT, @size)
     end
 
     def self.current_screen_size
