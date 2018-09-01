@@ -29,11 +29,11 @@ module TermQuickRPG
 
     def screen; Screen.main; end
 
-    def run
+    def run(map, player)
       bootstrap
 
       begin
-        run_loop
+        run_loop(map, player)
       rescue => ex
         raise ex
       ensure
@@ -62,8 +62,8 @@ module TermQuickRPG
       Curses.close_screen
     end
 
-    def run_loop
-      @map, @player = load_map
+    def run_loop(map, player)
+      @map, @player = map, player
       @map_views ||= []
 
       viewport = Viewport.new(width: 30, height: 15, y: 2, borders_inclusive: true,
@@ -89,23 +89,6 @@ module TermQuickRPG
           handle_input(player)
         end
       end
-    end
-
-    def load_map
-      # Map contents
-      player = Player.new(5,5)
-
-      entities = "The Adventure Begins ... Now"
-        .split("")
-        .map.with_index { |char, i| Item.new(2 + i, 2, char, "Letter #{char}") }
-        .delete_if { |e| e.char == " " }
-      entities << Item.new(8, 6, "♥", "Heart", "%s healed %s!")
-      entities << Item.new(4, 4, "¶", "Mace", "You hit with a %s!")
-      entities << player
-
-      map = Map.new(34, 30, entities)
-
-      [map, player]
     end
 
     def draw

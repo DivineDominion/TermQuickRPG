@@ -5,4 +5,4 @@
 
 require "termquickrpg"
 
-TermQuickRPG.run
+TermQuickRPG.run(path: File.join(File.dirname(__FILE__), "map.txt"))
