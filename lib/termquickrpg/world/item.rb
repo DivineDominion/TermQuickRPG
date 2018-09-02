@@ -1,10 +1,11 @@
+require "termquickrpg/world/positionable"
 require "termquickrpg/ui/map_view"
 require "termquickrpg/world/effect"
 
 module TermQuickRPG
   module World
     class Item
-      attr_reader :x, :y
+      include Positionable
       attr_reader :char, :name, :effect
 
       def initialize(x, y, char, name, effect = Effect.none)

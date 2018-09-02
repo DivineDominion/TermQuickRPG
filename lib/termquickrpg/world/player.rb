@@ -1,3 +1,4 @@
+require "termquickrpg/world/positionable"
 require "termquickrpg/observable"
 
 PLAYER_CHARACTER = "☺"
@@ -8,7 +9,7 @@ module TermQuickRPG
       include Observable
       PLAYER_DID_MOVE = :player_did_move
 
-      attr_reader :x, :y
+      include Positionable
       attr_reader :char
       attr_reader :inventory
 
