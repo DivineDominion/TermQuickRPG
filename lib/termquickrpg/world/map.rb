@@ -12,6 +12,10 @@ module TermQuickRPG
         raise "Map data is missing :layers" unless opts[:data][:layers]
 
         @width, @height = opts[:data][:size]
+
+        map_width, map_height = opts[:data][:layers][0].map { |line| line.length}.max, opts[:data][:layers][0].length
+        raise "Map size #{@width}x#{@height} does not equal base layer size #{map_width}x#{map_height}" if @width != map_width || @height != map_height
+
         @layers = opts[:data][:layers].map { |l| Layer.new(l) }
         @entities = opts[:entities] || []
       end
