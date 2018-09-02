@@ -27,6 +27,11 @@ module TermQuickRPG
           end
         end
       end
+
+      def blocked_tiles(solids)
+        return if solids.nil?
+        data.map { |line| line.chars.map { |c| solids.include?(c) } }
+      end
     end
   end
 end

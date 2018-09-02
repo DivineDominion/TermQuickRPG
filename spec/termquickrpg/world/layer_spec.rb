@@ -90,4 +90,14 @@ RSpec.describe TermQuickRPG::World::Layer do
       layer.draw(canvas)
     end
   end
+
+  describe "#blocked_tiles" do
+    let(:layer) { TermQuickRPG::World::Layer.new(["XooZ","oXoZ"]) }
+    let(:solids) { ["X", "Z"] }
+    it "returns array of true for solids" do
+      expect(layer.blocked_tiles(solids)).to eq([
+        [true, false, false, true],
+        [false, true, false, true]])
+    end
+  end
 end

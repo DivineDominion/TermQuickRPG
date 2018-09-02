@@ -73,12 +73,12 @@ module TermQuickRPG
       player.add_listener(viewport) # scroll on move
       @map_views << MapView.new(map, viewport, screen)
 
-      # Demo dual views
-      viewport2 = Viewport.new(width: 8, height: 5, x: 100, borders_inclusive: true,
-                              centered: [:vertical])
-      viewport2.scroll_to_visible(player.x, player.y)
-      player.add_listener(viewport2)
-      @map_views << MapView.new(map, viewport2, screen)
+      # # Demo dual views
+      # viewport2 = Viewport.new(width: 8, height: 5, x: 100, borders_inclusive: true,
+      #                         centered: [:vertical])
+      # viewport2.scroll_to_visible(player.x, player.y)
+      # player.add_listener(viewport2)
+      # @map_views << MapView.new(map, viewport2, screen)
 
       Curses.refresh
 
@@ -98,7 +98,8 @@ module TermQuickRPG
 
     def draw_help
       # Curses.setpos(0, 0)
-#       Curses.addstr(  "player: #{player.x}, #{player.y}")
+      # Curses.addstr(  "player: #{@player.x}, #{@player.y}")
+
 #       Curses.addstr("\nviewport: #{viewport.x}, #{viewport.y}; #{viewport.width}x#{viewport.height}; scroll: #{viewport.scroll_x}, #{viewport.scroll_y}")
 #       Curses.addstr("\nc #{Curses.cols}x#{Curses.lines}; scr #{screen.width}x#{screen.height} : #{viewport.max_x},#{viewport.max_y} = #{screen.width-viewport.max_x}x#{screen.height-viewport.max_y}")
 
@@ -148,6 +149,8 @@ module TermQuickRPG
     end
 
     def handle_move_player(player, direction)
+      return unless player.can_move?(map, direction)
+
       old_x, old_y = player.x, player.y
 
       if obj = player.would_collide_with_entities(map.entities, direction)

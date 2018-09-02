@@ -4,6 +4,7 @@ module TermQuickRPG
   module World
     class Map
       attr_reader :width, :height
+      attr_reader :layers
       attr_reader :entities
 
       def initialize(**opts)
@@ -17,6 +18,7 @@ module TermQuickRPG
         raise "Map size #{@width}x#{@height} does not equal base layer size #{map_width}x#{map_height}" if @width != map_width || @height != map_height
 
         @layers = opts[:data][:layers].map { |l| Layer.new(l) }
+        @collisions = @layers[0].blocked_tiles(opts[:data][:solids])
         @entities = opts[:entities] || []
       end
 
@@ -24,10 +26,15 @@ module TermQuickRPG
         x >= 0 && y >= 0 && x < width && y < height
       end
 
+      def blocked?(x, y)
+        return false unless @collisions
+        @collisions[y][x]
+      end
+
       def draw(canvas, start_x, start_y, width, height)
-        draw_layer(@layers[0], canvas, start_x, start_y, width, height)
+        draw_layer(layers[0], canvas, start_x, start_y, width, height)
         draw_entities(canvas, start_x, start_y, width, height)
-        draw_layer(@layers[1], canvas, start_x, start_y, width, height)
+        draw_layer(layers[1], canvas, start_x, start_y, width, height)
       end
 
       def draw_layer(layer, canvas, start_x, start_y, width, height)
