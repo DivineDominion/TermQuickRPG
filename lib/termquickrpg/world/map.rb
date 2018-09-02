@@ -1,3 +1,5 @@
+require "termquickrpg/world/layer"
+
 module TermQuickRPG
   module World
     class Map
@@ -10,7 +12,7 @@ module TermQuickRPG
         raise "Map data is missing :layers" unless opts[:data][:layers]
 
         @width, @height = opts[:data][:size]
-        @layers = opts[:data][:layers]
+        @layers = opts[:data][:layers].map { |l| Layer.new(l) }
         @entities = opts[:entities] || []
       end
 
@@ -26,15 +28,7 @@ module TermQuickRPG
 
       def draw_layer(layer, canvas, start_x, start_y, width, height)
         return if layer.nil?
-
-        end_x = start_x + width
-        end_y = start_y + height
-
-        layer
-          .select.with_index { |line, y| start_x <= y && y <= end_y }
-          .map { |line| line[start_x ... end_x] }
-          .each.with_index { |l, y|
-            l.chars.each.with_index { |char, x| canvas.draw(char, x, y) unless char == " " } }
+        layer.cutout(start_x, start_y, width, height).draw(canvas)
       end
 
       def draw_entities(canvas, start_x, start_y, width, height)
