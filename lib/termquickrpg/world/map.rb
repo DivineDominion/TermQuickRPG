@@ -55,7 +55,18 @@ module TermQuickRPG
       end
 
       def trigger(location)
-        triggers[location]
+        matches = triggers.keys.find_all { |loc| trigger_location_include?(loc, location) }
+        if matches
+          raise "Overlapping triggers not implemented" if matches.count > 1
+          triggers[matches.first]
+        end
+      end
+
+      def trigger_location_include?(trigger_location, location)
+        x1,y1 = trigger_location
+        x2,y2 = location
+        return (x1.respond_to?(:include?) ? x1.include?(x2) : x1 == x2) \
+            && (y1.respond_to?(:include?) ? y1.include?(y2) : y1 == y2)
       end
 
       # Drawing
