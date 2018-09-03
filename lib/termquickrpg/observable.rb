@@ -1,3 +1,5 @@
+require "weakref"
+
 module TermQuickRPG
   module Observable
     def listeners
@@ -5,7 +7,7 @@ module TermQuickRPG
     end
 
     def add_listener(listener)
-      listeners << listener
+      listeners << WeakRef.new(listener)
     end
 
     def remove_listener(listener)
@@ -13,6 +15,7 @@ module TermQuickRPG
     end
 
     def notify_listeners(event_name, *args)
+      listeners.delete_if { |obj| not obj.weakref_alive? }
       listeners.each do |listener|
         notify_listener(listener, event_name, *args)
       end

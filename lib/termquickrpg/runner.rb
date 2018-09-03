@@ -80,10 +80,10 @@ module TermQuickRPG
       map_views.each_with_index do |map_view, index|
         if map_view.map == map
           map_view.close
-          map_view.map.player_character.remove_listener(map_view.viewport)
           map_views.delete_at(index)
         end
       end
+      GC.start # Clean up weak references of observers
       Curses.refresh
     end
 
