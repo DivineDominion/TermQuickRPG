@@ -30,7 +30,7 @@ module TermQuickRPG
     def screen; Screen.main; end
 
     def run(map, player)
-      bootstrap
+      bootstrap(map, player)
 
       begin
         run_loop(map, player)
@@ -46,7 +46,7 @@ module TermQuickRPG
     attr_reader :player, :map
     attr_reader :map_views
 
-    def bootstrap
+    def bootstrap(map, player)
       Curses.init_screen
       Curses.start_color
       Curses.stdscr.keypad(true) # enable arrow keys
@@ -56,13 +56,7 @@ module TermQuickRPG
       Curses.noecho # Do not print keyboard input
 
       screen.add_listener(Curses)
-    end
 
-    def teardown
-      Curses.close_screen
-    end
-
-    def run_loop(map, player)
       @map, @player = map, player
       @map_views ||= []
 
@@ -81,7 +75,13 @@ module TermQuickRPG
       # @map_views << MapView.new(map, viewport2, screen)
 
       Curses.refresh
+    end
 
+    def teardown
+      Curses.close_screen
+    end
+
+    def run_loop(map, player)
       @keep_running = true
       while @keep_running
         RunLoop.main.run do
@@ -106,7 +106,7 @@ module TermQuickRPG
       Curses.setpos(Curses.lines - 2, (Curses.cols - TITLE.length) / 2)
       Curses.addstr(TITLE)
 
-      help = "W,A,S,D to move  [Q]uit [I]nventory"
+      help = "W,A,S,D to move  [I]nventory Us[e] [Q]uit "
       Curses.setpos(Curses.lines - 1, (Curses.cols - help.length) / 2)
       Curses.addstr(help)
     end
