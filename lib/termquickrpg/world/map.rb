@@ -1,4 +1,5 @@
 require "termquickrpg/world/layer"
+require "termquickrpg/world/item"
 require "termquickrpg/world/trigger"
 
 module TermQuickRPG
@@ -12,18 +13,31 @@ module TermQuickRPG
       def initialize(**opts)
         raise "Map is missing :data" unless opts[:data]
         raise "Map data is missing :size" unless opts[:data][:size]
-        raise "Map data is missing :layers" unless opts[:data][:layers]
+        raise "Map data is missing :layers" unless opts[:data][:layers] && !opts[:data][:layers].empty?
+
+        opts[:data] = {
+          items: []
+        }.merge(opts[:data])
 
         @width, @height = opts[:data][:size]
 
-        map_width, map_height = opts[:data][:layers][0].map { |line| line.length}.max, opts[:data][:layers][0].length
+        map_width, map_height = layer_size(opts[:data][:layers][0])
         raise "Map size #{@width}x#{@height} does not equal base layer size #{map_width}x#{map_height}" if @width != map_width || @height != map_height
 
         @layers = opts[:data][:layers].map { |l| Layer.new(l) }
         @collisions = @layers[0].blocked_tiles(opts[:data][:solids])
-        @entities = opts[:entities] || []
+
         @player_character = opts[:player_character]
+        @entities = opts[:data][:items].map { |e| Item.new(e) } || []
+        @entities << @player_character
+
         @triggers = opts[:data][:triggers].map { |loc, proc| [loc, Trigger.new(loc, proc)] }.to_h
+      end
+
+      def layer_size(layer)
+        width = layer.map { |line| line.length }.max
+        height = layer.length
+        [width, height]
       end
 
       attr_writer :active

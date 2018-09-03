@@ -9,8 +9,8 @@ module TermQuickRPG
       include Drawable
       attr_reader :name, :effect
 
-      def initialize(x, y, char, name, effect = Effect.none)
-        @x, @y = x, y
+      def initialize(location: [-1,-1], char: "", name: "", effect: Effect.none)
+        @x, @y = location
         @char, @name, @effect = char, name, Effect.new(effect)
       end
 
