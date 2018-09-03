@@ -137,9 +137,7 @@ module TermQuickRPG
 
       when ACTION_KEYS
         action = ACTION_KEYS[input]
-
-        UI::show_message("Cannot interact with anything here.")
-        UI::cleanup_after_dialog
+        handle_use_object(player)
 
       else
         unless input.nil?
@@ -153,10 +151,10 @@ module TermQuickRPG
 
       old_x, old_y = player.location
       player.move(direction)
+    end
 
+    def handle_use_object(player)
       if obj = map.entity_under(player)
-        display_map_views # display new player position immediately below dialog
-
         choice = UI::show_options("Found #{obj.name}!", { pick: "Pick up", cancel: "Leave" }, :single)
 
         if choice == :pick
@@ -164,6 +162,9 @@ module TermQuickRPG
           player.take(obj)
         end
 
+        UI::cleanup_after_dialog
+      else
+        UI::show_message("Cannot interact with anything here.")
         UI::cleanup_after_dialog
       end
     end
