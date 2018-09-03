@@ -67,11 +67,17 @@ module TermQuickRPG
         @window.refresh
       end
 
-      def player_did_move(player, x, y)
-        scroll_to_visible(x, y)
+      def track_movement(character)
+        character.add_listener(self) # :character_did_move
       end
 
-      def scroll_to_visible(x, y)
+      def character_did_move(character, x, y)
+        scroll_to_visible([x, y])
+      end
+
+      def scroll_to_visible(obj)
+        x, y = obj.respond_to?(:location) ? obj.location : obj
+
         did_scroll = false
 
         while x < @scroll_x

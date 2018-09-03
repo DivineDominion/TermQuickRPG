@@ -1,20 +1,17 @@
-require "termquickrpg/world/positionable"
-require "termquickrpg/ui/map_view"
+require "termquickrpg/world/locatable"
+require "termquickrpg/world/drawable"
 require "termquickrpg/world/effect"
 
 module TermQuickRPG
   module World
     class Item
-      include Positionable
-      attr_reader :char, :name, :effect
+      include Locatable
+      include Drawable
+      attr_reader :name, :effect
 
       def initialize(x, y, char, name, effect = Effect.none)
         @x, @y = x, y
         @char, @name, @effect = char, name, Effect.new(effect)
-      end
-
-      def draw(canvas, offset_x, offset_y)
-        canvas.draw("#{@char}", @x + offset_x, @y + offset_y)
       end
 
       def apply(entity)

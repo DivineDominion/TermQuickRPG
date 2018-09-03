@@ -6,7 +6,8 @@ module TermQuickRPG
     class Map
       attr_reader :width, :height
       attr_reader :layers
-      attr_reader :entities, :triggers
+      attr_reader :entities, :player_character
+      attr_reader :triggers
 
       def initialize(**opts)
         raise "Map is missing :data" unless opts[:data]
@@ -21,6 +22,7 @@ module TermQuickRPG
         @layers = opts[:data][:layers].map { |l| Layer.new(l) }
         @collisions = @layers[0].blocked_tiles(opts[:data][:solids])
         @entities = opts[:entities] || []
+        @player_character = opts[:player_character]
         @triggers = opts[:data][:triggers].map { |loc, proc| [loc, Trigger.new(loc, proc)] }.to_h
       end
 

@@ -1,16 +1,13 @@
 require "curses"
 require "termquickrpg/ext/curses/curses-resize"
 
-require "termquickrpg/util/run_loop"
+require "termquickrpg/control/run_loop"
 require "termquickrpg/ui/screen"
 require "termquickrpg/ui/dialogs"
 require "termquickrpg/ui/map_view"
 require "termquickrpg/ui/viewport"
 require "termquickrpg/ui/default_keys"
-require "termquickrpg/world/player"
-require "termquickrpg/world/item"
-require "termquickrpg/world/map"
-
+require "termquickrpg/control/player"
 
 class Hash
   # case matching
@@ -23,30 +20,29 @@ module TermQuickRPG
   TITLE = "TerminalQuickRPG by DivineDominion / 2018"
 
   class Runner
-    include World
     include UI
-    include Util
-
-    def screen; Screen.main; end
-
-    def run(map, player)
-      bootstrap(map, player)
-
-      begin
-        run_loop(map, player)
-      rescue => ex
-        raise ex
-      ensure
-        teardown
-      end
-    end
-
-    private
 
     attr_reader :player, :map
     attr_reader :map_views
 
-    def bootstrap(map, player)
+    def initialize(map)
+      @map = map
+      @player = Control::Player.new(map.player_character)
+    end
+
+    def screen; Screen.main; end
+
+    def run
+      bootstrap_ui
+      show_map(map)
+      run_loop
+    rescue => ex
+      raise ex
+    ensure
+      teardown
+    end
+
+    def bootstrap_ui
       Curses.init_screen
       Curses.start_color
       Curses.stdscr.keypad(true) # enable arrow keys
@@ -56,22 +52,23 @@ module TermQuickRPG
       Curses.noecho # Do not print keyboard input
 
       screen.add_listener(Curses)
+    end
 
-      @map, @player = map, player
+    def show_map(map)
       @map_views ||= []
 
       viewport = Viewport.new(width: 30, height: 15, y: 2, borders_inclusive: true,
                               margin: {bottom: 2}, # bottom screen help lines
                               centered: [:horizontal])
-      viewport.scroll_to_visible(player.x, player.y)
-      player.add_listener(viewport) # scroll on move
+      viewport.scroll_to_visible(map.player_character)
+      viewport.track_movement(map.player_character)
       @map_views << MapView.new(map, viewport, screen)
 
       # # Demo dual views
       # viewport2 = Viewport.new(width: 8, height: 5, x: 100, borders_inclusive: true,
       #                         centered: [:vertical])
-      # viewport2.scroll_to_visible(player.x, player.y)
-      # player.add_listener(viewport2)
+      # viewport2.scroll_to_visible(map.player_character)
+      # viewport2.track_movement(map.player_character)
       # @map_views << MapView.new(map, viewport2, screen)
 
       Curses.refresh
@@ -81,12 +78,12 @@ module TermQuickRPG
       Curses.close_screen
     end
 
-    def run_loop(map, player)
+    def run_loop
       @keep_running = true
       while @keep_running
-        RunLoop.main.run do
+        Control::RunLoop.main.run do
           draw
-          handle_input(player)
+          handle_input
         end
       end
     end
@@ -117,7 +114,7 @@ module TermQuickRPG
       end
     end
 
-    def handle_input(player)
+    def handle_input
       input = Curses.get_char
 
       case input
@@ -133,7 +130,7 @@ module TermQuickRPG
 
       when DIRECTION_KEYS
         direction = DIRECTION_KEYS[input]
-        handle_move_player(player, direction)
+        player.move(map, direction)
 
       when ACTION_KEYS
         action = ACTION_KEYS[input]
@@ -146,19 +143,8 @@ module TermQuickRPG
       end
     end
 
-    def handle_move_player(player, direction)
-      return unless player.can_move?(map, direction)
-
-      old_x, old_y = player.location
-      player.move(direction)
-
-      if trigger = map.trigger(player.location)
-        trigger.execute
-      end
-    end
-
     def handle_use_object(player)
-      if obj = map.entity_under(player)
+      if obj = player.usable_entity(map)
         choice = UI::show_options("Found #{obj.name}!", { pick: "Pick up", cancel: "Leave" }, :single)
 
         if choice == :pick

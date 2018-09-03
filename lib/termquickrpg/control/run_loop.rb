@@ -1,7 +1,7 @@
 require "thread"
 
 module TermQuickRPG
-  module Util
+  module Control
     # Main game loop handler. Use RunLoop#enqueue to ensure that a block is
     # executed after the current RunLoop#run finishes.
     class RunLoop

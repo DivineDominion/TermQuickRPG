@@ -1,6 +1,6 @@
 module TermQuickRPG
   module World
-    module Positionable
+    module Locatable
       attr_reader :x, :y
 
       def location

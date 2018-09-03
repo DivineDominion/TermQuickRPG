@@ -1,6 +1,6 @@
 require "terminal-size"
 require "termquickrpg/observable"
-require "termquickrpg/util/run_loop"
+require "termquickrpg/control/run_loop"
 
 module TermQuickRPG
   module UI
@@ -43,7 +43,7 @@ module TermQuickRPG
 
       def update_screen_size
         @size = Terminal.size
-        Util::RunLoop.main.enqueue { notify_listeners(SCREEN_SIZE_DID_CHANGE_EVENT, width, height) }
+        Control::RunLoop.main.enqueue { notify_listeners(SCREEN_SIZE_DID_CHANGE_EVENT, width, height) }
       end
     end
   end

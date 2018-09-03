@@ -1,10 +1,10 @@
-require "termquickrpg/world/positionable"
+require "termquickrpg/world/locatable"
 require "termquickrpg/script/context"
 
 module TermQuickRPG
   module World
     class Trigger
-      include Positionable
+      include Locatable
 
       attr_reader :script
 

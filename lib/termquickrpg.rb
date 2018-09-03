@@ -11,7 +11,7 @@ module TermQuickRPG
                    opts
                  end
       map, player = load_map(map_data)
-      Runner.new.run(map, player)
+      Runner.new(map).run
     end
 
     def read_map_data(path)
