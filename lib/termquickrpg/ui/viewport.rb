@@ -48,11 +48,15 @@ module TermQuickRPG
         @y = @centered.include?(:vertical)   ? (Screen.height - @height) / 2 : @y
       end
 
-      def replace_window
+      def close
         unless @window.nil?
           @window.erase
           @window.close
         end
+      end
+
+      def replace_window
+        close
         @window = Curses::Window.new(@height + BORDERS_WIDTH, @width + BORDERS_WIDTH, @y, @x)
       end
 

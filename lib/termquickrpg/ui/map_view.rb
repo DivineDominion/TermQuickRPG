@@ -21,6 +21,10 @@ module TermQuickRPG
         @viewport.window
       end
 
+      def close
+        viewport.close
+      end
+
       def display
         viewport.display do |start_x, start_y, width, height|
           @map.draw(self, start_x, start_y, width, height)

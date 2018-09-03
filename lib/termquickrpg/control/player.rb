@@ -4,9 +4,13 @@ module TermQuickRPG
       attr_reader :character
       attr_reader :inventory
 
-      def initialize(character, inventory = [])
+      def initialize(character = nil, inventory = [])
         @character = character
         @inventory = inventory
+      end
+
+      def switch_control(character)
+        @character = character
       end
 
       def name

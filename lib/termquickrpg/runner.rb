@@ -8,6 +8,7 @@ require "termquickrpg/ui/map_view"
 require "termquickrpg/ui/viewport"
 require "termquickrpg/ui/default_keys"
 require "termquickrpg/control/player"
+require "termquickrpg/control/map_stack"
 require "termquickrpg/script/context"
 
 class Hash
@@ -24,22 +25,38 @@ module TermQuickRPG
     include UI
 
     attr_reader :player, :map
-    attr_reader :map_views
 
     def initialize(**opts)
       opts = {
         launch: -> { raise "Missing :launch parameter in Runner" }
       }.merge(opts)
       Script::Context.main.game_dir = opts[:game_dir]
-      @map = Script::Context.main.run(&opts[:launch])
-      @player = Control::Player.new(map.player_character)
+      Control::MapStack.instance.add_listener(self) # Listen before launch
+      Script::Context.main.run(&opts[:launch])
+    end
+
+    def map_views
+      @map_views ||= []
+    end
+
+    def map_stack_did_change(map_stack)
+      close_map(@map)
+
+      if map = map_stack.front
+        @map = map
+        @player ||= Control::Player.new
+        @player.switch_control(map.player_character)
+        show_map(map)
+      else
+        @map = nil
+        @player = nil
+      end
     end
 
     def screen; Screen.main; end
 
     def run
       bootstrap_ui
-      show_map(map)
       run_loop
     rescue => ex
       raise ex
@@ -59,22 +76,31 @@ module TermQuickRPG
       screen.add_listener(Curses)
     end
 
-    def show_map(map)
-      @map_views ||= []
+    def close_map(map)
+      map_views.each_with_index do |map_view, index|
+        if map_view.map == map
+          map_view.close
+          map_view.map.player_character.remove_listener(map_view.viewport)
+          map_views.delete_at(index)
+        end
+      end
+      Curses.refresh
+    end
 
+    def show_map(map)
       viewport = Viewport.new(width: 30, height: 15, y: 2, borders_inclusive: true,
                               margin: {bottom: 2}, # bottom screen help lines
                               centered: [:horizontal])
       viewport.scroll_to_visible(map.player_character)
       viewport.track_movement(map.player_character)
-      @map_views << MapView.new(map, viewport, screen)
+      map_views << MapView.new(map, viewport, screen)
 
       # # Demo dual views
       viewport2 = Viewport.new(width: 8, height: 5, x: 100, borders_inclusive: true,
                               centered: [:vertical])
       viewport2.scroll_to_visible(map.player_character)
       viewport2.track_movement(map.player_character)
-      @map_views << MapView.new(map, viewport2, screen)
+      map_views << MapView.new(map, viewport2, screen)
 
       Curses.refresh
     end
