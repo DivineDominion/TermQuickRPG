@@ -26,6 +26,12 @@ module TermQuickRPG
         @triggers = opts[:data][:triggers].map { |loc, proc| [loc, Trigger.new(loc, proc)] }.to_h
       end
 
+      attr_writer :active
+
+      def active?
+        @active || false
+      end
+
       # Movable contents
 
       def blocked?(x, y)
