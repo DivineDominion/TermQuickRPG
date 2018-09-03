@@ -5,7 +5,9 @@ module Curses
     STYLES = {
       :single => %Q{┌─┐││└─┘├─┤},
       :double => %Q{╔═╗║║╚═╝╟─╢},
-      :plusdash => %Q{+-+||+-++-+}
+      :plusdash => %Q{+-+||+-++-+},
+      :halfout => %Q{▛▀▜▌▐▙▄▟▚▄▞},
+      :halfin => %Q{▗▄▖▐▌▝▀▘▚▄▞}
     }
 
     def draw_box(style)
