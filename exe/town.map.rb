@@ -28,4 +28,11 @@ layers: [
    "                    "]
 ],
 player_position: [9, 5],
+triggers: {
+  [14, 5] => -> (ctx) {
+    ctx.run do
+      open_map "house.map.rb"
+    end
+  }
+}
 }

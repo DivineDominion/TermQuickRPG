@@ -151,6 +151,10 @@ module TermQuickRPG
 
       old_x, old_y = player.location
       player.move(direction)
+
+      if trigger = map.trigger(player.location)
+        trigger.execute
+      end
     end
 
     def handle_use_object(player)
