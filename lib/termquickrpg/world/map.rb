@@ -22,14 +22,29 @@ module TermQuickRPG
         @entities = opts[:entities] || []
       end
 
-      def contains(x, y)
-        x >= 0 && y >= 0 && x < width && y < height
-      end
+      # Movable contents
 
       def blocked?(x, y)
         return false unless @collisions
-        @collisions[y][x]
+        @collisions[y] && @collisions[y][x]
       end
+
+      def include?(x, y)
+        x >= 0 && y >= 0 && x < width && y < height
+      end
+
+      def entity_under(object)
+        entities.each do |entity|
+          next if entity == object
+          if entity.location == object.location
+            return entity
+          end
+        end
+
+        nil
+      end
+
+      # Drawing
 
       def draw(canvas, start_x, start_y, width, height)
         draw_layer(layers[0], canvas, start_x, start_y, width, height)

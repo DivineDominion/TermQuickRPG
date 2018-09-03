@@ -54,25 +54,7 @@ module TermQuickRPG
 
       def can_move?(map, dir)
         x, y = project_movement(dir)
-        !map.blocked?(x, y)
-      end
-
-      def would_fit_into_map(map, dir)
-        x, y = project_movement(dir)
-        map.contains(x, y)
-      end
-
-      def would_collide_with_entities(objects, dir)
-        x, y = project_movement(dir)
-
-        objects.each do |obj|
-          next if obj == self
-          if obj.x == x && obj.y == y
-            return obj
-          end
-        end
-
-        false
+        map.include?(x, y) && !map.blocked?(x, y)
       end
     end
   end

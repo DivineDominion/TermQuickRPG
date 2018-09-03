@@ -151,11 +151,11 @@ module TermQuickRPG
     def handle_move_player(player, direction)
       return unless player.can_move?(map, direction)
 
-      old_x, old_y = player.x, player.y
+      old_x, old_y = player.location
+      player.move(direction)
 
-      if obj = player.would_collide_with_entities(map.entities, direction)
-        player.move(direction)
-        display_map_views # display new player position immediately
+      if obj = map.entity_under(player)
+        display_map_views # display new player position immediately below dialog
 
         choice = UI::show_options("Found #{obj.name}!", { pick: "Pick up", cancel: "Leave" }, :single)
 
@@ -165,8 +165,6 @@ module TermQuickRPG
         end
 
         UI::cleanup_after_dialog
-      elsif player.would_fit_into_map(map, direction)
-        player.move(direction)
       end
     end
 
