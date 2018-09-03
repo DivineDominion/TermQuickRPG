@@ -1,5 +1,6 @@
 require "curses"
 require "termquickrpg/ext/curses/window-draw_box"
+require "termquickrpg/control/default_keys" # FIXME: dep in wrong direction
 
 module Curses
   class Window
@@ -87,8 +88,8 @@ module TermQuickRPG
         input = Curses.get_char
 
         case input
-        when DIRECTION_KEYS
-          case DIRECTION_KEYS[input]
+        when Control::DIRECTION_KEYS
+          case Control::DIRECTION_KEYS[input]
           when :up then selection -= 1
           when :down then selection += 1
           end
@@ -99,8 +100,8 @@ module TermQuickRPG
             selection = 0
           end
 
-        when ACTION_KEYS
-          if ACTION_KEYS[input] == :use
+        when Control::ACTION_KEYS
+          if Control::ACTION_KEYS[input] == :use
             dialog.close
             return options.keys[selection]
           end

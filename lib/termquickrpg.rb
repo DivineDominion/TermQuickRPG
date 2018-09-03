@@ -1,4 +1,4 @@
-require "termquickrpg/runner"
+require "termquickrpg/bootstrap"
 require "termquickrpg/version"
 
 module TermQuickRPG
@@ -9,8 +9,8 @@ module TermQuickRPG
       main_path = File.join(game_dir, main_script_filename)
       raise "Main script executable not found: #{main_path}" unless File.exist?(main_path)
 
-      runner = Runner.new(game_dir: game_dir, launch: -> { eval(File.read(main_path)) })
-      runner.run
+      bootstrap = Bootstrap.new(game_dir: game_dir, launch: -> { eval(File.read(main_path)) })
+      bootstrap.run
     end
   end
 end

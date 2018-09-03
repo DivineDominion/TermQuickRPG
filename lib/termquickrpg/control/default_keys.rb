@@ -1,7 +1,7 @@
 require "curses"
 
 module TermQuickRPG
-  module UI
+  module Control
     DIRECTION_KEYS = {
       ?w => :up,
       ?s => :down,
