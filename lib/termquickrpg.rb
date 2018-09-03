@@ -1,26 +1,16 @@
 require "termquickrpg/runner"
 require "termquickrpg/version"
-require "termquickrpg/loading/map_loader"
 
 module TermQuickRPG
   class << self
-    def run(**opts)
-      map_data = if opts[:path]
-                   read_map_data(opts[:path])
-                 else
-                   opts
-                 end
-      map, player = load_map(map_data)
-      Runner.new(map).run
-    end
+    def run(game_dir, main_script_filename = "main.script.rb")
+      raise "Expected game_dir" unless game_dir
 
-    def read_map_data(path)
-      content = File.read(path)
-      eval(content)
-    end
+      main_path = File.join(game_dir, main_script_filename)
+      raise "Main script executable not found: #{main_path}" unless File.exist?(main_path)
 
-    def load_map(data, loader = Loading::MapLoader.new)
-      loader.load_map(data)
+      runner = Runner.new(game_dir: game_dir, launch: -> { eval(File.read(main_path)) })
+      runner.run
     end
   end
 end

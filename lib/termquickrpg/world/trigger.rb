@@ -14,7 +14,7 @@ module TermQuickRPG
       end
 
       def execute
-        script.call(Script::Context.new)
+        script.call(Script::Context.main)
       end
     end
   end

@@ -5,4 +5,5 @@
 
 require "termquickrpg"
 
-TermQuickRPG.run(path: File.join(File.dirname(__FILE__), "town.map.rb"))
+game_dir = File.join(File.dirname(__FILE__))
+TermQuickRPG.run(game_dir)

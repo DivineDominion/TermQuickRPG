@@ -8,6 +8,7 @@ require "termquickrpg/ui/map_view"
 require "termquickrpg/ui/viewport"
 require "termquickrpg/ui/default_keys"
 require "termquickrpg/control/player"
+require "termquickrpg/script/context"
 
 class Hash
   # case matching
@@ -25,8 +26,12 @@ module TermQuickRPG
     attr_reader :player, :map
     attr_reader :map_views
 
-    def initialize(map)
-      @map = map
+    def initialize(**opts)
+      opts = {
+        launch: -> { raise "Missing :launch parameter in Runner" }
+      }.merge(opts)
+      Script::Context.main.game_dir = opts[:game_dir]
+      @map = Script::Context.main.run(&opts[:launch])
       @player = Control::Player.new(map.player_character)
     end
 
@@ -65,11 +70,11 @@ module TermQuickRPG
       @map_views << MapView.new(map, viewport, screen)
 
       # # Demo dual views
-      # viewport2 = Viewport.new(width: 8, height: 5, x: 100, borders_inclusive: true,
-      #                         centered: [:vertical])
-      # viewport2.scroll_to_visible(map.player_character)
-      # viewport2.track_movement(map.player_character)
-      # @map_views << MapView.new(map, viewport2, screen)
+      viewport2 = Viewport.new(width: 8, height: 5, x: 100, borders_inclusive: true,
+                              centered: [:vertical])
+      viewport2.scroll_to_visible(map.player_character)
+      viewport2.track_movement(map.player_character)
+      @map_views << MapView.new(map, viewport2, screen)
 
       Curses.refresh
     end
@@ -178,5 +183,5 @@ module TermQuickRPG
 
       UI::cleanup_after_dialog
     end
-  end # Runner
+  end
 end
