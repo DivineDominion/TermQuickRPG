@@ -55,12 +55,12 @@ module TermQuickRPG
         map_views << UI::MapView.new(map, viewport, UI::Screen.main)
 
         # # Demo dual views
-        viewport2 = UI::Viewport.new(width: 8, height: 5, x: 100, borders_inclusive: true,
-                                    centered: [:vertical])
-        viewport2.scroll_to_visible(map.player_character)
-        viewport2.track_movement(map.player_character)
-        # viewport2.window.border_window.color_set(UI::Colors::PAIR_FLASH)
-        map_views << UI::MapView.new(map, viewport2, UI::Screen.main)
+        # viewport2 = UI::Viewport.new(width: 8, height: 5, x: 100, borders_inclusive: true,
+        #                             centered: [:vertical])
+        # viewport2.scroll_to_visible(map.player_character)
+        # viewport2.track_movement(map.player_character)
+        # # viewport2.window.border_window.color_set(UI::Colors::PAIR_FLASH)
+        # map_views << UI::MapView.new(map, viewport2, UI::Screen.main)
 
         Curses.refresh
       end
