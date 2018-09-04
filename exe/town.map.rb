@@ -28,8 +28,8 @@ layers: [
    "                    "]
 ],
 items: [
-  { location: [8, 6], char: "♥", name: "Heart", effect: "%s healed %s!"},
-  { location: [4, 4], char: "¶", name: "Mace", effect: "You swung your %s - and it broke!" }
+  { location: [8, 6], char: "♥", name: "Heart", effect: "%s heals you!"},
+  { location: [4, 4], char: "¶", name: "Mace", effect: "You swing your %s." }
 ],
 player_position: [9, 5],
 flags: { door_opened: false },
