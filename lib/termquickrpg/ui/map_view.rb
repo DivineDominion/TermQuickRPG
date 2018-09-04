@@ -17,8 +17,8 @@ module TermQuickRPG
         end
       end
 
-      def window
-        @viewport.window
+      def canvas
+        @viewport.canvas
       end
 
       def close
@@ -26,17 +26,14 @@ module TermQuickRPG
       end
 
       def display
-        viewport.display do |start_x, start_y, width, height|
+        viewport.draw do |start_x, start_y, width, height|
           @map.draw(self, start_x, start_y, width, height)
         end
       end
 
-      def draw(char, map_x, map_y)
-        x, y = [map_x + 1, map_y + 1] # window border
-        old_y, old_x = [window.cury, window.curx]
-        window.setpos(y, x)
-        window.addstr("#{char}")
-        window.setpos(old_y, old_x)
+      def draw(char, x, y)
+        canvas.setpos(y, x)
+        canvas.addstr("#{char}")
       end
 
       def undraw(map_x, map_y)

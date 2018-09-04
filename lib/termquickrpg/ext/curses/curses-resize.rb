@@ -8,4 +8,10 @@ module Curses
     Curses.clear
     Curses.refresh
   end
+
+  class Window
+    def size
+      [maxx, maxy]
+    end
+  end
 end
