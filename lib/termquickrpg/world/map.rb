@@ -19,7 +19,8 @@ module TermQuickRPG
         raise "Map data is missing :layers" unless opts[:data][:layers] && !opts[:data][:layers].empty?
 
         opts[:data] = {
-          items: []
+          items: [],
+          flags: {}
         }.merge(opts[:data])
 
         @width, @height = opts[:data][:size]
@@ -29,6 +30,8 @@ module TermQuickRPG
 
         @layers = opts[:data][:layers].map { |l| Layer.new(l) }
         @collisions = @layers[0].blocked_tiles(opts[:data][:solids])
+
+        @flags = opts[:data][:flags]
 
         @player_character = opts[:player_character]
         @entities = opts[:data][:items].map { |e| Item.new(e) } || []
@@ -40,6 +43,10 @@ module TermQuickRPG
 
       def character_did_move(character, from, to)
         notify_listeners(:map_content_did_invalidate, true) # redraw map
+      end
+
+      def flag(id)
+        @flags[id]
       end
 
       def layer_size(layer)
