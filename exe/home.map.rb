@@ -42,7 +42,8 @@ interactions: {
       if !map_flag[:have_pancakes]
         msg "I'm super hungry.", "What will we eat today?"
         request_use_item "Give some food:" do |item|
-          if item.name == "Pancakes"
+          case item.name
+          when "Pancakes"
             take item
             replace_tile [4,4], "⌾"
             sleep 0.2
@@ -52,10 +53,10 @@ interactions: {
             sleep 0.2
             msg "Great work! Let's dine!"
             map_flag[:have_pancakes] = true
-          elsif item.name == "Heart"
+          when "Your Heart"
             msg "You're disgusting!"
           else
-            msg "How would we eat a #{item.name}?"
+            msg "How would we eat that?!"
           end
         end
       end

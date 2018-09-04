@@ -23,7 +23,10 @@ interactions: {
     ctx.run do
       msg "Hello! I'm selling these fine pancakes."
       request_use_item "Trade for pancakes?" do |item|
-        if item.name == "Heart"
+        case item.name
+        when "Communism"
+          msg "You know I try to run a shop here, right?", "I have kids and family to care for ...", "Get lost!"
+        when "Your Heart"
           msg "That'll do, thanks for your commerce!"
           take item
           give Item.new(char: "⌾", name: "Pancakes", effect: "%s make you feel super!")

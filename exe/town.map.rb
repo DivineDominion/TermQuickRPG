@@ -1,18 +1,23 @@
 {
-size: [25, 12],
-solids: ["█", "▟", "▒"],
+size: [27, 17],
+solids: %Q{█▟▒╔╣║╠╦╗},
 layers: [
-  ["█████████████████████████",
-   "█                       █",
-   "█                       █",
-   "█                       █",
-   "█           ▒▟██▟▟█▒    █",
-   "█           ██░██▟█▟    █", # [14,5]=door
-   "█                       █",
-   "█                       █",
-   "█                       █",
-   "█  █▁█▟█                █",
-   "█                       █",
+  ["███████████████████████████",
+   "█                         █",
+   "█                         █",
+   "█                         █",
+   "█           ▒▟██▟▟█▒      █",
+   "█           ██░██▟█▟      █", # [14,5]=door
+   "█                         █",
+   "█                         █",
+   "█                         █",
+   "█  █▁█▟█       ╔╦╦╦╦╦╦╦╗  █",
+   "█              ║*⁑*⁑*⁑*║  █",
+   "█              ║⁑█▁█▟*⁑║  █",
+   "█              ║*⁑ ⁑*⁑*║  █",
+   "█              ╠╦╗ ╔╦╦╦╣  █",
+   "█                         █",
+   "█                         █",
    "█████████████████████████"],
   ["                         ",
    "                         ",
@@ -24,11 +29,13 @@ layers: [
    "                         ",
    "   ▒▒▒▒▒                 ",
    "                         ",
+   "                 ▒▒▒▒    ",
+   "                         ",
+   "                         ",
+   "                         ",
+   "                         ",
    "                         ",
    "                         "]
-],
-items: [
-  { location: [8, 6], char: "♥", name: "Heart", effect: "%s heals you!"},
 ],
 player_position: [4, 9],
 flags: { door_opened: false },
@@ -36,6 +43,11 @@ triggers: {
   [4, 9] => -> (ctx) {
     ctx.run do
       open_map "home"
+    end
+  },
+  [18, 11] => -> (ctx) {
+    ctx.run do
+      open_map "girlfriend"
     end
   },
   [14, 5] => -> (ctx) {
@@ -75,6 +87,10 @@ interactions: {
             sleep 0.2
             msg "You broke the door open!"
             map_flag[:door_opened] = true
+          when "Communism"
+            msg "#{item.name} cannot open doors."
+          when "Your Heart"
+            msg "#{item.name} cannot open this particular door."
           else
             msg "#{item.name} does not work on door."
           end
