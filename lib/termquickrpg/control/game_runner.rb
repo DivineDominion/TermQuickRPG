@@ -1,6 +1,7 @@
 require "curses"
 require "termquickrpg/ext/curses/curses-resize"
 
+require "termquickrpg/ui/help_line_window"
 require "termquickrpg/control/run_loop"
 require "termquickrpg/ui/screen"
 require "termquickrpg/ui/dialogs"
@@ -21,8 +22,6 @@ end
 module TermQuickRPG
   module Control
     class GameRunner
-      TITLE = "TerminalQuickRPG by DivineDominion / 2018"
-
       attr_reader :player, :map
 
       def map_views
@@ -87,19 +86,17 @@ module TermQuickRPG
         display_map_views
       end
 
+      def help_line_window
+        @help_line_window ||= UI::HelpLineWindow.new
+      end
+
       def draw_help
+        help_line_window.draw
         # Curses.setpos(0, 0)
         # Curses.addstr(  "player: #{@player.x}, #{@player.y}")
 
   #       Curses.addstr("\nviewport: #{viewport.x}, #{viewport.y}; #{viewport.width}x#{viewport.height}; scroll: #{viewport.scroll_x}, #{viewport.scroll_y}")
   #       Curses.addstr("\nc #{Curses.cols}x#{Curses.lines}; scr #{screen.width}x#{screen.height} : #{viewport.max_x},#{viewport.max_y} = #{screen.width-viewport.max_x}x#{screen.height-viewport.max_y}")
-
-        Curses.setpos(Curses.lines - 2, (Curses.cols - TITLE.length) / 2)
-        Curses.addstr(TITLE)
-
-        help = "W,A,S,D to move  [I]nventory Us[e] [Q]uit "
-        Curses.setpos(Curses.lines - 1, (Curses.cols - help.length) / 2)
-        Curses.addstr(help)
       end
 
       def display_map_views
