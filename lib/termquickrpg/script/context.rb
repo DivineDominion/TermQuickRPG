@@ -28,8 +28,6 @@ module TermQuickRPG
         Control::MapStack.instance.front.invalidate!
       end
 
-      def msg(text)
-        UI::show_message(text)
       end
 
       def request_use_item(message, &block)

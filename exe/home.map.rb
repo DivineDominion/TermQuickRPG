@@ -40,7 +40,7 @@ interactions: {
   [4..6, 6..7] => -> (ctx) {
     ctx.run do
       if !map_flag[:have_pancakes]
-        msg "What will we eat today?"
+        msg "I'm super hungry.", "What will we eat today?"
         request_use_item "Give some food:" do |item|
           if item.name == "Pancakes"
             take item
