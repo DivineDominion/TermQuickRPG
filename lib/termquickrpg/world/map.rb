@@ -49,6 +49,12 @@ module TermQuickRPG
         invalidate!
       end
 
+      def replace_tile(location, char)
+        z = location[2] || 0
+        layers[z].replace_tile(location, char)
+        invalidate!
+      end
+
       def layer_size(layer)
         width = layer.map { |line| line.length }.max
         height = layer.length

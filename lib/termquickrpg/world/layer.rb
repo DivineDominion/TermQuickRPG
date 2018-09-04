@@ -11,6 +11,11 @@ module TermQuickRPG
         self.data == other.data
       end
 
+      def replace_tile(location, char)
+        x, y = location
+        data[y][x] = char
+      end
+
       def cutout(start_x, start_y, width, height)
         line_range = (height == 0) ? (start_y .. -1)
                                    : (start_y ... start_y + height)

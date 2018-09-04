@@ -22,6 +22,10 @@ module TermQuickRPG
       def map_flags
         current_map.flags
       end
+
+      def replace_tile(location, char)
+        current_map.replace_tile(location, char)
+      end
     end
   end
 end

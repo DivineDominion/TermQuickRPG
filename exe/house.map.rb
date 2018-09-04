@@ -7,9 +7,9 @@ layers: [
    "█████████",
    "█       █",
    "█       █",
-   "███░░████"],
+   "███▁▁████"],
 ],
-player_position: [4, 4],
+player_position: [4, 5],
 triggers: {
   [3..4, 5] => -> (ctx) {
     ctx.run do
