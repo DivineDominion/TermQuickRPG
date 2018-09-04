@@ -19,7 +19,7 @@ module TermQuickRPG
 
       def read_map_data(path)
         content = File.read(path)
-        eval(content)
+        { id: File.basename(path) }.merge(eval(content))
       rescue Errno::ENOENT => e
         raise "Could not read map file from path: #{e}"
       rescue Exception => e

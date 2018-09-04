@@ -8,6 +8,7 @@ module TermQuickRPG
     class Map
       include Observable
 
+      attr_reader :id
       attr_reader :width, :height
       attr_reader :layers
       attr_reader :entities, :player_character
@@ -16,8 +17,11 @@ module TermQuickRPG
 
       def initialize(**opts)
         raise "Map is missing :data" unless opts[:data]
+        raise "Map data is missing :id" unless opts[:data][:id]
         raise "Map data is missing :size" unless opts[:data][:size]
         raise "Map data is missing :layers" unless opts[:data][:layers] && !opts[:data][:layers].empty?
+
+        @id = opts[:data][:id]
 
         opts[:data] = {
           items: [],
