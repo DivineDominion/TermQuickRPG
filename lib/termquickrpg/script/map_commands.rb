@@ -19,7 +19,7 @@ module TermQuickRPG
         Control::MapStack.instance.front
       end
 
-      def map_flags
+      def map_flag
         current_map.flags
       end
 
