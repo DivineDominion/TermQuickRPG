@@ -1,3 +1,3 @@
 # Entry point into the game
 
-open_map "town.map.rb"
+open_map "home"

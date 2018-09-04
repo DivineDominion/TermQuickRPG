@@ -11,7 +11,7 @@ layers: [
    "█                       █",
    "█                       █",
    "█                       █",
-   "█                       █",
+   "█  █▁█▟█                █",
    "█                       █",
    "█████████████████████████"],
   ["                         ",
@@ -22,7 +22,7 @@ layers: [
    "                         ",
    "                         ",
    "                         ",
-   "                         ",
+   "   ▒▒▒▒▒                 ",
    "                         ",
    "                         ",
    "                         "]
@@ -31,9 +31,14 @@ items: [
   { location: [8, 6], char: "♥", name: "Heart", effect: "%s heals you!"},
   { location: [4, 4], char: "¶", name: "Mace", effect: "You swing your %s." }
 ],
-player_position: [9, 5],
+player_position: [4, 9],
 flags: { door_opened: false },
 triggers: {
+  [4, 9] => -> (ctx) {
+    ctx.run do
+      open_map "home"
+    end
+  },
   [14, 5] => -> (ctx) {
     ctx.run do
       if map_flag[:door_opened]
