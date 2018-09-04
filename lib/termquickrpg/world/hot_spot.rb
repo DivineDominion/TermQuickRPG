@@ -3,7 +3,7 @@ require "termquickrpg/script/context"
 
 module TermQuickRPG
   module World
-    class Trigger
+    class HotSpot
       include Locatable
 
       attr_reader :script
@@ -13,8 +13,8 @@ module TermQuickRPG
         @script = script
       end
 
-      def execute
-        script.call(Script::Context.main)
+      def execute(context)
+        script.call(context)
       end
     end
   end

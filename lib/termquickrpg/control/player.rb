@@ -16,6 +16,10 @@ module TermQuickRPG
         inventory.pick_item(reason)
       end
 
+      def take(item)
+        inventory << item
+      end
+
       def switch_control(character)
         @character = character
       end
@@ -24,22 +28,44 @@ module TermQuickRPG
         "You"
       end
 
-      def take(item)
-        inventory << item
-      end
-
       def move(map, direction)
         return unless character.can_move?(map, direction)
 
         character.move(direction)
 
-        if trigger = character.trigger(map)
-          trigger.execute
+        if trigger = usable_trigger(map)
+          trigger.execute(Script::Context.main)
+        end
+      end
+
+      def usable_trigger(map)
+        map.trigger(character.location)
+      end
+
+      def interact(map)
+        if obj = usable_entity(map)
+          choice = UI::show_options("Found #{obj.name}!", { pick: "Pick up", cancel: "Leave" }, :single)
+
+          if choice == :pick
+            map.entities.delete(obj)
+            take(obj)
+          end
+
+          UI::cleanup_after_dialog
+        elsif interaction = usable_interaction(map)
+          interaction.execute(Script::Context.main)
+        else
+          UI::show_message("Cannot interact with anything here.")
+          UI::cleanup_after_dialog
         end
       end
 
       def usable_entity(map)
         map.entity_under(character)
+      end
+
+      def usable_interaction(map)
+        map.interaction(character.location)
       end
     end
   end

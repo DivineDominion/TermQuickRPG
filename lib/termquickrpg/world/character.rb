@@ -15,10 +15,6 @@ module TermQuickRPG
         @x, @y = x, y
         @char = char
       end
-
-      def trigger(map)
-        map.trigger(location)
-      end
     end
   end
 end

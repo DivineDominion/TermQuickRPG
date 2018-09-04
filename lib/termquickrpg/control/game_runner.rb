@@ -59,6 +59,7 @@ module TermQuickRPG
                                     centered: [:vertical])
         viewport2.scroll_to_visible(map.player_character)
         viewport2.track_movement(map.player_character)
+        # viewport2.window.border_window.color_set(UI::Colors::PAIR_FLASH)
         map_views << UI::MapView.new(map, viewport2, UI::Screen.main)
 
         Curses.refresh
@@ -135,19 +136,7 @@ module TermQuickRPG
       end
 
       def handle_use_object(player)
-        if obj = player.usable_entity(map)
-          choice = UI::show_options("Found #{obj.name}!", { pick: "Pick up", cancel: "Leave" }, :single)
-
-          if choice == :pick
-            map.entities.delete(obj)
-            player.take(obj)
-          end
-
-          UI::cleanup_after_dialog
-        else
-          UI::show_message("Cannot interact with anything here.")
-          UI::cleanup_after_dialog
-        end
+        player.interact(map)
       end
 
       def show_inventory(player)

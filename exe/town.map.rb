@@ -39,7 +39,16 @@ triggers: {
       if map_flags[:door_opened]
         open_map "house.map.rb"
       else
-        request_use_item("Select item to open door:") { |item|
+        msg "Locked."
+      end
+    end
+  }
+},
+interactions: {
+  [14, 5] => -> (ctx) {
+    ctx.run do
+      unless map_flags[:door_opened]
+        request_use_item "Select item to open door:" do |item|
           if item.name == "Mace"
             move player, :down, 0.6
             move player, :down, 0.6
@@ -55,9 +64,8 @@ triggers: {
             map_flags[:door_opened] = true
           else
             msg "#{item.name} does not work on door."
-            move player, :down
           end
-        } or move player, :down
+        end
       end
     end
   }

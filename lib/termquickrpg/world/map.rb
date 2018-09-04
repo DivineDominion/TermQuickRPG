@@ -1,6 +1,6 @@
 require "termquickrpg/world/layer"
 require "termquickrpg/world/item"
-require "termquickrpg/world/trigger"
+require "termquickrpg/world/hot_spot"
 require "termquickrpg/observable"
 
 module TermQuickRPG
@@ -11,7 +11,8 @@ module TermQuickRPG
       attr_reader :width, :height
       attr_reader :layers
       attr_reader :entities, :player_character
-      attr_reader :triggers, :flags
+      attr_reader :triggers, :interactions
+      attr_reader :flags
 
       def initialize(**opts)
         raise "Map is missing :data" unless opts[:data]
@@ -20,7 +21,9 @@ module TermQuickRPG
 
         opts[:data] = {
           items: [],
-          flags: {}
+          flags: {},
+          triggers: {},
+          interactions: {}
         }.merge(opts[:data])
 
         @width, @height = opts[:data][:size]
@@ -38,7 +41,8 @@ module TermQuickRPG
         @entities << @player_character
         @player_character.add_listener(self)
 
-        @triggers = opts[:data][:triggers].map { |loc, proc| [loc, Trigger.new(loc, proc)] }.to_h
+        @triggers = opts[:data][:triggers].map { |loc, proc| [loc, HotSpot.new(loc, proc)] }.to_h
+        @interactions = opts[:data][:interactions].map { |loc, proc| [loc, HotSpot.new(loc, proc)] }.to_h
       end
 
       def invalidate!
@@ -61,7 +65,9 @@ module TermQuickRPG
         [width, height]
       end
 
-      attr_writer :active
+      def active=(value)
+        @active = value
+      end
 
       def active?
         @active || false
@@ -89,16 +95,24 @@ module TermQuickRPG
         nil
       end
 
+      def interaction(location)
+        matches = interactions.keys.find_all { |loc| hot_spot_location_include?(loc, location) }
+        if matches
+          raise "Overlapping interactions not implemented" if matches.count > 1
+          interactions[matches.first]
+        end
+      end
+
       def trigger(location)
-        matches = triggers.keys.find_all { |loc| trigger_location_include?(loc, location) }
+        matches = triggers.keys.find_all { |loc| hot_spot_location_include?(loc, location) }
         if matches
           raise "Overlapping triggers not implemented" if matches.count > 1
           triggers[matches.first]
         end
       end
 
-      def trigger_location_include?(trigger_location, location)
-        x1,y1 = trigger_location
+      def hot_spot_location_include?(hot_spot_location, location)
+        x1,y1 = hot_spot_location
         x2,y2 = location
         return (x1.respond_to?(:include?) ? x1.include?(x2) : x1 == x2) \
             && (y1.respond_to?(:include?) ? y1.include?(y2) : y1 == y2)
