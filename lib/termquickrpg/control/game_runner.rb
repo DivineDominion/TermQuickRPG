@@ -28,12 +28,16 @@ module TermQuickRPG
         @map_views ||= []
       end
 
+      def help_line_window
+        @help_line_window ||= UI::HelpLineWindow.new
+      end
+
       def map_stack_did_change(map_stack)
         close_map(@map)
 
         if map = map_stack.front
           @map = map
-          @player ||= Control::Player.new
+          @player ||= Control::Player.instance
           @player.switch_control(map.player_character)
           show_map(map)
         else
@@ -84,10 +88,6 @@ module TermQuickRPG
       def draw
         draw_help
         display_map_views
-      end
-
-      def help_line_window
-        @help_line_window ||= UI::HelpLineWindow.new
       end
 
       def draw_help
@@ -151,23 +151,12 @@ module TermQuickRPG
       end
 
       def show_inventory(player)
-        if player.inventory.empty?
-          UI::show_message("Inventory is empty.")
-        else
-          items = player.inventory.map { |item| "#{item.char}   #{item.name}" }
-          choice = UI::show_options("Inventory", ["Cancel", *items], :single)
-
-          if choice > 0
-            item_index = choice - 1 # "Cancel" offset
-            item = player.inventory.delete_at(item_index)
-            effect = item.apply(player)
-            if effect
-              UI::show_message(effect)
-            end
+        if item = player.item_from_inventory
+          if effect = item.apply(player)
+            UI::show_message(effect)
+            UI::cleanup_after_dialog
           end
         end
-
-        UI::cleanup_after_dialog
       end
     end
   end

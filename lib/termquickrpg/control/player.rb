@@ -1,12 +1,19 @@
+require "singleton"
+require "termquickrpg/control/inventory"
+
 module TermQuickRPG
   module Control
     class Player
-      attr_reader :character
-      attr_reader :inventory
+      include Singleton
 
-      def initialize(character = nil, inventory = [])
-        @character = character
-        @inventory = inventory
+      attr_reader :character
+
+      def inventory
+        @inventory ||= Inventory.new
+      end
+
+      def item_from_inventory(reason = nil)
+        inventory.pick_item(reason)
       end
 
       def switch_control(character)
@@ -18,7 +25,7 @@ module TermQuickRPG
       end
 
       def take(item)
-        @inventory << item
+        inventory << item
       end
 
       def move(map, direction)
