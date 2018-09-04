@@ -20,6 +20,10 @@ module TermQuickRPG
         inventory << item
       end
 
+      def remove_from_inventory(item)
+        inventory.remove(item)
+      end
+
       def switch_control(character)
         @character = character
       end

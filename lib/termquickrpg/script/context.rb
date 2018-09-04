@@ -44,6 +44,19 @@ module TermQuickRPG
         end
       end
 
+      def take(item)
+        Control::Player.instance.remove_from_inventory(item)
+      end
+
+      def give(item, notify = true)
+        Control::Player.instance.take(item)
+
+        if notify
+          msg "Obtained #{item.name}!"
+          UI::cleanup_after_dialog(force: true)
+        end
+      end
+
       include MapCommands
       include EffectCommands
       include CharacterCommands
