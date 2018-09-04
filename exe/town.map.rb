@@ -36,8 +36,8 @@ flags: { door_opened: false },
 triggers: {
   [14, 5] => -> (ctx) {
     ctx.run do
-        open_map "house.map.rb"
       if map_flag[:door_opened]
+        open_map "shop"
       else
         msg "Locked."
       end

@@ -1,24 +1,25 @@
 {
-size: [9, 6],
-solids: ["█"],
+size: [15, 7],
+solids: %Q{█☻▄},
 layers: [
-  ["██████░██",
-   "█   ☻   █",
-   "█████████",
-   "█       █",
-   "█       █",
-   "███▁▁████"],
+  ["██▄███░████",
+   "█       ▟▘█",
+   "█   ☻  ▝▘ █",
+   "███████████████",
+   "█             █",
+   "█             █",
+   "███▁▁███▄███▄██"]
 ],
-player_position: [4, 5],
+player_position: [4, 6],
 triggers: {
-  [3..4, 5] => -> (ctx) {
+  [3..4, 6] => -> (ctx) {
     ctx.run do
-      leave_map
+      open_map "town"
     end
   }
 },
 interactions: {
-  [1..7, 3] => -> (ctx) {
+  [1..7, 4] => -> (ctx) {
     ctx.run do
       msg "Hello! I'm selling these fine pancakes."
       request_use_item "Trade for pancakes?" do |item|
