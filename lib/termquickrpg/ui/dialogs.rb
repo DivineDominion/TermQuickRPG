@@ -115,6 +115,8 @@ module TermQuickRPG
           end
         end
       end
+    ensure
+      cleanup_after_dialog(force: false)
     end
   end
 end
