@@ -8,6 +8,7 @@ module TermQuickRPG
 
       def initialize(map, viewport, screen)
         @viewport, @map = viewport, map
+        map.add_listener(self)
         viewport.add_listener(self)
       end
 
@@ -42,6 +43,21 @@ module TermQuickRPG
 
       def viewport_did_scroll(viewport)
         display
+      end
+
+      def map_content_did_invalidate(map, flag_or_location)
+        if (flag = flag_or_location) == true
+          display
+        elsif location = flag_or_location and is_in_viewport_bounds(flag_or_location)
+          display
+        end
+      end
+
+      def is_in_viewport_bounds(location)
+        x, y = location
+        mapx, mapy, width, height = viewport.map_bounds
+        return (mapx <= x && x < mapx + width) \
+            && (mapy <= y && y < mapy + height)
       end
     end
   end

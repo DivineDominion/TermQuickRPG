@@ -13,9 +13,10 @@ module TermQuickRPG
       end
 
       def move(dir)
+        old_x, old_y = x, y
         @x, @y = project_movement(dir)
       ensure
-        notify_listeners(:character_did_move, @x, @y)
+        notify_listeners(:character_did_move, [old_x, old_y], [@x, @y])
       end
 
       def project_movement(dir)

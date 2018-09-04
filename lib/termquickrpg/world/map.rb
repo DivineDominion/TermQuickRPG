@@ -1,10 +1,13 @@
 require "termquickrpg/world/layer"
 require "termquickrpg/world/item"
 require "termquickrpg/world/trigger"
+require "termquickrpg/observable"
 
 module TermQuickRPG
   module World
     class Map
+      include Observable
+
       attr_reader :width, :height
       attr_reader :layers
       attr_reader :entities, :player_character
@@ -30,8 +33,13 @@ module TermQuickRPG
         @player_character = opts[:player_character]
         @entities = opts[:data][:items].map { |e| Item.new(e) } || []
         @entities << @player_character
+        @player_character.add_listener(self)
 
         @triggers = opts[:data][:triggers].map { |loc, proc| [loc, Trigger.new(loc, proc)] }.to_h
+      end
+
+      def character_did_move(character, from, to)
+        notify_listeners(:map_content_did_invalidate, true) # redraw map
       end
 
       def layer_size(layer)

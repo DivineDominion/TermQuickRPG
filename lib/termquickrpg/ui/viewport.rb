@@ -21,10 +21,14 @@ module TermQuickRPG
       def_delegator :@window, :close
 
       def draw
-        width, height = canvas_size
         @window.draw do
-          yield @scroll_x, @scroll_y, width, height
+          yield *map_bounds
         end
+      end
+
+      def map_bounds
+        width, height = canvas_size
+        [@scroll_x, @scroll_y, width, height]
       end
 
       def frame_did_change(frame, *args)
@@ -36,8 +40,8 @@ module TermQuickRPG
         character.add_listener(self) # :character_did_move
       end
 
-      def character_did_move(character, x, y)
-        scroll_to_visible([x, y])
+      def character_did_move(character, from, to)
+        scroll_to_visible(to)
       end
 
       def scroll_to_visible(obj)
