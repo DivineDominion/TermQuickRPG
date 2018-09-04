@@ -38,6 +38,7 @@ module TermQuickRPG
       end
 
       def draw
+        window.touch # Mark as needing re-display
         window.refresh
       end
 
