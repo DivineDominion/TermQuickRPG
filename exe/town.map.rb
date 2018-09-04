@@ -53,7 +53,12 @@ interactions: {
     ctx.run do
       unless map_flag[:door_opened]
         request_use_item "Select item to open door:" do |item|
-          if item.name == "Mace"
+          case item.name
+          when "Dagger"
+            flash_screen
+            take item
+            msg "You broke #{item.name}!"
+          when "Mace"
             move player, :down, 0.6
             move player, :down, 0.6
             move player, :down, 0.6
@@ -61,6 +66,10 @@ interactions: {
             move player, :up, 0.1
             move player, :up, 0.1
             sleep 0.1
+            flash_screen
+            move player, :down, 0.6
+            sleep 0.5
+            move player, :up, 0.1
             flash_screen
             replace_tile [14,5], "▁"
             sleep 0.2
