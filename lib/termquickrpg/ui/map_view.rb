@@ -6,15 +6,9 @@ module TermQuickRPG
       attr_reader :viewport
       attr_reader :map
 
-      def initialize(map, viewport, *args)
+      def initialize(map, viewport, screen)
         @viewport, @map = viewport, map
         viewport.add_listener(self)
-
-        # forward screen resizing
-        screen = args.pop
-        if screen
-          screen.add_listener(self)
-        end
       end
 
       def canvas
@@ -41,8 +35,8 @@ module TermQuickRPG
       end
 
       # Event listener
-      def screen_size_did_change(screen, width, height)
-        viewport.adjust_to_screen_size(width, height)
+
+      def viewport_size_did_change(viewport, width, height)
         display
       end
 

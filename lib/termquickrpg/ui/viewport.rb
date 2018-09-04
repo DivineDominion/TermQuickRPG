@@ -6,12 +6,12 @@ module TermQuickRPG
   module UI
     class Viewport
       include Observable
-      VIEWPORT_DID_SCROLL = :viewport_did_scroll
 
       attr_reader :scroll_x, :scroll_y
 
       def initialize(**attrs)
         @window = BorderedWindow.new(attrs)
+        @window.add_listener(self)
         @scroll_x, @scroll_y = 0, 0
       end
 
@@ -27,8 +27,9 @@ module TermQuickRPG
         end
       end
 
-      def adjust_to_screen_size(width, height)
-        @window.adjust_to_screen_size(width, height)
+      def frame_did_change(frame, *args)
+        width, height = canvas_size
+        notify_listeners(:viewport_size_did_change, width, height)
       end
 
       def track_movement(character)
@@ -64,7 +65,7 @@ module TermQuickRPG
           did_scroll = true
         end
       ensure
-        notify_listeners(VIEWPORT_DID_SCROLL) if did_scroll
+        notify_listeners(:viewport_did_scroll) if did_scroll
       end
     end
   end
