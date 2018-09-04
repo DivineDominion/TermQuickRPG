@@ -16,6 +16,7 @@ module TermQuickRPG
       end
 
       extend Forwardable
+      attr_reader :window
       def_delegator :@window, :content, :canvas
       def_delegator :@window, :content_size, :canvas_size
       def_delegator :@window, :close
