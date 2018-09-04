@@ -25,14 +25,6 @@ module TermQuickRPG
         notify_listeners(:map_stack_did_change)
       end
 
-      def pop
-        map = maps.pop
-        front.active = true if front
-        map
-      ensure
-        notify_listeners(:map_stack_did_change)
-      end
-
       def front
         maps.last
       end

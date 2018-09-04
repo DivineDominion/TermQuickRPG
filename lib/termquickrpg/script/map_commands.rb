@@ -12,10 +12,6 @@ module TermQuickRPG
         Control::MapStack.instance.push(map)
       end
 
-      def leave_map
-        Control::MapStack.instance.pop
-      end
-
       def current_map
         Control::MapStack.instance.front
       end
