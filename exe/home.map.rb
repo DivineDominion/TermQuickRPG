@@ -13,6 +13,11 @@ layers: [
    "██▁▁███▄███"]
 ],
 player_position: [8, 4],
+items: [
+  { location: [7, 1], char: "☨", name: "Two-Handed Sword", effect: "You slash with your %s." },
+  { location: [8, 1], char: "†", name: "Dagger", effect: "You stab with your %s." },
+  { location: [9, 1], char: "¶", name: "Mace", effect: "You swing your %s." },
+],
 triggers: {
   [2..3, 8] => -> (ctx) {
     ctx.run do
