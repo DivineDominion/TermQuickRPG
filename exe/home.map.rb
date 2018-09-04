@@ -22,6 +22,16 @@ triggers: {
 },
 flags: { have_pancakes: false },
 interactions: {
+  [8, 4] => -> (ctx) {
+    ctx.run do
+      if map_flag[:have_pancakes]
+        msg "Good job!", "Now the day is saved."
+        quit
+      else
+        msg "You are starving. Fetch some food."
+      end
+    end
+  },
   [4..6, 6..7] => -> (ctx) {
     ctx.run do
       if !map_flag[:have_pancakes]
