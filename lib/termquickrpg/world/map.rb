@@ -11,7 +11,7 @@ module TermQuickRPG
       attr_reader :width, :height
       attr_reader :layers
       attr_reader :entities, :player_character
-      attr_reader :triggers
+      attr_reader :triggers, :flags
 
       def initialize(**opts)
         raise "Map is missing :data" unless opts[:data]
@@ -43,10 +43,6 @@ module TermQuickRPG
 
       def character_did_move(character, from, to)
         notify_listeners(:map_content_did_invalidate, true) # redraw map
-      end
-
-      def flag(id)
-        @flags[id]
       end
 
       def layer_size(layer)

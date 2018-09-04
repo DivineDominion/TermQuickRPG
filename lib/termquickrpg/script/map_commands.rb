@@ -14,6 +14,14 @@ module TermQuickRPG
       def leave_map
         Control::MapStack.instance.pop
       end
+
+      def current_map
+        Control::MapStack.instance.front
+      end
+
+      def map_flags
+        current_map.flags
+      end
     end
   end
 end

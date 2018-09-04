@@ -2,6 +2,7 @@ require "curses"
 require "termquickrpg/control/game_runner"
 require "termquickrpg/control/map_stack"
 require "termquickrpg/ui/screen"
+require "termquickrpg/ui/colors"
 require "termquickrpg/script/context"
 
 module TermQuickRPG
@@ -36,6 +37,8 @@ module TermQuickRPG
       Curses.curs_set(0) # Invisible cursor
       Curses.noecho # Do not print keyboard input
 
+      UI::Colors.setup
+
       UI::Screen.main.add_listener(Curses)
     end
 
@@ -51,6 +54,7 @@ module TermQuickRPG
     end
 
     def teardown
+      Curses.use_default_colors # Reset to system defaults
       Curses.close_screen
     end
   end

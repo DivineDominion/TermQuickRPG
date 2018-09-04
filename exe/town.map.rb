@@ -7,7 +7,7 @@ layers: [
    "█                  █",
    "█                  █",
    "█           █████  █",
-   "█           ██░██  █", # [13,5]
+   "█           ██░██  █", # [14,5]=door
    "█                  █",
    "█                  █",
    "█                  █",
@@ -36,7 +36,21 @@ flags: { door_opened: false },
 triggers: {
   [14, 5] => -> (ctx) {
     ctx.run do
-      open_map "house.map.rb"
+      if map_flags[:door_opened]
+        open_map "house.map.rb"
+      else
+        move player, :down, 0.6
+        move player, :down, 0.6
+        move player, :down, 0.6
+        sleep 1
+        move player, :up, 0.1
+        move player, :up, 0.1
+        sleep 0.1
+        flash_screen
+        sleep 0.2
+        msg "You broke the door open!"
+        map_flags[:door_opened] = true
+      end
     end
   }
 }
