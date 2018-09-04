@@ -1,6 +1,7 @@
 require "curses"
 require "termquickrpg/ext/curses/window-draw_box"
 require "termquickrpg/control/default_keys" # FIXME: dep in wrong direction
+require "termquickrpg/control/run_loop"
 
 module Curses
   class Window
@@ -15,9 +16,16 @@ end
 
 module TermQuickRPG
   module UI
-    def self.cleanup_after_dialog
-      Curses.clear
-      Curses.refresh
+    def self.cleanup_after_dialog(force: false)
+      if force
+        Curses.clear
+        Curses.refresh
+      else
+        Control::RunLoop.main.enqueue {
+          Curses.clear
+          Curses.refresh
+        }
+      end
     end
 
     def self.show_message(*lines)

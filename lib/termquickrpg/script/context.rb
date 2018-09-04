@@ -1,6 +1,7 @@
 require "termquickrpg/script/map_commands"
 require "termquickrpg/script/character_commands"
 require "termquickrpg/script/effect_commands"
+require "termquickrpg/control/inventory"
 require "termquickrpg/ui/dialogs"
 
 module TermQuickRPG
@@ -22,10 +23,25 @@ module TermQuickRPG
         instance_eval(&block)
       end
 
+      # Quickfix to redraw the map after cleanin up UI artifacts; should become obsolete with usage of Panels
+      def redraw_current_map
+        Control::MapStack.instance.front.invalidate!
+      end
+
       def msg(text)
-        Curses.refresh
         UI::show_message(text)
-        UI::cleanup_after_dialog
+      end
+
+      def request_use_item(message, &block)
+        if item = Control::Player.instance.item_from_inventory(message)
+          UI::cleanup_after_dialog(force: true)
+          redraw_current_map
+
+          yield item
+          return true
+        else
+          return false
+        end
       end
 
       include MapCommands

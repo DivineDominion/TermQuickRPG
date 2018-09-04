@@ -41,8 +41,12 @@ module TermQuickRPG
         @triggers = opts[:data][:triggers].map { |loc, proc| [loc, Trigger.new(loc, proc)] }.to_h
       end
 
-      def character_did_move(character, from, to)
+      def invalidate!
         notify_listeners(:map_content_did_invalidate, true) # redraw map
+      end
+
+      def character_did_move(character, from, to)
+        invalidate!
       end
 
       def layer_size(layer)

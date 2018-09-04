@@ -39,17 +39,24 @@ triggers: {
       if map_flags[:door_opened]
         open_map "house.map.rb"
       else
-        move player, :down, 0.6
-        move player, :down, 0.6
-        move player, :down, 0.6
-        sleep 1
-        move player, :up, 0.1
-        move player, :up, 0.1
-        sleep 0.1
-        flash_screen
-        sleep 0.2
-        msg "You broke the door open!"
-        map_flags[:door_opened] = true
+        request_use_item("Select item to open door:") { |item|
+          if item.name == "Mace"
+            move player, :down, 0.6
+            move player, :down, 0.6
+            move player, :down, 0.6
+            sleep 1
+            move player, :up, 0.1
+            move player, :up, 0.1
+            sleep 0.1
+            flash_screen
+            sleep 0.2
+            msg "You broke the door open!"
+            map_flags[:door_opened] = true
+          else
+            msg "#{item.name} does not work on door."
+            move player, :down
+          end
+        } or move player, :down
       end
     end
   }
