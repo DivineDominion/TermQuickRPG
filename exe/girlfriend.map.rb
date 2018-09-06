@@ -24,13 +24,13 @@ interactions: {
     ctx.run do
       case map_flag[:times_spoken]
       when 0
-        msg "Please, don't talk to me right now."
+        dialogue "Girlfriend", "Maybe I don't want to talk to you now ..."
       when 1
-        msg "I told you to stop."
+        dialogue "Girlfriend", "I told you to perhaps stop."
       when 2
-        msg "I warn you one last time."
+        dialogue "Girlfriend", "I warn you one last time."
       when 3
-        msg "You know ...", "I don't want to be with you any more."
+        dialogue "Girlfriend", "You know ...", "I don't want to be with you any more."
 
         flash_screen 0.15
         sleep 0.15
@@ -46,15 +46,15 @@ interactions: {
 
         give Item.new(char: "♥", name: "Your Heart", effect: "%s is aching."), "Got Your Heart back!"
       when 4
-        msg "What?"
+        dialogue "Ex-Girlfriend", "What?"
       when 5,7,9
-        msg "..."
+        dialogue "Ex-Girlfriend", "..."
       when 6
-        msg "It's over."
+        dialogue "Ex-Girlfriend", "It's over."
       when 8
-        msg "Deal with it."
+        dialogue "Ex-Girlfriend", "Deal with it."
       when 10
-        msg "Ok, one last kiss for your effort."
+        dialogue "Ex-Girlfriend", "Ok, one last kiss for your effort."
         flash_screen 0.3
         give Item.new(char: "☭", name: "Communism", effect: "You get what you deserve.")
       end

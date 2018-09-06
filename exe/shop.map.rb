@@ -21,17 +21,17 @@ triggers: {
 interactions: {
   [1..7, 4] => -> (ctx) {
     ctx.run do
-      msg "Hello! I'm selling these fine pancakes."
+      dialogue "Vendor", "Hello! I'm selling these fine pancakes.", "Do you want to trade anything for some?"
       request_use_item "Trade for pancakes?" do |item|
         case item.name
         when "Communism"
-          msg "You know I try to run a shop here, right?", "I have kids and family to care for ...", "Get lost!"
+          dialogue "Vendor", "...", "You know I try to run a shop here, right?", "I gotta make me some profits."
         when "Your Heart"
-          msg "That'll do, thanks for your commerce!"
+          dialogue "Vendor", "That'll do, thanks for your commerce!"
           take item
           give Item.new(char: "⌾", name: "Pancakes", effect: "%s make you feel super!")
         else
-          msg "What would I need a #{item.name} for?"
+          dialogue "Vendor", "What would I need a #{item.name} for?"
         end
       end
     end

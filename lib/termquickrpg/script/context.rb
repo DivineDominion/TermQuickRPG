@@ -36,6 +36,10 @@ module TermQuickRPG
         UI::show_message(*lines)
       end
 
+      def dialogue(name, *lines)
+        UI::show_dialogue(name, *lines)
+      end
+
       def request_use_item(message, &block)
         if item = Control::Player.instance.item_from_inventory(message)
           redraw_current_map

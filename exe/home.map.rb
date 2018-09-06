@@ -40,7 +40,7 @@ interactions: {
   [4..6, 6..7] => -> (ctx) {
     ctx.run do
       if !map_flag[:have_pancakes]
-        msg "I'm super hungry.", "What will we eat today?"
+        dialogue "Bob", "I'm super hungry.", "What will we eat today?"
         request_use_item "Give some food:" do |item|
           case item.name
           when "Pancakes"
@@ -51,12 +51,12 @@ interactions: {
             sleep 0.2
             replace_tile [6,4], "⌾"
             sleep 0.2
-            msg "Great work! Let's dine!"
+            dialogue "Bob", "Great work! Let's dine!"
             map_flag[:have_pancakes] = true
           when "Your Heart"
-            msg "You're disgusting!"
+            dialogue "Bob", "You're disgusting!"
           else
-            msg "How would we eat that?!"
+            dialogue "Bob", "How would we eat that?!"
           end
         end
       end

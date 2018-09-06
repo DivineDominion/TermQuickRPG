@@ -14,6 +14,17 @@ module Curses
   end
 end
 
+require "termquickrpg/dialogue/dialogue"
+require "termquickrpg/dialogue/dialogue_controller"
+
+module TermQuickRPG
+  module UI
+    def self.show_dialogue(name, *lines)
+      Dialogue::DialogueController.new(Dialogue::Dialogue.new(name, *lines)).show_dialogue
+    end
+  end
+end
+
 module TermQuickRPG
   module UI
     def self.cleanup_after_dialog(force: false)
