@@ -54,7 +54,9 @@ module TermQuickRPG
       def give(item, notify = true)
         Control::Player.instance.take(item)
 
-        if notify
+        if notify.is_a?(String)
+          msg notify
+        elsif notify
           msg "Obtained #{item.name}!"
         end
       end

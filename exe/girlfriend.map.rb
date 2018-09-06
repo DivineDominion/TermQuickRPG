@@ -44,7 +44,7 @@ interactions: {
         move player, :down
         sleep 1
 
-        give Item.new(char: "♥", name: "Your Heart", effect: "%s is aching.")
+        give Item.new(char: "♥", name: "Your Heart", effect: "%s is aching."), "Got Your Heart back!"
       when 4
         msg "What?"
       when 5,7,9
