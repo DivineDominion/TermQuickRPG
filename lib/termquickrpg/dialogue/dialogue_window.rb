@@ -1,92 +1,88 @@
 require "curses"
-require "termquickrpg/ui/responsive_frame"
-require "termquickrpg/ext/curses/window-draw_box"
+require "termquickrpg/ui/bordered_window"
 
 module TermQuickRPG
   module Dialogue
     class DialogueWindow
-      DEFAULT_WIDTH = 50
-      attr_reader :frame
+      NUM_COLS = 50
+      NUM_LINES = 3
+
+      attr_reader :window, :padding
       attr_accessor :name, :visible_lines
       attr_accessor :status
 
       def initialize(**attrs)
         @visible_lines = []
         @status = :continue
+        @padding = { horizontal: 2, vertical: 1 }
 
+        # Override customizations
         attrs[:centered] = :horizontal
-        attrs[:width] = DEFAULT_WIDTH
-        attrs[:height] = 4
-        attrs[:padding] = { horizontal: 2, vertical: 1 }
+        attrs[:width] = NUM_COLS + 2 * @padding[:horizontal] + 2 # Borders inclusive
+        attrs[:height] = NUM_LINES + 2 * @padding[:vertical] + 2
         attrs[:margin] = { bottom: 3 } # Help lines
         attrs[:y] = 1000 # Anchor to bottom edge
 
-        @frame = UI::ResponsiveFrame.new(attrs)
-        @frame.add_listener(self)
-      end
-
-      def window
-        @window ||= create_window
-      end
-
-      def create_window
-        x, y = frame.origin
-        width, height = frame.size
-        win = Curses::Window.new(height, width, y, x)
-        return win
+        @window = UI::BorderedWindow.new(attrs)
+        @window.add_listener(self)
       end
 
       def close
-        return unless @window # Do not lazily recreate a window
-        window.clear
-        window.refresh
-        window.close
+        unless window.nil?
+          window.close(refresh: true)
+        end
       end
 
       def draw
-        window.clear
-        window.draw_box(:double)
-        draw_name
-        draw_lines
-        draw_status
-        window.refresh
-      end
-
-      def draw_name
-        window.setpos(0, 4)
-        window.addstr(" #{name} ")
-      end
-
-      def draw_lines
-        visible_lines.each.with_index do |line, i|
-          # +1 for the border
-          x, y = 1 + frame.padding[:horizontal], i + 1 + frame.padding[:vertical]
-          window.setpos(y, x)
-          window.addstr(line)
+        window.draw do |frame, border, content|
+          draw_name(border)
+          draw_lines(content)
+          draw_status(border)
         end
       end
 
-      def draw_status
-        # draw "[ MOD ]"
-        window.setpos(frame.height - 1, frame.width - 9)
-        window.addstr("[")
-        window.attron(Curses::A_REVERSE)
-        window.addstr(" ")
-        window.attron(Curses::A_BLINK)
-        if status == :continue
-          window.addstr("...")
+      private
+
+      def draw_name(border)
+        border.setpos(0, 4)
+        border.addstr(" #{name} ")
+      end
+
+      def draw_lines(content)
+        if visible_lines.count > 3
+          lines = visible_lines[-3..-1]
+          content.setpos(0, padding[:horizontal])
+          content.addstr("...")
         else
-          window.addstr("END")
+          lines = visible_lines
         end
-        window.attroff(Curses::A_BLINK)
-        window.addstr(" ")
-        window.attroff(Curses::A_REVERSE)
-        window.addstr("]")
+
+        lines.each.with_index do |line, i|
+          content.setpos(i + padding[:vertical], padding[:horizontal])
+          content.addstr(line)
+        end
       end
 
-      def frame_did_change(frame, x, y, width, height)
-        window.move(y, x)
-        window.resize(height, width)
+      def draw_status(border)
+        # draw "[ MOD ]"
+        border.setpos(border.height - 1, border.width - 9)
+        border.addstr("[")
+        if status == :continue
+          border.addstr(" ")
+          border.attron(Curses::A_BLINK)
+          border.addstr("...")
+          border.attroff(Curses::A_BLINK)
+          border.addstr(" ")
+        else
+          border.attron(Curses::A_REVERSE)
+          border.addstr(" ")
+          border.attron(Curses::A_BLINK)
+          border.addstr("END")
+          border.attroff(Curses::A_BLINK)
+          border.addstr(" ")
+          border.attroff(Curses::A_REVERSE)
+        end
+        border.addstr("]")
       end
     end
   end

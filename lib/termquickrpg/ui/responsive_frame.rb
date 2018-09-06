@@ -10,7 +10,6 @@ module TermQuickRPG
       attr_reader :original_x, :original_y, :original_width, :original_height
       attr_reader :centered
 
-      attr_accessor :padding
       attr_accessor :margin_bottom
 
       def initialize(**attrs)
@@ -21,19 +20,13 @@ module TermQuickRPG
           height: 10,
           centered: false,
           margin: {},
-          padding: {horizontal: 0, vertical: 0},
           screen: Screen.main
         }.merge(attrs)
 
         @x, @y = attrs[:x], attrs[:y]
+        @width, @height = attrs[:width], attrs[:height]
         @centered = [*attrs[:centered]]
         @margin_bottom = attrs[:margin][:bottom] || 0
-
-        @padding = attrs[:padding].is_a?(Array) \
-          ? [:horizontal, :vertical].zip(attrs[:padding]) \
-          : attrs[:padding]
-        @width = attrs[:width] + 2 * @padding[:horizontal]
-        @height = attrs[:height] + 2 * @padding[:vertical]
 
         # Cache original positions for restoring later
         @original_width, @original_height = @width, @height

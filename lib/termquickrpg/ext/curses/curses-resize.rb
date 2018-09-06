@@ -10,8 +10,16 @@ module Curses
   end
 
   class Window
+    def height
+      maxy
+    end
+
+    def width
+      maxx
+    end
+
     def size
-      [maxx, maxy]
+      [width, height]
     end
   end
 end

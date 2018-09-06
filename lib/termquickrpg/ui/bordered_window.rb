@@ -20,7 +20,6 @@ module TermQuickRPG
         @border_window = Curses::Window.new(height, width, y, x)
         @content = @border_window.subwin(height - 2 * BORDER_WIDTH, width - 2 * BORDER_WIDTH,
                                          y + BORDER_WIDTH, x + BORDER_WIDTH)
-
         @frame.add_listener(self)
       end
 
@@ -28,9 +27,10 @@ module TermQuickRPG
         @content.size
       end
 
-      def close
+      def close(refresh: false)
         unless @border_window.nil?
           @border_window.erase
+          @border_window.refresh if refresh
           @border_window.close
         end
       end
@@ -42,7 +42,7 @@ module TermQuickRPG
         @border_window.touch # Touch before refreshing subwindows
         @border_window.draw_box(:double)
 
-        yield
+        yield @frame, @border_window, @content
 
         @border_window.refresh
       end
