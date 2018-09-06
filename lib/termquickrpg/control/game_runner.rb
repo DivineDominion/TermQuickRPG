@@ -72,7 +72,6 @@ module TermQuickRPG
             map_views.delete_at(index)
           end
         end
-        GC.start # Clean up weak references of observers
         Curses.refresh
       end
 
@@ -82,6 +81,7 @@ module TermQuickRPG
           Control::RunLoop.main.run do
             draw
             handle_input
+            GC.start # Clean up weak references of observers
           end
         end
       end
