@@ -54,13 +54,10 @@ module TermQuickRPG
             map.entities.delete(obj)
             take(obj)
           end
-
-          UI::cleanup_after_dialog
         elsif interaction = usable_interaction(map)
           interaction.execute(Script::Context.main)
         else
           UI::show_message("Cannot interact with anything here.")
-          UI::cleanup_after_dialog
         end
       end
 

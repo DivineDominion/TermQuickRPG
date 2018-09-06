@@ -19,8 +19,6 @@ module TermQuickRPG
 
       def pick_item(reason = nil)
         UI::InventoryScreen.new(items).show_picker(reason)
-      ensure
-        UI::cleanup_after_dialog
       end
     end
   end

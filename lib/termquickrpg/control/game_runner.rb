@@ -143,7 +143,6 @@ module TermQuickRPG
         if item = player.item_from_inventory
           if effect = item.apply(player)
             UI::show_message(effect)
-            UI::cleanup_after_dialog
           end
         end
       end

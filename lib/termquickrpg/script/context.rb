@@ -38,7 +38,6 @@ module TermQuickRPG
 
       def request_use_item(message, &block)
         if item = Control::Player.instance.item_from_inventory(message)
-          UI::cleanup_after_dialog(force: true)
           redraw_current_map
 
           yield item
@@ -57,7 +56,6 @@ module TermQuickRPG
 
         if notify
           msg "Obtained #{item.name}!"
-          UI::cleanup_after_dialog(force: true)
         end
       end
 

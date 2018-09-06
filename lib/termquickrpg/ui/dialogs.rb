@@ -110,13 +110,13 @@ module TermQuickRPG
 
         when Control::ACTION_KEYS
           if Control::ACTION_KEYS[input] == :use
+            dialog.clear
+            dialog.refresh
             dialog.close
             return options.keys[selection]
           end
         end
       end
-    ensure
-      cleanup_after_dialog(force: false)
     end
   end
 end
