@@ -10,10 +10,16 @@ module TermQuickRPG
 
       BORDER_WIDTH = 1
 
+      attr_accessor :border
       attr_reader :frame, :border_window, :content
 
       def initialize(**attrs)
+        attrs = {
+          border: :double
+        }.merge(attrs)
+
         @frame = ResponsiveFrame.new(attrs)
+        @border = attrs[:border]
 
         width, height = @frame.size
         x, y = @frame.origin
@@ -40,7 +46,7 @@ module TermQuickRPG
 
         @border_window.clear
         @border_window.touch # Touch before refreshing subwindows
-        @border_window.draw_box(:double)
+        @border_window.draw_box(border)
 
         yield @frame, @border_window, @content
 

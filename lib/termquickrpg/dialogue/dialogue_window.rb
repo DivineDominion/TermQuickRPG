@@ -22,6 +22,7 @@ module TermQuickRPG
         attrs[:height] = NUM_LINES + 2 * @padding[:vertical] + 2
         attrs[:margin] = { bottom: 3 } # Help lines
         attrs[:y] = 1000 # Anchor to bottom edge
+        attrs[:border] = :double
 
         @window = UI::BorderedWindow.new(attrs)
         @window.add_listener(self)
