@@ -71,7 +71,7 @@ module TermQuickRPG
         if status == :continue
           border.addstr(" ")
           border.attron(Curses::A_BLINK)
-          border.addstr("...")
+          border.addstr("···")
           border.attroff(Curses::A_BLINK)
           border.addstr(" ")
         else
