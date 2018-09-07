@@ -1,5 +1,6 @@
 require "singleton"
 require "termquickrpg/control/inventory"
+require "termquickrpg/audio/sounds"
 
 module TermQuickRPG
   module Control
@@ -57,7 +58,7 @@ module TermQuickRPG
         elsif interaction = usable_interaction(map)
           interaction.execute(Script::Context.main)
         else
-          UI::show_message("Cannot interact with anything here.")
+          Audio::Sound::beep
         end
       end
 

@@ -1,7 +1,7 @@
 require "curses"
 require "termquickrpg/dialogue/dialogue"
 require "termquickrpg/dialogue/dialogue_window"
-require "termquickrpg/ui/dialogs" # for cleanup
+require "termquickrpg/audio/sounds"
 
 module TermQuickRPG
   module Dialogue
@@ -32,6 +32,8 @@ module TermQuickRPG
             else
               has_quit = true
             end
+          else
+            Audio::Sound::beep
           end
         end
         window.close

@@ -2,6 +2,7 @@ require "curses"
 require "termquickrpg/ext/curses/window-draw_box"
 require "termquickrpg/control/default_keys" # FIXME: dep in wrong direction
 require "termquickrpg/control/run_loop"
+require "termquickrpg/audio/sounds"
 
 module Curses
   class Window
@@ -112,6 +113,7 @@ module TermQuickRPG
           case Control::DIRECTION_KEYS[input]
           when :up then selection -= 1
           when :down then selection += 1
+          else Audio::Sound::beep
           end
 
           if selection < 0
@@ -126,7 +128,11 @@ module TermQuickRPG
             dialog.refresh
             dialog.close
             return options.keys[selection]
+          else
+            Audio::Sound::beep
           end
+        else
+          Audio::Sound::beep
         end
       end
     end
