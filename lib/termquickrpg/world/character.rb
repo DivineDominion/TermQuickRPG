@@ -1,9 +1,9 @@
 require "termquickrpg/world/locatable"
 require "termquickrpg/world/locomotive"
 require "termquickrpg/world/drawable"
-require "termquickrpg/ui/colors"
+require "termquickrpg/ui/color"
 
-PLAYER_CHARACTER = "☺"
+PLAYER_CHARACTER = "☻"
 PLAYER_COLOR = TermQuickRPG::UI::Color::Pair::PLAYER
 
 module TermQuickRPG

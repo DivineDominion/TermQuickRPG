@@ -1,4 +1,4 @@
-require "termquickrpg/ui/colors"
+require "termquickrpg/ui/color"
 
 module TermQuickRPG
   module UI
@@ -6,7 +6,7 @@ module TermQuickRPG
       def self.flash_screen(duration)
         Curses.refresh
         win = Curses::Window.new(Curses.lines, Curses.cols, 0, 0)
-        win.bkgd(Curses::color_pair(UI::Color::Pair::FLASH))
+        UI::Color::Pair::FLASH.style(win)
         win.touch
         win.refresh
 

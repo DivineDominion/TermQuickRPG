@@ -63,8 +63,7 @@ module TermQuickRPG
 
       top, left = (Curses.lines - height) / 2, (Curses.cols - width) / 2
       dialog = Curses::Window.new(height, width, top, left)
-      dialog.bkgd(Curses::color_pair(UI::Color::Pair::DEFAULT))
-      dialog.color_set(UI::Color::Pair::DEFAULT)
+      UI::Color::Pair::DEFAULT.style(dialog)
       dialog.keypad(true)
       dialog.draw_box(style)
 

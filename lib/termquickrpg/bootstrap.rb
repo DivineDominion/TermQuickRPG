@@ -2,7 +2,7 @@ require "curses"
 require "termquickrpg/control/game_runner"
 require "termquickrpg/control/map_stack"
 require "termquickrpg/ui/screen"
-require "termquickrpg/ui/colors"
+require "termquickrpg/ui/color"
 require "termquickrpg/script/context"
 
 module TermQuickRPG

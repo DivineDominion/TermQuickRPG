@@ -1,5 +1,5 @@
 require "curses"
-require "termquickrpg/ui/colors"
+require "termquickrpg/ui/color"
 
 module TermQuickRPG
   module UI
@@ -30,9 +30,9 @@ module TermQuickRPG
       def draw(char, x, y, color = nil)
         color ||= UI::Color::Pair::DEFAULT
         canvas.setpos(y, x)
-        canvas.attron(Curses::color_pair(color))
-        canvas.addstr("#{char}")
-        canvas.attroff(Curses::color_pair(color))
+        color.set(canvas) do
+          canvas.addstr("#{char}")
+        end
       end
 
       def undraw(map_x, map_y)
