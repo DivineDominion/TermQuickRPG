@@ -28,7 +28,7 @@ module TermQuickRPG
 
       def load_map(data)
         player_position = data[:player_position] || [1,1]
-        player_character = Character.new(*player_position, PLAYER_CHARACTER)
+        player_character = Character.new(*player_position, PLAYER_CHARACTER, PLAYER_COLOR)
 
         Map.new(data: data, player_character: player_character)
       end

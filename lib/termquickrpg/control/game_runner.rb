@@ -59,7 +59,6 @@ module TermQuickRPG
         #                             centered: [:vertical])
         # viewport2.scroll_to_visible(map.player_character)
         # viewport2.track_movement(map.player_character)
-        # # viewport2.window.border_window.color_set(UI::Colors::PAIR_FLASH)
         # map_views << UI::MapView.new(map, viewport2, UI::Screen.main)
 
         Curses.refresh

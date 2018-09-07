@@ -37,7 +37,7 @@ module TermQuickRPG
       Curses.curs_set(0) # Invisible cursor
       Curses.noecho # Do not print keyboard input
 
-      UI::Colors.setup
+      UI::Color.setup
 
       UI::Screen.main.add_listener(Curses)
     end
