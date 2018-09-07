@@ -6,7 +6,7 @@ module TermQuickRPG
       WHITE_BRIGHT = 255
 
       module Pair
-        DEFAULT = 0 # B/W
+        DEFAULT = 1 # white on black
 
         PLAYER = 100
         FLASH = 255
@@ -21,8 +21,7 @@ module TermQuickRPG
         Curses.init_pair(Pair::FLASH, 254, 255)
         Curses.init_pair(Pair::PLAYER, Curses::COLOR_YELLOW, Curses::COLOR_BLACK)
 
-        # Curses.init_pair(0, Curses::COLOR_WHITE, Curses::COLOR_BLACK)
-        Curses.stdscr.color_set(0)
+        Curses.init_pair(Pair::DEFAULT, Curses::COLOR_WHITE, Curses::COLOR_BLACK)
       end
     end
   end

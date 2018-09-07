@@ -1,6 +1,7 @@
 require "curses"
 require "termquickrpg/ext/curses/curses-resize"
 require "termquickrpg/ui/responsive_frame"
+require "termquickrpg/ui/colors"
 require "termquickrpg/observable"
 
 module TermQuickRPG
@@ -23,7 +24,11 @@ module TermQuickRPG
 
         width, height = @frame.size
         x, y = @frame.origin
+
         @border_window = Curses::Window.new(height, width, y, x)
+        @border_window.bkgd(Curses::color_pair(UI::Color::Pair::DEFAULT))
+        @border_window.color_set(UI::Color::Pair::DEFAULT)
+
         @content = @border_window.subwin(height - 2 * BORDER_WIDTH, width - 2 * BORDER_WIDTH,
                                          y + BORDER_WIDTH, x + BORDER_WIDTH)
         @frame.add_listener(self)
