@@ -42,7 +42,7 @@ interactions: {
 
         flash_screen 0.15
         move player, :down
-        sleep 1
+        sleep 0.5
 
         give Item.new(char: "♥", name: "Your Heart", effect: "%s is aching."), "Got Your Heart back!"
       when 4
