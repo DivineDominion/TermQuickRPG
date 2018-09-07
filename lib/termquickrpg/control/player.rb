@@ -1,5 +1,5 @@
 require "singleton"
-require "termquickrpg/control/inventory"
+require "termquickrpg/inventory"
 require "termquickrpg/audio/sounds"
 
 module TermQuickRPG
@@ -10,7 +10,7 @@ module TermQuickRPG
       attr_reader :character
 
       def inventory
-        @inventory ||= Inventory.new
+        @inventory ||= Inventory::Inventory.new
       end
 
       def item_from_inventory(reason = nil)

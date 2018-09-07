@@ -1,7 +1,7 @@
 require "termquickrpg/script/map_commands"
 require "termquickrpg/script/character_commands"
 require "termquickrpg/script/effect_commands"
-require "termquickrpg/control/inventory"
+require "termquickrpg/inventory"
 require "termquickrpg/ui/dialogs"
 
 module TermQuickRPG

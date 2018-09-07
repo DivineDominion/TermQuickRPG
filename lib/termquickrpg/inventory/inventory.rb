@@ -1,12 +1,16 @@
-require "termquickrpg/ui/inventory_screen"
+require "termquickrpg/inventory/inventory_controller"
 
 module TermQuickRPG
-  module Control
+  module Inventory
     class Inventory
       attr_reader :items
 
       def initialize(items = [])
         @items = items
+      end
+
+      def inventory_controller
+        @controller ||= InventoryController.new
       end
 
       def <<(item)
@@ -18,7 +22,7 @@ module TermQuickRPG
       end
 
       def pick_item(reason = nil)
-        UI::InventoryScreen.new(items).show_picker(reason)
+        inventory_controller.show_picker(items, reason)
       end
     end
   end
