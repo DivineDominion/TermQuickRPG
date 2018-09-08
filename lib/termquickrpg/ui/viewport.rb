@@ -48,29 +48,26 @@ module TermQuickRPG
       def scroll_to_visible(obj)
         x, y = obj.respond_to?(:location) ? obj.location : obj
         canvas_width, canvas_height = canvas_size
-        did_scroll = false
 
-        while x < @scroll_x
-          @scroll_x -= 1
-          did_scroll = true
-        end
+        x_diff = if x < @scroll_x
+                   x - @scroll_x
+                 elsif x >= @scroll_x + canvas_width
+                   x - (@scroll_x + canvas_width - 1)
+                 else
+                   0
+                 end
 
-        while y < @scroll_y
-          @scroll_y -= 1
-          did_scroll = true
-        end
-
-        while x >= @scroll_x + canvas_width
-          @scroll_x += 1
-          did_scroll = true
-        end
-
-        while y >= @scroll_y + canvas_height
-          @scroll_y += 1
-          did_scroll = true
-        end
+        y_diff = if y < @scroll_y
+                   y - @scroll_y
+                 elsif y >= @scroll_y + canvas_height
+                   y - (@scroll_y + canvas_height - 1)
+                 else
+                   0
+                 end
+        @scroll_x = @scroll_x + x_diff
+        @scroll_y = @scroll_y + y_diff
       ensure
-        notify_listeners(:viewport_did_scroll) if did_scroll
+        notify_listeners(:viewport_did_scroll) if (x_diff != 0 || y_diff != 0)
       end
     end
   end
