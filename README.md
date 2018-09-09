@@ -41,6 +41,54 @@ After checking out the repo, run `bin/setup` to install dependencies. Then, run 
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
+### Game scripts
+
+You can write maps to include scriptable content and not just static map data.
+
+- To execute a script when the player _moves onto_ a coordinate, add an entry to the `:triggers` hash. (Key: location of the form `[x, y]`; Value: lambda `-> (ctx) { }`)
+- To execute a script when the player _interacts_ with a specific coordinate (e.g. when you placed a decorative thing on the map to mangle with), add an entry to the `:interactions` hash. (Key: location of the form `[x, y]`; Value: lambda `-> (ctx) { }`)
+- To have items the player can pick up, add an entry to the `:items` array as a hash of all item initializer parameters. (`{ location: [x, y], char: "†", name: "Dagger", effect: "You stab with your Dagger." }`)
+- To have non-player characters to talk to, add an entry to `:characters` array as a hash of all character initializer parameters. (`{ location: [x, y], char: "☻", name: "Bob", talk: -> (ctx, bob) { } }`.
+
+The actual scripts are in the Ruby lambdas. That means they are executable Ruby code: you can do everything you can do in regular Ruby code, like using loops and if-statements.
+
+To access the game engine-specific commands, you get a _script context_ to `#run` the script in as the first parameter of the lambda (named `ctx` in the examples). Wrap your code like in this example:
+
+```ruby
+{
+interactions: [
+  # Location x=10/y=5 in the map
+  [10, 5] => -> (ctx) {
+    # Regular ruby code could be here
+    ctx.run do
+      # Custom script commands are available in this block, like:
+      msg "Hi!"
+    end
+  }
+], # rest of the map data ...
+}
+```
+
+Note that scripts accept 1 or 2 parameters. The first one is always the script context. The optional second parameter is the trigger itself. In the case of a character's `talk` script, that would be the character game object itself. You can use that object in your script to change the character's representation on the map or move it around:
+
+```ruby
+{
+characters: [
+  { 
+    location: [x, y], char: "☺", name: "Bob", talk: -> (ctx, bob) { 
+      ctx.run
+        # Use regular script commands
+        move bob, :up
+        dialogue bob, "Don't touch me!"
+        # Access `bob`'s properties and methods to change his face
+        bob.replace_char "☹"
+      end
+    } 
+  }, # more character definitions here ...
+], # rest of the map data ...
+}
+```
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/DivineDominion/termquickrpg. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.

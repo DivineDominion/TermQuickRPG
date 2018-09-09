@@ -88,7 +88,7 @@ interactions: {
             msg "You broke the door open!"
             map_flag[:door_opened] = true
           when "Communism"
-            msg "#{item.name} cannot open doors."
+            msg "#{item.name} usually turns out to be a dead end,", "and we don't want one now, do we?"
           when "Your Heart"
             msg "#{item.name} cannot open this particular door."
           else
