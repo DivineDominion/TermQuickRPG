@@ -13,9 +13,10 @@ module TermQuickRPG
       include Locomotive
       include Drawable
 
-      def initialize(x, y, char, color = UI::Color::Pair::DEFAULT)
-        @x, @y = x, y
+      def initialize(location: [-1,-1], char: nil, name: nil, color: UI::Color::Pair::DEFAULT, talk: nil)
+        @x, @y = location
         @char = char
+        @name, @talk = name, talk
         @color = color
       end
     end
