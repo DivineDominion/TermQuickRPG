@@ -19,9 +19,9 @@ triggers: {
   }
 },
 interactions: {
-  [1..7, 4] => -> (ctx) {
+  [1..10, 4] => -> (ctx) {
     ctx.run do
-      dialogue "Vendor", "Hello! I'm selling these fine pancakes.", "Do you want to trade anything for some?"
+      dialogue "Vendor", "Hello! I'm selling these fine pancakes.", "Do you want to trade anything for a bunch?"
       request_use_item "Trade for pancakes?" do |item|
         case item.name
         when "Communism"
