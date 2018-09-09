@@ -25,6 +25,7 @@ module TermQuickRPG
 
         opts[:data] = {
           items: [],
+          characters: [],
           flags: {},
           triggers: {},
           interactions: {}
@@ -41,8 +42,9 @@ module TermQuickRPG
         @flags = opts[:data][:flags]
 
         @player_character = opts[:player_character]
-        @entities = opts[:data][:items].map { |e| Item.new(e) } || []
-        @entities << @player_character
+        @items = opts[:data][:items].map { |e| Item.new(e) } || []
+        @characters = opts[:data][:characters].map { |e| Character.new(e) } || []
+        @entities = [*@items, *@characters, @player_character] # Draw player on top
         @player_character.add_listener(self)
 
         @triggers = opts[:data][:triggers].map { |loc, proc| [loc, HotSpot.new(loc, proc)] }.to_h
@@ -80,8 +82,17 @@ module TermQuickRPG
       # Movable contents
 
       def blocked?(x, y)
+        has_solid_block?(x, y) # || has_character_at?(x, y)
+      end
+
+      def has_solid_block?(x, y)
         return false unless @collisions
         @collisions[y] && @collisions[y][x]
+      end
+
+      def has_character_at?(x, y)
+        return false unless @characters
+        @characters.find { |c| c.location == [x, y] }
       end
 
       def include?(x, y)

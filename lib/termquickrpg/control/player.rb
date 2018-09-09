@@ -49,11 +49,15 @@ module TermQuickRPG
 
       def interact(map)
         if obj = usable_entity(map)
-          choice = UI::show_options("Found #{obj.name}!", { pick: "Pick up", cancel: "Leave" }, :single)
+          if obj.is_a?(World::Item)
+            choice = UI::show_options("Found #{obj.name}!", { pick: "Pick up", cancel: "Leave" }, :single)
 
-          if choice == :pick
-            map.entities.delete(obj)
-            take(obj)
+            if choice == :pick
+              map.entities.delete(obj)
+              take(obj)
+            end
+          elsif obj.is_a?(World::Character)
+            obj.talk_to(Script::Context.main)
           end
         elsif interaction = usable_interaction(map)
           interaction.execute(Script::Context.main)

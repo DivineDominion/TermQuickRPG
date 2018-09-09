@@ -19,6 +19,18 @@ module TermQuickRPG
 
       attr_accessor :game_dir
 
+      # Calls the block with appropriate parameters.
+      def call_block(block, sender)
+        if block.arity == 2
+          block.call(self, sender)
+        elsif block.arity  == 1
+          block.call(self)
+        else
+          raise "Don't know how to call scripts blocks with arity of #{block.arity}."
+        end
+      end
+
+      # Used inside scripts as `ctx.run { ... }` to actually execute.
       def run(&block)
         instance_eval(&block)
       end

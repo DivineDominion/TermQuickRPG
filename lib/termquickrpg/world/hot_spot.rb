@@ -14,7 +14,7 @@ module TermQuickRPG
       end
 
       def execute(context)
-        script.call(context)
+        context.call_block(script, self)
       end
     end
   end
