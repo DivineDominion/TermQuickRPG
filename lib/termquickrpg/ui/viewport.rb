@@ -21,11 +21,25 @@ module TermQuickRPG
       def_delegator :@window, :content_size, :canvas_size
       def_delegator :@window, :close
 
-      def draw
+      def render
         @window.draw do
           yield *map_bounds
         end
       end
+
+      def draw(char, x, y, color = nil)
+        color ||= UI::Color::Pair::DEFAULT
+        canvas.setpos(y, x)
+        color.set(canvas) do
+          canvas.addstr("#{char}")
+        end
+      end
+
+      def undraw(x, y)
+        draw(" ", x, y)
+      end
+
+      # Scrolling & resizing
 
       def map_bounds
         width, height = canvas_size

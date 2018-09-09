@@ -87,7 +87,7 @@ module TermQuickRPG
 
       def draw
         draw_help
-        display_map_views
+        render_map_views
       end
 
       def draw_help
@@ -99,9 +99,9 @@ module TermQuickRPG
   #       Curses.addstr("\nc #{Curses.cols}x#{Curses.lines}; scr #{screen.width}x#{screen.height} : #{viewport.max_x},#{viewport.max_y} = #{screen.width-viewport.max_x}x#{screen.height-viewport.max_y}")
       end
 
-      def display_map_views
+      def render_map_views
         @map_views.each do |map_view|
-          map_view.display
+          map_view.render
         end
       end
 

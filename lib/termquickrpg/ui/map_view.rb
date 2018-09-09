@@ -1,4 +1,3 @@
-require "curses"
 require "termquickrpg/ui/color"
 
 module TermQuickRPG
@@ -13,47 +12,31 @@ module TermQuickRPG
         viewport.add_listener(self)
       end
 
-      def canvas
-        @viewport.canvas
-      end
-
       def close
         viewport.close
       end
 
-      def display
-        viewport.draw do |start_x, start_y, width, height|
-          @map.draw(self, start_x, start_y, width, height)
+      def render
+        viewport.render do |start_x, start_y, width, height|
+          @map.draw(viewport, start_x, start_y, width, height)
         end
-      end
-
-      def draw(char, x, y, color = nil)
-        color ||= UI::Color::Pair::DEFAULT
-        canvas.setpos(y, x)
-        color.set(canvas) do
-          canvas.addstr("#{char}")
-        end
-      end
-
-      def undraw(map_x, map_y)
-        draw(" ", map_x, map_y)
       end
 
       # Event listener
 
       def viewport_size_did_change(viewport, width, height)
-        display
+        render
       end
 
       def viewport_did_scroll(viewport)
-        display
+        render
       end
 
       def map_content_did_invalidate(map, flag_or_location)
         if (flag = flag_or_location) == true
-          display
+          render
         elsif location = flag_or_location and is_in_viewport_bounds(flag_or_location)
-          display
+          render
         end
       end
 
