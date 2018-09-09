@@ -61,13 +61,13 @@ module TermQuickRPG
         viewport.track_movement(map.player_character)
         map_views << UI::MapView.new(map, viewport, UI::Screen.main)
 
-        # Demo dual views
-        viewport2 = UI::Viewport.new(width: 9, height: 5, x: 100,
-                                    centered: [:vertical],
-                                    scroll_padding: [-1, -1])
-        viewport2.center_on(map.player_character)
-        viewport2.track_movement(map.player_character)
-        map_views << UI::MapView.new(map, viewport2, UI::Screen.main)
+        # # Demo dual views
+        # viewport2 = UI::Viewport.new(width: 9, height: 5, x: 100,
+        #                             centered: [:vertical],
+        #                             scroll_padding: [-1, -1])
+        # viewport2.center_on(map.player_character)
+        # viewport2.track_movement(map.player_character)
+        # map_views << UI::MapView.new(map, viewport2, UI::Screen.main)
       end
 
       def leave_map(map)
