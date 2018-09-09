@@ -20,24 +20,25 @@ triggers: {
 },
 flags: { times_spoken: 0 },
 characters: [
-  { location: [1, 1], char: "☻", name: "Girlfriend", talk: -> (ctx, girlfriend) {
+  { location: [1, 1], char: "☺", name: "Girlfriend", talk: -> (ctx, gf) {
       ctx.run do
         case map_flag[:times_spoken]
         when 0
-          dialogue "Girlfriend", "Maybe I don't want to talk to you now ..."
+          dialogue gf, "Maybe I don't want to talk to you now ..."
         when 1
-          dialogue "Girlfriend", "I told you to perhaps stop."
+          dialogue gf, "I told you to perhaps stop."
         when 2
-          dialogue "Girlfriend", "I warn you one last time."
+          dialogue gf, "I warn you one last time."
         when 3
-          dialogue "Girlfriend", "You know ...", "I don't want to be with you any more."
+          dialogue gf, "You know ...", "I don't want to be with you any more."
 
           flash_screen 0.15
           sleep 0.15
 
           flash_screen 0.15
           move player, :down
-          girlfriend.replace_char "☃"
+          gf.replace_char "☃"
+          gf.change_name "Ex-Girlfriend"
           sleep 0.15
 
           flash_screen 0.15
@@ -46,17 +47,19 @@ characters: [
 
           give Item.new(char: "♥", name: "Your Heart", effect: "%s is aching."), "Got Your Heart back!"
         when 4
-          dialogue "Ex-Girlfriend", "What?"
+          dialogue gf, "What?"
         when 5,7,9
-          dialogue "Ex-Girlfriend", "..."
+          dialogue gf, "..."
         when 6
-          dialogue "Ex-Girlfriend", "It's over."
+          dialogue gf, "It's over."
         when 8
-          dialogue "Ex-Girlfriend", "Deal with it."
+          dialogue gf, "Deal with it."
         when 10
-          dialogue "Ex-Girlfriend", "Ok, one last kiss for your effort."
+          dialogue gf, "Ok, one last kiss for your effort."
           flash_screen 0.3
           give Item.new(char: "☭", name: "Communism", effect: "You get what you deserve.")
+        else
+          msg "Sometimes, there's nothing people have to tell each other anymore."
         end
         map_flag[:times_spoken] += 1
       end

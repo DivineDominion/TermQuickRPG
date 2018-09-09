@@ -19,31 +19,31 @@ items: [
   { location: [9, 1], char: "¶", name: "Mace", effect: "You swing your %s." },
 ],
 characters: [
-  { location: [4, 2], char: "☺", name: "Bar", talk: -> (ctx) {
+  { location: [4, 2], char: "☺", name: "Bar", talk: -> (ctx, dude) {
       ctx.run do
-        dialogue "Bar", *map_flag[:dudes_texts][map_flag[:talked_to_dudes]]
+        dialogue dude, *map_flag[:dudes_texts][map_flag[:talked_to_dudes]]
         map_flag[:talked_to_dudes] = [map_flag[:talked_to_dudes] + 1, 3].min
       end
     }
   },
-  { location: [6, 2], char: "☺", name: "Foo", talk: -> (ctx) {
+  { location: [6, 2], char: "☺", name: "Foo", talk: -> (ctx, dude) {
       ctx.run do
-        dialogue "Foo", *map_flag[:dudes_texts][map_flag[:talked_to_dudes]]
+        dialogue dude, *map_flag[:dudes_texts][map_flag[:talked_to_dudes]]
         map_flag[:talked_to_dudes] = [map_flag[:talked_to_dudes] + 1, 3].min
       end
     }
   },
-  { location: [2, 4], char: "☺", name: "Baz", talk: -> (ctx) {
+  { location: [2, 4], char: "☺", name: "Baz", talk: -> (ctx, dude) {
       ctx.run do
-        dialogue "Baz", *map_flag[:dudes_texts][map_flag[:talked_to_dudes]]
+        dialogue dude, *map_flag[:dudes_texts][map_flag[:talked_to_dudes]]
         map_flag[:talked_to_dudes] = [map_flag[:talked_to_dudes] + 1, 3].min
       end
     }
   },
-  { location: [5, 6], char: "☻", name: "Bob", talk: -> (ctx) {
+  { location: [5, 6], char: "☻", name: "Bob", talk: -> (ctx, bob) {
       ctx.run do
         if !map_flag[:have_pancakes]
-          dialogue "Bob", "We're all super hungry.", "What will we eat today?"
+          dialogue bob, "We're all super hungry.", "What will we eat today?"
           request_use_item "Give some food:" do |item|
             case item.name
             when "Communism"
@@ -56,12 +56,12 @@ characters: [
               sleep 0.2
               replace_tile [6,4], "⌾"
               sleep 0.2
-              dialogue "Bob", "Great work! Let's dine!"
+              dialogue bob, "Great work! Let's dine!"
               map_flag[:have_pancakes] = true
             when "Your Heart"
-              dialogue "Bob", "You're disgusting!"
+              dialogue bob, "You're disgusting!"
             else
-              dialogue "Bob", "How would we eat that?!"
+              dialogue bob, "How would we eat that?!"
             end
           end
         end

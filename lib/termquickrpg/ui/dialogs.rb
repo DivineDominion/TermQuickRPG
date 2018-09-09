@@ -20,8 +20,8 @@ require "termquickrpg/dialogue/dialogue_controller"
 
 module TermQuickRPG
   module UI
-    def self.show_dialogue(name, *lines)
-      Dialogue::DialogueController.new(Dialogue::Dialogue.new(name, *lines)).show_dialogue
+    def self.show_dialogue(who, *lines)
+      Dialogue::DialogueController.new(Dialogue::Dialogue.new(who, *lines)).show_dialogue
     end
   end
 end

@@ -4,7 +4,8 @@ module TermQuickRPG
       attr_reader :name, :lines
       attr_reader :current_line_no
 
-      def initialize(name, *lines)
+      def initialize(who, *lines)
+        name = who.respond_to?(:name) ? who.name : who
         @name, @lines = name, lines
         @current_line_no = -1
       end

@@ -48,8 +48,8 @@ module TermQuickRPG
         UI::show_message(*lines)
       end
 
-      def dialogue(name, *lines)
-        UI::show_dialogue(name, *lines)
+      def dialogue(who, *lines)
+        UI::show_dialogue(who, *lines)
       end
 
       def request_use_item(message, &block)

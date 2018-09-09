@@ -13,6 +13,7 @@ module TermQuickRPG
       include Locomotive
       include Drawable
 
+      attr_accessor :name, :char
       attr_reader :talk
 
       def initialize(location: [-1,-1], char: nil, name: nil, color: UI::Color::Pair::DEFAULT, talk: nil)
@@ -20,6 +21,10 @@ module TermQuickRPG
         @char = char
         @name, @talk = name, talk
         @color = color
+      end
+
+      def change_name(new_name)
+        @name = new_name
       end
 
       def replace_char(new_char)
