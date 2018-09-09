@@ -124,17 +124,26 @@ module TermQuickRPG
 
         when Control::ACTION_KEYS
           if Control::ACTION_KEYS[input] == :use
-            dialog.clear
-            dialog.refresh
-            dialog.close
             return options.keys[selection]
           else
             Audio::Sound::beep
           end
+
+        when Control::CANCEL_KEYS
+          if cancel_key = options.keys.find { |k| k == :cancel || k == :close }
+            return cancel_key
+          else
+            Audio::Sound::beep
+          end
+
         else
           Audio::Sound::beep
         end
       end
+    ensure
+      dialog.clear
+      dialog.refresh
+      dialog.close
     end
   end
 end
