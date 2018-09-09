@@ -47,19 +47,21 @@ module TermQuickRPG
       end
 
       def show_map(map)
-        viewport = UI::Viewport.new(width: 30, height: 15, y: 2, borders_inclusive: true,
+        viewport = UI::Viewport.new(width: 30, height: 15, y: 2,
                                     margin: {bottom: 2}, # bottom screen help lines
-                                    centered: [:horizontal])
-        viewport.scroll_to_visible(map.player_character)
+                                    centered: [:horizontal],
+                                    scroll_padding: [8, 4])
+        viewport.center_on(map.player_character)
         viewport.track_movement(map.player_character)
         map_views << UI::MapView.new(map, viewport, UI::Screen.main)
 
-        # # Demo dual views
-        # viewport2 = UI::Viewport.new(width: 8, height: 5, x: 100, borders_inclusive: true,
-        #                             centered: [:vertical])
-        # viewport2.scroll_to_visible(map.player_character)
-        # viewport2.track_movement(map.player_character)
-        # map_views << UI::MapView.new(map, viewport2, UI::Screen.main)
+        # Demo dual views
+        viewport2 = UI::Viewport.new(width: 9, height: 5, x: 100,
+                                    centered: [:vertical],
+                                    scroll_padding: [-1, -1])
+        viewport2.center_on(map.player_character)
+        viewport2.track_movement(map.player_character)
+        map_views << UI::MapView.new(map, viewport2, UI::Screen.main)
       end
 
       def leave_map(map)
