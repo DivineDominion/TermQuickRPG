@@ -19,6 +19,16 @@ module TermQuickRPG
       Curses::Key::RIGHT => :right
     }
 
+    CANCEL_KEYS = {
+      ?q => :quit,
+      ?Q => :quit,
+
+      "\e" => :cancel,
+      Curses::Key::EXIT => :cancel,
+      Curses::Key::CANCEL => :cancel,
+      Curses::Key::BREAK => :cancel
+    }
+
     ACTION_KEYS = {
       ?e => :use,
       ?E => :use,

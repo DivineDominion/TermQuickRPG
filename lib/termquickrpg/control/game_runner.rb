@@ -115,12 +115,10 @@ module TermQuickRPG
         input = Curses.get_char
 
         case input
-        when "q", "Q", "\e", Curses::Key::EXIT, Curses::Key::CANCEL, Curses::Key::BREAK
-          @keep_running = false # faster during dev
-          # case show_options("Quit?", { yes: "Yes", cancel: "No" }, :double)
-          # when :yes then @keep_running = false
-          # else redraw_window.call
-          # end
+        when Control::CANCEL_KEYS # Any cancel variant will quit
+          if UI::show_options("Quit?", { yes: "Yes", cancel: "No" }, :double) == :yes
+            @keep_running = false
+          end
 
         when "I", "i"
           show_inventory(player)

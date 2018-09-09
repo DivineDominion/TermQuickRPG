@@ -32,6 +32,9 @@ module TermQuickRPG
               Audio::Sound::beep
             end
 
+          when Control::CANCEL_KEYS # Cancel or quit will close
+            did_cancel = true
+
           when Control::DIRECTION_KEYS
             if items.empty?
               Audio::Sound::beep
