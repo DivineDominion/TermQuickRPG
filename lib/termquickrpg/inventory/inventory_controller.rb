@@ -14,7 +14,7 @@ module TermQuickRPG
         window.items = items
         window.customize_title(title) # `nil` shows default
 
-        selected_item = nil
+        selected_item = items.empty? ? nil : 0
         picked_item, did_cancel = nil, false
         while !(picked_item || did_cancel) do
           window.draw(selected_item: selected_item)
