@@ -19,6 +19,12 @@ class Hash
   end
 end
 
+class Array
+  def reverse_each_with_index &block
+    to_enum.with_index.reverse_each &block
+  end
+end
+
 module TermQuickRPG
   module Control
     class GameRunner
@@ -66,7 +72,7 @@ module TermQuickRPG
 
       def leave_map(map)
         # Delete backwards to not shrink the array while enumerating
-        map_views.to_enum.with_index.reverse_each do |map_view, index|
+        map_views.reverse_each_with_index do |map_view, index|
           if map_view.map == map
             map_view.close
             map_views.delete_at(index)
