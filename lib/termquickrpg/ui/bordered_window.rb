@@ -43,11 +43,12 @@ module TermQuickRPG
           @border_window.erase
           @border_window.refresh if refresh
           @border_window.close
+          @border_window = nil
         end
       end
 
       def draw
-        return if Curses.closed?
+        return if !@border_window
 
         @border_window.clear
         @border_window.touch # Touch before refreshing subwindows

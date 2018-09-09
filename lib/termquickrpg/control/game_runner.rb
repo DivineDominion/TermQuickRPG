@@ -33,7 +33,7 @@ module TermQuickRPG
       end
 
       def map_stack_did_change(map_stack)
-        close_map(@map)
+        leave_map(@map)
 
         if map = map_stack.front
           @map = map
@@ -60,18 +60,16 @@ module TermQuickRPG
         # viewport2.scroll_to_visible(map.player_character)
         # viewport2.track_movement(map.player_character)
         # map_views << UI::MapView.new(map, viewport2, UI::Screen.main)
-
-        Curses.refresh
       end
 
-      def close_map(map)
-        map_views.each_with_index do |map_view, index|
+      def leave_map(map)
+        # Delete backwards to not shrink the array while enumerating
+        map_views.to_enum.with_index.reverse_each do |map_view, index|
           if map_view.map == map
             map_view.close
             map_views.delete_at(index)
           end
         end
-        Curses.refresh
       end
 
       def game_loop

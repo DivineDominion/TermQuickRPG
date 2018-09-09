@@ -9,17 +9,22 @@ module TermQuickRPG
 
       attr_reader :scroll_x, :scroll_y
 
+      extend Forwardable
+      attr_reader :window
+      def_delegator :@window, :content, :canvas
+      def_delegator :@window, :content_size, :canvas_size
+
       def initialize(**attrs)
         @window = BorderedWindow.new(attrs)
         @window.add_listener(self)
         @scroll_x, @scroll_y = 0, 0
       end
 
-      extend Forwardable
-      attr_reader :window
-      def_delegator :@window, :content, :canvas
-      def_delegator :@window, :content_size, :canvas_size
-      def_delegator :@window, :close
+      def close
+        @window.close(refresh: true)
+      end
+
+      # Drawing
 
       def render
         @window.draw do
