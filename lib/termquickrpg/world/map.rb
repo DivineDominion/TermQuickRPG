@@ -17,38 +17,39 @@ module TermQuickRPG
 
       def initialize(**opts)
         raise "Map is missing :data" unless opts[:data]
-        raise "Map data is missing :id" unless opts[:data][:id]
-        raise "Map data is missing :size" unless opts[:data][:size]
-        raise "Map data is missing :layers" unless opts[:data][:layers] && !opts[:data][:layers].empty?
+        data = opts[:data]
+        raise "Map data is missing :id" unless data[:id]
+        raise "Map data is missing :size" unless data[:size]
+        raise "Map data is missing :layers" unless data[:layers] && !data[:layers].empty?
 
-        @id = opts[:data][:id]
+        @id = data[:id]
 
-        opts[:data] = {
+        data = {
           items: [],
           characters: [],
           flags: {},
           triggers: {},
           interactions: {}
-        }.merge(opts[:data])
+        }.merge(data)
 
-        @width, @height = opts[:data][:size]
+        @width, @height = data[:size]
 
-        map_width, map_height = layer_size(opts[:data][:layers][0])
+        map_width, map_height = layer_size(data[:layers][0])
         raise "Map size #{@width}x#{@height} does not equal base layer size #{map_width}x#{map_height}" if @width != map_width || @height != map_height
 
-        @layers = opts[:data][:layers].map { |l| Layer.new(l) }
-        @collisions = @layers[0].blocked_tiles(opts[:data][:solids])
+        @layers = data[:layers].map { |l| Layer.new(l) }
+        @collisions = @layers[0].blocked_tiles(data[:solids])
 
-        @flags = opts[:data][:flags]
+        @flags = data[:flags]
 
         @player_character = opts[:player_character]
-        @items = opts[:data][:items].map { |e| Item.new(e) } || []
-        @characters = opts[:data][:characters].map { |e| Character.new(e) } || []
+        @items = data[:items].map { |e| Item.new(e) } || []
+        @characters = data[:characters].map { |e| Character.new(e) } || []
         @entities = [*@items, *@characters, @player_character] # Draw player on top
         @player_character.add_listener(self)
 
-        @triggers = opts[:data][:triggers].map { |loc, proc| [loc, HotSpot.new(loc, proc)] }.to_h
-        @interactions = opts[:data][:interactions].map { |loc, proc| [loc, HotSpot.new(loc, proc)] }.to_h
+        @triggers = data[:triggers].map { |loc, proc| [loc, HotSpot.new(loc, proc)] }.to_h
+        @interactions = data[:interactions].map { |loc, proc| [loc, HotSpot.new(loc, proc)] }.to_h
       end
 
       def invalidate!
