@@ -33,24 +33,28 @@ module TermQuickRPG
             end
 
           when Control::DIRECTION_KEYS
-            case Control::DIRECTION_KEYS[input]
-            when :up
-              if selected_item
-                selected_item -= 1
-              else
-                selected_item = items.count - 1
+            if items.empty?
+              Audio::Sound::beep
+            else
+              case Control::DIRECTION_KEYS[input]
+              when :up
+                if selected_item
+                  selected_item -= 1
+                else
+                  selected_item = items.count - 1
+                end
+              when :down
+                if selected_item
+                  selected_item += 1
+                else
+                  selected_item = 0
+                end
+              else Audio::Sound::beep
               end
-            when :down
-              if selected_item
-                selected_item += 1
-              else
-                selected_item = 0
-              end
-            else Audio::Sound::beep
-            end
 
-            # Reset if scrolled beyond items
-            selected_item = nil if selected_item < 0 || selected_item >= items.count
+              # Reset if scrolled beyond items
+              selected_item = nil if selected_item and (selected_item < 0 || selected_item >= items.count)
+            end
 
           else
             Audio::Sound::beep
