@@ -52,10 +52,10 @@ module TermQuickRPG
         end
       end
 
-      def close(refresh: true)
+      def close
         return if @border_window.nil?
         @border_window.erase
-        @border_window.refresh if refresh
+        @border_window.noutrefresh # Register region as needing redraw
         @border_window.close
         @border_window = nil
         notify_listeners(:bordered_window_did_close)
