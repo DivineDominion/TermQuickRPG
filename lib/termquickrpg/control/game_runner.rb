@@ -128,8 +128,9 @@ module TermQuickRPG
           player.move(map, direction)
 
         when Control::ACTION_KEYS
-          action = Control::ACTION_KEYS[input]
-          handle_use_object(player)
+          if Control::ACTION_KEYS[input] == :use
+            handle_use_object(player)
+          end
 
         else
           unless input.nil?
