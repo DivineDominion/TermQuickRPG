@@ -32,6 +32,7 @@ module TermQuickRPG
       end
 
       def talk_to(context)
+        return unless talk
         context.call_block(talk, self)
       end
     end

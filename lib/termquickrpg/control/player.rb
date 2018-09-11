@@ -1,5 +1,6 @@
 require "singleton"
 require "termquickrpg/inventory"
+require "termquickrpg/interaction"
 require "termquickrpg/audio/sounds"
 
 module TermQuickRPG
@@ -48,7 +49,10 @@ module TermQuickRPG
       end
 
       def interact(map)
-        if obj = usable_entity(map)
+        picker = Interaction::Picker.new(map, character.location)
+        return unless target_location = picker.pick_target
+
+        if obj = map.entity_at(target_location) and obj != self.character
           if obj.is_a?(World::Item)
             choice = UI::show_options("Found #{obj.name}!", { pick: "Pick up", cancel: "Leave" }, :single)
 
@@ -59,19 +63,11 @@ module TermQuickRPG
           elsif obj.is_a?(World::Character)
             obj.talk_to(Script::Context.main)
           end
-        elsif interaction = usable_interaction(map)
+        elsif interaction = map.interaction_at(target_location)
           interaction.execute(Script::Context.main)
         else
           Audio::Sound::beep
         end
-      end
-
-      def usable_entity(map)
-        map.entity_under(character)
-      end
-
-      def usable_interaction(map)
-        map.interaction(character.location)
       end
     end
   end

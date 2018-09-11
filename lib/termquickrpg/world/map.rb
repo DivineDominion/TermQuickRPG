@@ -107,10 +107,10 @@ module TermQuickRPG
         x >= 0 && y >= 0 && x < width && y < height
       end
 
-      def entity_under(object)
+      def entity_at(obj)
+        location = obj.respond_to?(:location) ? obj.location : obj
         entities.each do |entity|
-          next if entity == object
-          if entity.location == object.location
+          if entity.location == location
             return entity
           end
         end
@@ -118,8 +118,9 @@ module TermQuickRPG
         nil
       end
 
-      def interaction(location)
-        matches = interactions.keys.find_all { |loc| hot_spot_location_include?(loc, location) }
+      def interaction_at(obj)
+        location = obj.respond_to?(:location) ? obj.location : obj
+        matches = interactions.keys.find_all { |hsloc| hot_spot_location_include?(hsloc, location) }
         if matches
           raise "Overlapping interactions not implemented" if matches.count > 1
           interactions[matches.first]

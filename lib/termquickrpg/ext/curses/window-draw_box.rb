@@ -4,10 +4,12 @@ module Curses
   class Window
     STYLES = {
       :single => %Q{┌─┐││└─┘├─┤},
+      :singleround => %Q{╭─╮││╰─╯├─┤},
       :double => %Q{╔═╗║║╚═╝╟─╢},
       :plusdash => %Q{+-+||+-++-+},
       :halfout => %Q{▛▀▜▌▐▙▄▟▚▄▞},
-      :halfin => %Q{▗▄▖▐▌▝▀▘▚▄▞}
+      :halfin => %Q{▗▄▖▐▌▝▀▘▚▄▞},
+      :halfcorners => %Q{▛ ▜  ▙ ▟   }
     }
 
     def draw_box(style)
