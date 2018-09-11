@@ -5,19 +5,20 @@ module TermQuickRPG
   module UI
     module Effects
       def self.flash_screen(duration)
-        effect = Control::WindowRegistry.create_full_screen_effect
+        Curses.refresh
+        win = Curses::Window.new(Curses.lines, Curses.cols, 0, 0)
+        UI::Color::Pair::FLASH.style(win)
+        win.touch
+        win.refresh
 
-        effect.render do |win|
-          UI::Color::Pair::FLASH.style(win)
-          win.touch
-          win.refresh
+        sleep(duration)
 
-          sleep(duration)
-        end
+        win.erase
+        win.close
 
         Curses.clear
-        effect.close
         Curses.refresh
+        Control::WindowRegistry.instance.render_window_stack(force: true)
       end
     end
   end

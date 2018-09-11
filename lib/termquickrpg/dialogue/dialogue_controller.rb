@@ -24,7 +24,7 @@ module TermQuickRPG
         advance_dialogue
         has_quit = false
         while !has_quit do
-          window.draw
+          window.render
           input = Curses.get_char
           if Control::ACTION_KEYS[input] == :use
             if dialogue.has_next?

@@ -25,8 +25,8 @@ module TermQuickRPG
         change_offset(translated_picker_offset(direction))
       end
 
-      def draw_picker
-        window.draw
+      def render_picker
+        window.render
       end
 
       def close_window

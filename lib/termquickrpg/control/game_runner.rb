@@ -6,11 +6,11 @@ require "termquickrpg/control/run_loop"
 require "termquickrpg/ui/screen"
 require "termquickrpg/ui/dialogs"
 
-require "termquickrpg/ui/map_view"
+require "termquickrpg/map_display/map_view"
+require "termquickrpg/map_display/viewport"
+require "termquickrpg/control/viewport_registry"
 require "termquickrpg/control/map_stack"
 
-require "termquickrpg/ui/viewport"
-require "termquickrpg/control/viewport_registry"
 
 require "termquickrpg/control/default_keys"
 require "termquickrpg/control/player"
@@ -34,12 +34,10 @@ module TermQuickRPG
     class GameRunner
       attr_reader :player, :map
 
-      def map_views
-        @map_views ||= []
       end
 
-      def help_line_window
-        @help_line_window ||= UI::HelpLineWindow.new
+      def map_views
+        @map_views ||= []
       end
 
       def map_stack_did_change(map_stack)
@@ -57,36 +55,42 @@ module TermQuickRPG
       end
 
       def show_map(map)
-        viewport = UI::Viewport.new(width: 30, height: 15, y: 2,
-                                    margin: {bottom: 2}, # bottom screen help lines
-                                    centered: [:horizontal],
-                                    scroll_padding: [8, 4])
+        map_window = Control::WindowRegistry.create_bordered_window(
+          width: 30, height: 15, y: 2,
+          margin: {bottom: 2}, # bottom screen help lines
+          centered: [:horizontal])
+        viewport = MapDisplay::Viewport.new(scroll_padding: [8, 4])
+        ViewportRegistry.instance.register(viewport, as_main: true)
+        map_view = MapDisplay::MapView.new(map, viewport)
+        map_views << map_view
+        map_window.add_subview(map_view)
         viewport.center_on(map.player_character)
         viewport.track_movement(map.player_character)
-        ViewportRegistry.instance.register(viewport, as_main: true)
-        map_views << UI::MapView.new(map, viewport, UI::Screen.main)
 
         # # Demo dual views
-        # viewport2 = UI::Viewport.new(width: 9, height: 5, x: 100,
-        #                             centered: [:vertical],
-        #                             scroll_padding: [-1, -1])
+        # viewport2 = MapDisplay::Viewport.new(
+        #   width: 9, height: 5, x: 100,
+        #   centered: [:vertical],
+        #   scroll_padding: [-1, -1])
         # viewport2.center_on(map.player_character)
         # viewport2.track_movement(map.player_character)
         # ViewportRegistry.instance.register(viewport2)
-        # map_views << UI::MapView.new(map, viewport2, UI::Screen.main)
+        # map_views << MapDisplay::MapView.new(map, viewport2, UI::Screen.main)
       end
 
       def leave_map(map)
         # Delete backwards to not shrink the array while enumerating
         map_views.reverse_each_with_index do |map_view, index|
           if map_view.map == map
-            map_view.close
+            map_view.window.close
             map_views.delete_at(index)
           end
         end
       end
 
       def game_loop
+        Control::WindowRegistry.create_help_line_window
+
         @keep_running = true
         while @keep_running
           Control::RunLoop.main.run do
@@ -98,23 +102,7 @@ module TermQuickRPG
       end
 
       def draw
-        draw_help
-        render_map_views
-      end
-
-      def draw_help
-        help_line_window.draw
-        # Curses.setpos(0, 0)
-        # Curses.addstr(  "player: #{@player.x}, #{@player.y}")
-
-  #       Curses.addstr("\nviewport: #{viewport.x}, #{viewport.y}; #{viewport.width}x#{viewport.height}; scroll: #{viewport.scroll_x}, #{viewport.scroll_y}")
-  #       Curses.addstr("\nc #{Curses.cols}x#{Curses.lines}; scr #{screen.width}x#{screen.height} : #{viewport.max_x},#{viewport.max_y} = #{screen.width-viewport.max_x}x#{screen.height-viewport.max_y}")
-      end
-
-      def render_map_views
-        @map_views.each do |map_view|
-          map_view.render
-        end
+        Control::WindowRegistry.instance.render_window_stack
       end
 
       def handle_input

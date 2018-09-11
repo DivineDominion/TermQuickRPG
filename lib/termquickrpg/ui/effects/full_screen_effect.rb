@@ -14,7 +14,7 @@ module TermQuickRPG
 
       def close
         unless @window.nil?
-          @window.erase
+          @window.clear
           @window.noutrefresh
           @window.close
           @window = nil
@@ -22,12 +22,9 @@ module TermQuickRPG
         end
       end
 
-      def refresh(force: false)
-        if force
-          @window.refresh
-        else
-          @window.noutrefresh
-        end
+      def refresh
+        # Full-screen effects should force-refresh all the time
+        @window.refresh
       end
 
       def render

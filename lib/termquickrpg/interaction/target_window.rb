@@ -1,47 +1,31 @@
+require "delegate"
+require "forwardable"
+require "curses"
 require "termquickrpg/control/window_registry"
-require "termquickrpg/interaction/map_cutout"
+require "termquickrpg/interaction/target_view"
 
 module TermQuickRPG
   module Interaction
-    class TargetWindow
-      CROSSHAIR = "⨉"
+    class TargetWindow < SimpleDelegator
+      extend Forwardable
+
       BORDER_WIDTH = 1
 
-      attr_reader :window, :map_cutout
-      attr_accessor :target_offset
+      attr_reader :window, :map_cutout, :target_view
+      def_delegators :target_view, :target_offset, :target_offset=
 
       def initialize(map_cutout, origin, size)
-        @map_cutout = map_cutout
         x, y = origin
         width, height = size
         attrs = {
           x: x, y: y,
           width: width + BORDER_WIDTH * 2, height: height + BORDER_WIDTH * 2,
-          border: :singleround
+          border: :singleround,
+          window_attrs: Curses::A_BOLD
         }
-        @window = Control::WindowRegistry.create_bordered_window(attrs)
-        @target_offset = [0,0]
-      end
-
-      def close
-        unless @window.nil?
-          @window.close
-          @window = nil
-        end
-      end
-
-      def draw
-        # window.border_window.attron(Curses::A_BLINK)
-        window.border_window.attron(Curses::A_BOLD)
-        window.draw do |frame, border, content|
-          map_cutout.draw(content)
-          content.setpos(*target_offset.reverse)
-          content.attron(Curses::A_BLINK | Curses::A_BOLD)#Curses::A_REVERSE)
-          content.addstr(CROSSHAIR)
-          content.attroff(Curses::A_BLINK | Curses::A_BOLD)#Curses::A_REVERSE)
-        end
-        window.border_window.attroff(Curses::A_BOLD)
-        # window.border_window.attroff(Curses::A_BLINK)
+        super(Control::WindowRegistry.create_bordered_window(attrs))
+        @target_view = TargetView.new(map_cutout)
+        add_subview(target_view)
       end
     end
   end

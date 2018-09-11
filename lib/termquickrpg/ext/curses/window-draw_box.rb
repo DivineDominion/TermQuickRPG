@@ -36,9 +36,9 @@ module Curses
       addstr(style[7])
     end
 
-    def draw_divider(style, y)
-      style = STYLES[style]
-      raise "Style not found" if style.nil?
+    def draw_divider(style_name, y)
+      style = STYLES[style_name]
+      raise "Style not found: '#{style}'" if style.nil?
 
       setpos(y, 0)
       addstr(style[8])

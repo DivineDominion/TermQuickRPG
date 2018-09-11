@@ -4,20 +4,15 @@ require "termquickrpg/control/default_keys"
 module TermQuickRPG
   module Inventory
     class InventoryController
-      attr_reader :window
-
-      def initialize(window = InventoryWindow.new)
-        @window = window
-      end
-
-      def show_picker(items, title = nil)
+      def show_picker(items, title = nil, window = InventoryWindow.new)
         window.items = items
         window.customize_title(title) # `nil` shows default
 
         selected_item = items.empty? ? nil : 0
         picked_item, did_cancel = nil, false
         while !(picked_item || did_cancel) do
-          window.draw(selected_item: selected_item)
+          window.select_item(selected_item)
+          window.render
           input = Curses.get_char
 
           case input

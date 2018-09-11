@@ -4,7 +4,7 @@ require "termquickrpg/observable"
 require "termquickrpg/ext/curses/window-canvas"
 
 module TermQuickRPG
-  module UI
+  module MapDisplay
     class Viewport
       include Observable
 
@@ -15,52 +15,35 @@ module TermQuickRPG
       attr_reader :scroll_padding
       attr_reader :overscroll
 
-      extend Forwardable
-      attr_reader :window
-      def_delegator :@window, :content, :canvas
-      def_delegator :@window, :content_size, :canvas_size
+      attr_reader :frame_origin
+      attr_reader :canvas_size
 
       def initialize(**attrs)
-        @window = Control::WindowRegistry.create_bordered_window(attrs)
-        @window.add_listener(self)
         @scroll_x, @scroll_y = 0, 0
-
         @original_scroll_padding = attrs[:scroll_padding] || [0, 0]
-        adjust_scroll_padding
       end
 
       def close
-        unless @window.nil?
-          @window.close
-          @window = nil
-          notify_listeners(:viewport_did_close)
-        end
+        notify_listeners(:viewport_did_close)
+      end
+
+      def fill_window(window)
+        @frame_origin = window.origin
+        @canvas_size = window.content_size
+        adjust_scroll_padding
       end
 
       def translate_map_to_screen(location)
         x, y = location
         scroll_x, scroll_y = map_bounds
         x_off, y_off = overscroll
-        x_frame, y_frame = window.frame.origin
-        [x - scroll_x + x_off + x_frame, y - scroll_y + y_off + y_frame]
+        x_frame, y_frame = frame_origin
+        return [x - scroll_x + x_off + x_frame,
+                y - scroll_y + y_off + y_frame]
       end
-
-      # Drawing
 
       def render
-        @window.draw do
-          yield *map_bounds
-        end
-      end
-
-      def draw(char, x, y, color = nil)
-        x_off, y_off = overscroll
-        x, y = x + x_off, y + y_off
-        canvas.draw(char, x, y, color)
-      end
-
-      def undraw(x, y)
-        draw(" ", x, y)
+        yield *map_bounds, *overscroll
       end
 
       # Scrolling & resizing
@@ -69,12 +52,6 @@ module TermQuickRPG
         width, height = canvas_size.zip(overscroll).map { |arr| arr.reduce(&:-)}
         x, y = [scroll_x, 0].max, [scroll_y, 0].max # start location is never negative
         [x, y, width, height]
-      end
-
-      def frame_did_change(frame, *args)
-        adjust_scroll_padding
-        width, height = canvas_size
-        notify_listeners(:viewport_size_did_change, width, height)
       end
 
       def track_movement(character)

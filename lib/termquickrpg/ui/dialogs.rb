@@ -28,18 +28,6 @@ end
 
 module TermQuickRPG
   module UI
-    def self.cleanup_after_dialog(force: false)
-      if force
-        Curses.clear
-        Curses.refresh
-      else
-        Control::RunLoop.main.enqueue {
-          Curses.clear
-          Curses.refresh
-        }
-      end
-    end
-
     def self.show_message(*lines)
       show_options(*lines, "Continue", :single)
     end

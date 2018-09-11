@@ -29,7 +29,7 @@ module TermQuickRPG
 
         target_offset, did_cancel = nil, false
         while !(target_offset || did_cancel) do
-          controller.draw_picker
+          controller.render_picker
 
           input = Curses.get_char
 

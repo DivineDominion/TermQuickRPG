@@ -1,8 +1,11 @@
+require "termquickrpg/ui/window"
 require "termquickrpg/ui/responsive_frame"
 
 module TermQuickRPG
   module UI
     class HelpLineWindow
+      include UI::Window
+
       TITLE = "TerminalQuickRPG by DivineDominion / 2018"
       HELP = "W,A,S,D to move  [I]nventory Us[e] [Q]uit "
 
@@ -37,9 +40,18 @@ module TermQuickRPG
         return win
       end
 
-      def draw
+      def render
+        super
         window.touch # Mark as needing re-display
         window.refresh
+      end
+
+      def refresh(force: false)
+        if force
+          window.refresh
+        else
+          window.noutrefresh
+        end
       end
 
       def frame_did_change(frame, x, y, width, height)
