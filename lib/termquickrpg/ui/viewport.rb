@@ -31,6 +31,15 @@ module TermQuickRPG
 
       def close
         @window.close(refresh: true)
+        notify_listeners(:viewport_did_close)
+      end
+
+      def translate_map_to_screen(location)
+        x, y = location
+        scroll_x, scroll_y = map_bounds
+        x_off, y_off = overscroll
+        x_frame, y_frame = window.frame.origin
+        [x - scroll_x + x_off + x_frame, y - scroll_y + y_off + y_frame]
       end
 
       # Drawing

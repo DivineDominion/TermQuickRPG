@@ -5,11 +5,15 @@ require "termquickrpg/ui/help_line_window"
 require "termquickrpg/control/run_loop"
 require "termquickrpg/ui/screen"
 require "termquickrpg/ui/dialogs"
+
 require "termquickrpg/ui/map_view"
+require "termquickrpg/control/map_stack"
+
 require "termquickrpg/ui/viewport"
+require "termquickrpg/control/viewport_registry"
+
 require "termquickrpg/control/default_keys"
 require "termquickrpg/control/player"
-require "termquickrpg/control/map_stack"
 require "termquickrpg/script/context"
 
 class Hash
@@ -59,6 +63,7 @@ module TermQuickRPG
                                     scroll_padding: [8, 4])
         viewport.center_on(map.player_character)
         viewport.track_movement(map.player_character)
+        ViewportRegistry.instance.register(viewport, as_main: true)
         map_views << UI::MapView.new(map, viewport, UI::Screen.main)
 
         # # Demo dual views
@@ -67,6 +72,7 @@ module TermQuickRPG
         #                             scroll_padding: [-1, -1])
         # viewport2.center_on(map.player_character)
         # viewport2.track_movement(map.player_character)
+        # ViewportRegistry.instance.register(viewport2)
         # map_views << UI::MapView.new(map, viewport2, UI::Screen.main)
       end
 
