@@ -24,6 +24,8 @@ module TermQuickRPG
         }.merge(attrs)
 
         @x, @y = attrs[:x], attrs[:y]
+        raise "Illegal frame coordinates: #{@x},#{@y}" if @x < 0 || @y < 0
+
         @width, @height = attrs[:width], attrs[:height]
         @centered = [*attrs[:centered]]
         @margin_bottom = attrs[:margin][:bottom] || 0
