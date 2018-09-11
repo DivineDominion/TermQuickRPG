@@ -1,6 +1,6 @@
 {
 size: [27, 17],
-solids: %Q{█▟▒╔╣║╠╦╗},
+solids: %Q{█▟░▒╔╣║╠╦╗},
 layers: [
   ["███████████████████████████",
    "█                         █",
@@ -54,8 +54,6 @@ triggers: {
     ctx.run do
       if map_flag[:door_opened]
         open_map "shop"
-      else
-        msg "Locked."
       end
     end
   }
@@ -64,6 +62,7 @@ interactions: {
   [14, 5] => -> (ctx) {
     ctx.run do
       unless map_flag[:door_opened]
+        msg "The shop's door is locked."
         request_use_item "Select item to open door:" do |item|
           case item.name
           when "Dagger"
@@ -71,7 +70,6 @@ interactions: {
             take item
             msg "You broke #{item.name}!"
           when "Mace"
-            move player, :down, 0.6
             move player, :down, 0.6
             move player, :down, 0.6
             sleep 1

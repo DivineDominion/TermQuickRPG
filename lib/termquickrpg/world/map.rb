@@ -14,6 +14,7 @@ module TermQuickRPG
       attr_reader :entities, :player_character
       attr_reader :triggers, :interactions
       attr_reader :flags
+      attr_reader :collisions, :solid_tiles
 
       def initialize(**opts)
         raise "Map is missing :data" unless opts[:data]
@@ -38,7 +39,8 @@ module TermQuickRPG
         raise "Map size #{@width}x#{@height} does not equal base layer size #{map_width}x#{map_height}" if @width != map_width || @height != map_height
 
         @layers = data[:layers].map { |l| Layer.new(l) }
-        @collisions = @layers[0].blocked_tiles(data[:solids])
+        @solid_tiles = data[:solids]
+        update_collisions
 
         @flags = data[:flags]
 
@@ -52,17 +54,22 @@ module TermQuickRPG
         @interactions = data[:interactions].map { |loc, proc| [loc, HotSpot.new(loc, proc)] }.to_h
       end
 
-      def invalidate!
-        notify_listeners(:map_content_did_invalidate, true) # redraw map
-      end
-
-      def character_did_move(character, from, to)
-        invalidate!
+      def update_collisions
+        @collisions = @layers[0].blocked_tiles(solid_tiles)
       end
 
       def replace_tile(location, char)
         z = location[2] || 0
         layers[z].replace_tile(location, char)
+        update_collisions if z == 0
+        invalidate!
+      end
+
+      def invalidate!
+        notify_listeners(:map_content_did_invalidate, true) # redraw map
+      end
+
+      def character_did_move(character, from, to)
         invalidate!
       end
 
@@ -83,12 +90,12 @@ module TermQuickRPG
       # Movable contents
 
       def blocked?(x, y)
-        has_solid_block?(x, y) # || has_character_at?(x, y)
+        has_solid_block?(x, y) || has_character_at?(x, y)
       end
 
       def has_solid_block?(x, y)
-        return false unless @collisions
-        @collisions[y] && @collisions[y][x]
+        return false unless collisions
+        collisions[y] && collisions[y][x]
       end
 
       def has_character_at?(x, y)
