@@ -34,6 +34,10 @@ module TermQuickRPG
         @frame.add_listener(self)
       end
 
+      def origin
+        @frame.origin
+      end
+
       def content_size
         @content.size
       end

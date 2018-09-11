@@ -10,6 +10,10 @@ module Curses
   end
 
   class Window
+    def origin
+      [minx, miny]
+    end
+
     def height
       maxy
     end
