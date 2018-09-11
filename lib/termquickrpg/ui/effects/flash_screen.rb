@@ -1,21 +1,22 @@
+require "termquickrpg/control/window_registry"
 require "termquickrpg/ui/color"
 
 module TermQuickRPG
   module UI
     module Effects
       def self.flash_screen(duration)
-        Curses.refresh
-        win = Curses::Window.new(Curses.lines, Curses.cols, 0, 0)
-        UI::Color::Pair::FLASH.style(win)
-        win.touch
-        win.refresh
+        effect = Control::WindowRegistry.create_full_screen_effect
 
-        sleep(duration)
+        effect.render do |win|
+          UI::Color::Pair::FLASH.style(win)
+          win.touch
+          win.refresh
 
-        win.erase
-        win.close
+          sleep(duration)
+        end
 
         Curses.clear
+        effect.close
         Curses.refresh
       end
     end

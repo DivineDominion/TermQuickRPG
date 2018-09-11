@@ -39,11 +39,6 @@ module TermQuickRPG
         exit 0
       end
 
-      # Quickfix to redraw the map after cleanin up UI artifacts; should become obsolete with usage of Panels
-      def redraw_current_map
-        Control::MapStack.instance.front.invalidate!
-      end
-
       def msg(*lines)
         UI::show_message(*lines)
       end
@@ -54,8 +49,6 @@ module TermQuickRPG
 
       def request_use_item(message, &block)
         if item = Control::Player.instance.item_from_inventory(message)
-          redraw_current_map
-
           yield item
           return true
         else
