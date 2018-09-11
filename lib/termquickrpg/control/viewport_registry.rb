@@ -8,10 +8,14 @@ module TermQuickRPG
     # get the same treatment, e.g. for action pickers.
     class ViewportRegistry
       include Singleton
-      attr_reader :viewports
+
+      def viewports
+        @viewports ||= []
+      end
 
       def register(viewport, as_main: false)
         viewport.add_listener(self)
+        viewports << viewport
         @main = viewport if as_main
       end
 
