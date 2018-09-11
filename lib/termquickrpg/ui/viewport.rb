@@ -1,5 +1,5 @@
 require "forwardable"
-require "termquickrpg/ui/bordered_window"
+require "termquickrpg/control/window_registry"
 require "termquickrpg/observable"
 require "termquickrpg/ext/curses/window-canvas"
 
@@ -21,7 +21,7 @@ module TermQuickRPG
       def_delegator :@window, :content_size, :canvas_size
 
       def initialize(**attrs)
-        @window = BorderedWindow.new(attrs)
+        @window = Control::WindowRegistry.instance.create_bordered_window(attrs)
         @window.add_listener(self)
         @scroll_x, @scroll_y = 0, 0
 
@@ -30,8 +30,11 @@ module TermQuickRPG
       end
 
       def close
-        @window.close(refresh: true)
-        notify_listeners(:viewport_did_close)
+        unless @window.nil?
+          @window.close
+          @window = nil
+          notify_listeners(:viewport_did_close)
+        end
       end
 
       def translate_map_to_screen(location)

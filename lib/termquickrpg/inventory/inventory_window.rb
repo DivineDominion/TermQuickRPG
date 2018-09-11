@@ -1,4 +1,4 @@
-require "termquickrpg/ui/bordered_window"
+require "termquickrpg/control/window_registry"
 
 module TermQuickRPG
   module Inventory
@@ -14,7 +14,7 @@ module TermQuickRPG
       end
 
       def window
-        @window ||= UI::BorderedWindow.new(
+        @window ||= Control::WindowRegistry.instance.create_bordered_window(
           style: @style,
           centered: [:horizontal, :vertical], height: 15, width: 35)
       end
@@ -25,7 +25,7 @@ module TermQuickRPG
 
       def close
         unless @window.nil? # Do not lazily create new on close
-          @window.close(refresh: true)
+          @window.close
           @window = nil
         end
       end

@@ -1,5 +1,5 @@
 require "curses"
-require "termquickrpg/ui/bordered_window"
+require "termquickrpg/control/window_registry"
 
 module TermQuickRPG
   module Dialogue
@@ -24,13 +24,14 @@ module TermQuickRPG
         attrs[:y] = 1000 # Anchor to bottom edge
         attrs[:border] = :double
 
-        @window = UI::BorderedWindow.new(attrs)
+        @window = Control::WindowRegistry.instance.create_bordered_window(attrs)
         @window.add_listener(self)
       end
 
       def close
-        unless window.nil?
-          window.close(refresh: true)
+        unless @window.nil?
+          @window.close
+          @window = nil
         end
       end
 

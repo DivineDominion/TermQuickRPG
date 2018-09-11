@@ -1,4 +1,4 @@
-require "termquickrpg/ui/bordered_window"
+require "termquickrpg/control/window_registry"
 require "termquickrpg/interaction/map_cutout"
 
 module TermQuickRPG
@@ -19,12 +19,15 @@ module TermQuickRPG
           width: width + BORDER_WIDTH * 2, height: height + BORDER_WIDTH * 2,
           border: :singleround
         }
-        @window = UI::BorderedWindow.new(attrs)
+        @window = Control::WindowRegistry.instance.create_bordered_window(attrs)
         @target_offset = [0,0]
       end
 
       def close
-        window.close(refresh: true)
+        unless @window.nil?
+          @window.close
+          @window = nil
+        end
       end
 
       def draw

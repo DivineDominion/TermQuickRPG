@@ -42,13 +42,23 @@ module TermQuickRPG
         @content.size
       end
 
-      def close(refresh: false)
-        unless @border_window.nil?
-          @border_window.erase
-          @border_window.refresh if refresh
-          @border_window.close
-          @border_window = nil
+      def refresh(force: false)
+        if force
+          @border_window.touch
+          @border_window.refresh
+        else
+          @border_window.touch
+          @border_window.noutrefresh
         end
+      end
+
+      def close(refresh: true)
+        return if @border_window.nil?
+        @border_window.erase
+        @border_window.refresh if refresh
+        @border_window.close
+        @border_window = nil
+        notify_listeners(:bordered_window_did_close)
       end
 
       def draw
