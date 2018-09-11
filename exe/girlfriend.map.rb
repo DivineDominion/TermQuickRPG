@@ -59,7 +59,7 @@ characters: [
           flash_screen 0.3
           give Item.new(char: "☭", name: "Communism", effect: "You get what you deserve.")
         else
-          msg "Sometimes, there's nothing people have to tell each other anymore."
+          msg "Sometimes, there's nothing people", "have to tell each other anymore."
         end
         map_flag[:times_spoken] += 1
       end

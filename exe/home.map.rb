@@ -47,7 +47,7 @@ characters: [
           request_use_item "Give some food:" do |item|
             case item.name
             when "Communism"
-              msg "Communism hasn't fed that many people over the course of history.", "You're wary to try your luck on your pals."
+              msg "Communism hasn't fed many people with success", "over the course of history.", "You're wary to try your luck on your pals."
             when "Pancakes"
               take item
               replace_tile [4,4], "⌾"
