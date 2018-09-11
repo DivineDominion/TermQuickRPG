@@ -1,6 +1,7 @@
 require "forwardable"
 require "termquickrpg/ui/bordered_window"
 require "termquickrpg/observable"
+require "termquickrpg/ext/curses/window-canvas"
 
 module TermQuickRPG
   module UI
@@ -41,12 +42,9 @@ module TermQuickRPG
       end
 
       def draw(char, x, y, color = nil)
-        color ||= UI::Color::Pair::DEFAULT
         x_off, y_off = overscroll
-        canvas.setpos(y + y_off, x + x_off)
-        color.set(canvas) do
-          canvas.addstr("#{char}")
-        end
+        x, y = x + x_off, y + y_off
+        canvas.draw(char, x, y, color)
       end
 
       def undraw(x, y)
