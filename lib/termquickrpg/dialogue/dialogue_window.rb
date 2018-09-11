@@ -24,7 +24,7 @@ module TermQuickRPG
         attrs[:y] = 1000 # Anchor to bottom edge
         attrs[:border] = :double
 
-        @window = Control::WindowRegistry.instance.create_bordered_window(attrs)
+        @window = Control::WindowRegistry.create_bordered_window(attrs)
         @window.add_listener(self)
       end
 

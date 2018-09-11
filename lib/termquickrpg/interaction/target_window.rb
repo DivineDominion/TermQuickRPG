@@ -19,7 +19,7 @@ module TermQuickRPG
           width: width + BORDER_WIDTH * 2, height: height + BORDER_WIDTH * 2,
           border: :singleround
         }
-        @window = Control::WindowRegistry.instance.create_bordered_window(attrs)
+        @window = Control::WindowRegistry.create_bordered_window(attrs)
         @target_offset = [0,0]
       end
 

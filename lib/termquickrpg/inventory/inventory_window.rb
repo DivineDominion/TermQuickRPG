@@ -14,7 +14,7 @@ module TermQuickRPG
       end
 
       def window
-        @window ||= Control::WindowRegistry.instance.create_bordered_window(
+        @window ||= Control::WindowRegistry.create_bordered_window(
           style: @style,
           centered: [:horizontal, :vertical], height: 15, width: 35)
       end

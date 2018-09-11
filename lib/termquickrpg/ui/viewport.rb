@@ -21,7 +21,7 @@ module TermQuickRPG
       def_delegator :@window, :content_size, :canvas_size
 
       def initialize(**attrs)
-        @window = Control::WindowRegistry.instance.create_bordered_window(attrs)
+        @window = Control::WindowRegistry.create_bordered_window(attrs)
         @window.add_listener(self)
         @scroll_x, @scroll_y = 0, 0
 
