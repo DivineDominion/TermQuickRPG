@@ -49,7 +49,7 @@ module TermQuickRPG
       end
 
       def interact(map)
-        picker = Interaction::Picker.new(map, character.location)
+        picker = Interaction::Picker.new(map, character.location, ViewportRegistry.instance.main)
         return unless target_location = picker.pick_target
 
         if obj = map.entity_at(target_location) and obj != self.character

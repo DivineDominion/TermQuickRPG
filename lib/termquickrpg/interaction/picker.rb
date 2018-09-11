@@ -7,8 +7,9 @@ module TermQuickRPG
       attr_reader :map
       attr_reader :center, :radius
       attr_reader :origin, :size
+      attr_reader :frame_origin
 
-      def initialize(map, center, radius = 1)
+      def initialize(map, center, screen_translator, radius = 1)
         @map = map
         @center, @radius = center, radius
 
@@ -16,10 +17,11 @@ module TermQuickRPG
         end_x, end_y = center.map { |i| i + radius}
         @origin = [start_x, start_y]
         @size = [(start_x..end_x).count, (start_y..end_y).count]
+        @frame_origin = screen_translator.translate_map_to_screen([start_x, start_y])
       end
 
       def controller
-        @controller ||= Interaction::TargetController.new(size, [radius, radius], Interaction::TargetWindow.new(Interaction::MapCutout.new(map, origin, size), [0,0], size))
+        @controller ||= Interaction::TargetController.new(size, [radius, radius], Interaction::TargetWindow.new(Interaction::MapCutout.new(map, origin, size), frame_origin, size))
       end
 
       def pick_target
