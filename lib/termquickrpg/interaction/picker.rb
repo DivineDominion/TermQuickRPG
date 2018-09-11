@@ -53,6 +53,8 @@ module TermQuickRPG
 
         controller.close_window
 
+        return nil if !target_offset
+
         x_off, y_off = target_offset
         x, y = origin
         [x + x_off, y + y_off]
