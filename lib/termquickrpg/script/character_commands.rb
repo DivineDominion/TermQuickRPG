@@ -10,6 +10,8 @@ module TermQuickRPG
       def move(character, direction, after_delay = 0)
         sleep(after_delay) if after_delay > 0
         character.move(direction)
+      ensure
+        Control::WindowRegistry.instance.render_window_stack
       end
     end
   end

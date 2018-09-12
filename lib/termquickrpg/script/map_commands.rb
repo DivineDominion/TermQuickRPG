@@ -10,6 +10,8 @@ module TermQuickRPG
         filename << ".map.rb" unless filename.end_with?(".map.rb")
         map = Loading::MapLoader.new(File.join(game_dir, filename)).map
         Control::MapStack.instance.push(map)
+      ensure
+        # Control::WindowRegistry.instance.render_window_stack
       end
 
       def current_map
@@ -22,6 +24,8 @@ module TermQuickRPG
 
       def replace_tile(location, char)
         current_map.replace_tile(location, char)
+      ensure
+        Control::WindowRegistry.instance.render_window_stack
       end
     end
   end

@@ -1,8 +1,8 @@
-require "termquickrpg/script/map_commands"
 require "termquickrpg/script/character_commands"
+require "termquickrpg/script/dialog_commands"
 require "termquickrpg/script/effect_commands"
-require "termquickrpg/inventory"
-require "termquickrpg/ui/view_components"
+require "termquickrpg/script/inventory_commands"
+require "termquickrpg/script/map_commands"
 
 module TermQuickRPG
   module Script
@@ -17,9 +17,7 @@ module TermQuickRPG
 
       private_class_method :new
 
-      attr_accessor :game_dir
-
-      # Calls the block with appropriate parameters.
+      # Calls the block with appropriate parameters. Invokes script command lambdas.
       def call_block(block, sender)
         if block.arity == 2
           block.call(self, sender)
@@ -35,44 +33,19 @@ module TermQuickRPG
         instance_eval(&block)
       end
 
+      # -- Script commands --
+
+      attr_accessor :game_dir
+
       def quit
         exit 0
       end
 
-      def msg(*lines)
-        UI::show_message(*lines)
-      end
-
-      def dialogue(who, *lines)
-        UI::show_dialogue(who, *lines)
-      end
-
-      def request_use_item(message, &block)
-        if item = Control::Player.instance.item_from_inventory(message)
-          yield item
-          return true
-        else
-          return false
-        end
-      end
-
-      def take(item)
-        Control::Player.instance.remove_from_inventory(item)
-      end
-
-      def give(item, notify = true)
-        Control::Player.instance.take(item)
-
-        if notify.is_a?(String)
-          msg notify
-        elsif notify
-          msg "Obtained #{item.name}!"
-        end
-      end
-
-      include MapCommands
-      include EffectCommands
       include CharacterCommands
+      include DialogCommands
+      include EffectCommands
+      include InventoryCommands
+      include MapCommands
     end
   end
 end

@@ -18,7 +18,6 @@ module TermQuickRPG
 
         Curses.clear
         Curses.refresh
-        Control::WindowRegistry.instance.render_window_stack(force: true)
       end
     end
   end
