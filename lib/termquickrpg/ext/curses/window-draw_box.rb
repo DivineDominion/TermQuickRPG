@@ -12,38 +12,40 @@ module Curses
       :halfcorners => %Q{▛ ▜  ▙ ▟   }
     }
 
-    def draw_box(style)
-      style = STYLES[style]
-      raise "Style not found" if style.nil?
+    attr_accessor :border
+
+    def draw_box(style_name = nil)
+      @border ||= STYLES[style_name]
+      raise "Style not found: '#{style_name}'" if @border.nil?
 
       width, height = maxx, maxy
 
       setpos(0, 0)
-      addstr(style[0])
-      (width - 2).times { addstr(style[1]) }
-      addstr(style[2])
+      addstr(border[0])
+      (width - 2).times { addstr(border[1]) }
+      addstr(border[2])
 
       (height - 2).times do |y|
         setpos(y + 1, 0)
-        addstr(style[3])
+        addstr(border[3])
         setpos(y + 1, width - 1)
-        addstr(style[4])
+        addstr(border[4])
       end
 
       setpos(height - 1, 0)
-      addstr(style[5])
-      (width - 2).times { addstr(style[6]) }
-      addstr(style[7])
+      addstr(border[5])
+      (width - 2).times { addstr(border[6]) }
+      addstr(border[7])
     end
 
-    def draw_divider(style_name, y)
-      style = STYLES[style_name]
-      raise "Style not found: '#{style}'" if style.nil?
+    def draw_divider(y, style_name = nil)
+      @border ||= STYLES[style_name]
+      raise "Style not found: '#{style_name}'" if @border.nil?
 
       setpos(y, 0)
-      addstr(style[8])
-      (maxx - 2).times { addstr(style[9]) }
-      addstr(style[10])
+      addstr(border[8])
+      (maxx - 2).times { addstr(border[9]) }
+      addstr(border[10])
     end
   end
 end

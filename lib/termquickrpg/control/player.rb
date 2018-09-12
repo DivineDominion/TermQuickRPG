@@ -54,7 +54,7 @@ module TermQuickRPG
 
         if obj = map.entity_at(target_location) and obj != self.character
           if obj.is_a?(World::Item)
-            choice = UI::show_options("Found #{obj.name}!", { pick: "Pick up", cancel: "Leave" }, :single)
+            choice = UI::show_options("Found #{obj.name}!", { pick: "Pick up", cancel: "Leave" })
 
             if choice == :pick
               map.entities.delete(obj)

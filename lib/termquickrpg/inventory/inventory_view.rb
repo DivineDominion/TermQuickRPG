@@ -40,7 +40,7 @@ module TermQuickRPG
       end
 
       def draw_divider(border_window, y)
-        border_window.draw_divider(border, y)
+        border_window.draw_divider(y)
       end
 
       def draw_items(content, selected_item)

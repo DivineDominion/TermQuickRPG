@@ -8,7 +8,7 @@ module TermQuickRPG
 
         case input
         when Control::CANCEL_KEYS # Any cancel variant will quit
-          if UI::show_options("Quit?", { quit: "Yes", cancel: "No" }, :double) == :quit
+          if UI::show_options("Quit?", { quit: "Yes", cancel: "No" }) == :quit
             Control::GameRunner.instance.quit!
           end
 
