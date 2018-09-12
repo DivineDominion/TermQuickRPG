@@ -17,13 +17,11 @@ module TermQuickRPG
       def initialize(map_cutout, origin, size)
         x, y = origin
         width, height = size
-        attrs = {
+        super(Control::WindowRegistry.create_bordered_window(
           x: x, y: y,
           width: width + BORDER_WIDTH * 2, height: height + BORDER_WIDTH * 2,
           border: :singleround,
-          window_attrs: Curses::A_BOLD
-        }
-        super(Control::WindowRegistry.create_bordered_window(attrs))
+          window_attrs: Curses::A_BOLD))
         @target_view = TargetView.new(map_cutout)
         add_subview(target_view)
       end

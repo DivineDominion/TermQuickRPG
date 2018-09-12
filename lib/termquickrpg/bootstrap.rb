@@ -1,6 +1,7 @@
 require "curses"
 require "termquickrpg/control/game_runner"
 require "termquickrpg/control/map_stack"
+require "termquickrpg/control/window_registry"
 require "termquickrpg/ui/screen"
 require "termquickrpg/ui/color"
 require "termquickrpg/script/context"
@@ -15,7 +16,7 @@ module TermQuickRPG
     end
 
     def game_runner
-      @game_runner ||= Control::GameRunner.new
+      @game_runner ||= Control::GameRunner.instance
     end
 
     def run
@@ -40,10 +41,13 @@ module TermQuickRPG
       UI::Color.setup
 
       UI::Screen.main.add_listener(Curses)
+
+      Control::WindowRegistry.create_help_line_window
     end
 
     def bootstrap_game
       Script::Context.main.game_dir = game_dir
+
       # Listen to map changes before launch to forward script events
       Control::MapStack.instance.add_listener(game_runner)
       Script::Context.main.run(&launch)

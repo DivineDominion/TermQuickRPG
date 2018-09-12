@@ -3,16 +3,13 @@ require "termquickrpg/ext/curses/curses-resize"
 
 require "termquickrpg/ui/help_line_window"
 require "termquickrpg/control/run_loop"
-require "termquickrpg/ui/screen"
-require "termquickrpg/ui/dialogs"
 
 require "termquickrpg/map_display/map_view"
 require "termquickrpg/map_display/viewport"
 require "termquickrpg/control/viewport_registry"
 require "termquickrpg/control/map_stack"
 
-
-require "termquickrpg/control/default_keys"
+require "termquickrpg/control/user_input"
 require "termquickrpg/control/player"
 require "termquickrpg/script/context"
 
@@ -29,12 +26,44 @@ class Array
   end
 end
 
+require "singleton"
+
 module TermQuickRPG
   module Control
     class GameRunner
-      attr_reader :player, :map
+      include Singleton
 
+      def user_input
+        @user_input ||= Control::UserInput.new
       end
+
+      def quit!
+        @keep_running = false
+      end
+
+      def game_loop
+        @keep_running = true
+        while @keep_running
+          Control::RunLoop.main.run do
+            draw
+            handle_input
+            GC.start # Clean up weak references of observers
+          end
+        end
+      end
+
+      def draw
+        Control::WindowRegistry.instance.render_window_stack
+      end
+
+      def handle_input
+        user_input.process(player, map)
+      end
+
+      # Map display
+
+
+      attr_reader :player, :map
 
       def map_views
         @map_views ||= []
@@ -75,7 +104,7 @@ module TermQuickRPG
         # viewport2.center_on(map.player_character)
         # viewport2.track_movement(map.player_character)
         # ViewportRegistry.instance.register(viewport2)
-        # map_views << MapDisplay::MapView.new(map, viewport2, UI::Screen.main)
+        # map_views << MapDisplay::MapView.new(map, viewport2)
       end
 
       def leave_map(map)
@@ -84,63 +113,6 @@ module TermQuickRPG
           if map_view.map == map
             map_view.window.close
             map_views.delete_at(index)
-          end
-        end
-      end
-
-      def game_loop
-        Control::WindowRegistry.create_help_line_window
-
-        @keep_running = true
-        while @keep_running
-          Control::RunLoop.main.run do
-            draw
-            handle_input
-            GC.start # Clean up weak references of observers
-          end
-        end
-      end
-
-      def draw
-        Control::WindowRegistry.instance.render_window_stack
-      end
-
-      def handle_input
-        input = Curses.get_char
-
-        case input
-        when Control::CANCEL_KEYS # Any cancel variant will quit
-          if UI::show_options("Quit?", { quit: "Yes", cancel: "No" }, :double) == :quit
-            @keep_running = false
-          end
-
-        when "I", "i"
-          show_inventory(player)
-
-        when Control::DIRECTION_KEYS
-          direction = Control::DIRECTION_KEYS[input]
-          player.move(map, direction)
-
-        when Control::ACTION_KEYS
-          if Control::ACTION_KEYS[input] == :use
-            handle_use_object(player)
-          end
-
-        else
-          unless input.nil?
-            # show_message("got #{input} / #{input.ord}")
-          end
-        end
-      end
-
-      def handle_use_object(player)
-        player.interact(map)
-      end
-
-      def show_inventory(player)
-        if item = player.item_from_inventory
-          if effect = item.apply(player)
-            UI::show_message(effect)
           end
         end
       end
