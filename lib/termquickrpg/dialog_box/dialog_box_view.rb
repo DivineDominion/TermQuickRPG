@@ -1,5 +1,6 @@
 require "termquickrpg/ui/view"
 require "termquickrpg/ext/curses/window-draw_box"
+require "termquickrpg/ext/curses/window-with_attrs"
 
 module TermQuickRPG
   module DialogBox

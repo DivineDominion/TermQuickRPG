@@ -1,6 +1,7 @@
 require "curses"
 require "termquickrpg/ui/window"
 require "termquickrpg/ext/curses/curses-resize"
+require "termquickrpg/ext/curses/window-draw_box"
 require "termquickrpg/ui/responsive_frame"
 require "termquickrpg/ui/color"
 require "termquickrpg/observable"
