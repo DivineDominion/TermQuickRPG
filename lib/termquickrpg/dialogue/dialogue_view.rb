@@ -6,13 +6,32 @@ module TermQuickRPG
       include UI::View
 
       attr_reader :padding
-      attr_accessor :name, :status, :visible_lines
 
       def initialize(padding: [0,0], name: nil, visible_lines: [], status: :continue)
         @padding = padding
         @name = name
         @visible_lines = visible_lines
         @status = status
+      end
+
+      attr_reader :name, :status, :visible_lines
+
+      def name=(value)
+        @name = value
+      ensure
+        needs_display!
+      end
+
+      def status=(value)
+        @status = value
+      ensure
+        needs_display!
+      end
+
+      def visible_lines=(value)
+        @visible_lines = value
+      ensure
+        needs_display!
       end
 
       def render(border_window: nil, canvas: nil, **opts)

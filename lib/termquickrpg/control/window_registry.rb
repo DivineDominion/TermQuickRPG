@@ -46,6 +46,10 @@ module TermQuickRPG
       def window_did_close(window)
         windows.delete(window)
         refresh_window_stack
+        # Re-render all remaining windows
+        windows.each do |window|
+          window.needs_render!
+        end
       end
 
       def full_screen_effect_did_close(effect)

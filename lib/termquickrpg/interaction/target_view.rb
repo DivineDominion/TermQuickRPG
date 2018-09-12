@@ -7,11 +7,23 @@ module TermQuickRPG
 
       CROSSHAIR = "⨉"
 
-      attr_accessor :map_cutout, :target_offset
-
       def initialize(map_cutout, target_offset = [0, 0])
         @map_cutout = map_cutout
         @target_offset = target_offset
+      end
+
+      attr_reader :map_cutout, :target_offset
+
+      def map_cutout=(value)
+        @map_cutout = value
+      ensure
+        needs_display!
+      end
+
+      def target_offset=(value)
+        @target_offset = value
+      ensure
+        needs_display!
       end
 
       def render(border_window: nil, canvas: nil, **opts)

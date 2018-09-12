@@ -24,19 +24,27 @@ module TermQuickRPG
         advance_dialogue
         has_quit = false
         while !has_quit do
-          window.render
-          input = Curses.get_char
-          if Control::ACTION_KEYS[input] == :use
-            if dialogue.has_next?
-              advance_dialogue
-            else
-              has_quit = true
-            end
-          else
-            Audio::Sound::beep
-          end
+          Control::WindowRegistry.instance.render_window_stack
+
+          has_quit = handle_input
         end
         window.close
+      end
+
+      private
+
+      def handle_input
+        input = Curses.get_char
+        if Control::ACTION_KEYS[input] == :use
+          if dialogue.has_next?
+            advance_dialogue
+          else
+            return true
+          end
+        else
+          Audio::Sound::beep
+        end
+        return false
       end
     end
   end

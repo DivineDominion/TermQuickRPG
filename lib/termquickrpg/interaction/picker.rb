@@ -29,7 +29,7 @@ module TermQuickRPG
 
         target_offset, did_cancel = nil, false
         while !(target_offset || did_cancel) do
-          controller.render_picker
+          Control::WindowRegistry.instance.render_window_stack
 
           input = Curses.get_char
 

@@ -8,15 +8,28 @@ module TermQuickRPG
 
       TITLE = "Inventory"
 
-      attr_reader :title
-      attr_accessor :items, :selected_item
-
       def initialize(items = [])
         @items = items
       end
 
+      attr_reader :title, :items, :selected_item
+
       def customize_title(title = nil)
         @title = title || TITLE
+      ensure
+        needs_display!
+      end
+
+      def items=(value)
+        @items = value
+      ensure
+        needs_display!
+      end
+
+      def selected_item=(value)
+        @selected_item = value
+      ensure
+        needs_display!
       end
 
       def render(border_window: nil, canvas: nil, **opts)

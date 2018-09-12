@@ -10,7 +10,6 @@ module TermQuickRPG
       X_PADDING = 2
 
       attr_reader :lines, :options
-      attr_accessor :selected_option
 
       def initialize(lines, options)
         raise "Options hash missing" if !options || options.length == 0
@@ -24,6 +23,16 @@ module TermQuickRPG
                      # Wrap single string option in hash
                      { close: options.to_s }
                    end
+      end
+
+      def selected_option
+        @selected_option
+      end
+
+      def selected_option=(value)
+        @selected_option = value
+      ensure
+        needs_display!
       end
 
       def intrinsic_size
