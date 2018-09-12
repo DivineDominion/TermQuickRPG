@@ -70,6 +70,7 @@ interactions: {
             take item
             msg "You broke #{item.name}!"
           when "Mace"
+            sleep 0.2
             move player, :down, 0.6
             move player, :down, 0.6
             sleep 1
