@@ -1,7 +1,6 @@
 require "singleton"
 require "forwardable"
 require "termquickrpg/ui/bordered_window"
-require "termquickrpg/ui/effects/full_screen_effect"
 
 module TermQuickRPG
   module Control
@@ -17,12 +16,6 @@ module TermQuickRPG
         window = UI::BorderedWindow.new(attrs)
       ensure
         register(window)
-      end
-
-      def create_full_screen_effect
-        @effect = UI::FullScreenEffect.new
-      ensure
-        register(@effect)
       end
 
       def create_help_line_window
@@ -46,17 +39,10 @@ module TermQuickRPG
       def window_did_close(window)
         windows.delete(window)
         refresh_window_stack
-        # Re-render all remaining windows
+        # Re-render all remaining windows in next iteration
         windows.each do |window|
           window.needs_render!
         end
-      end
-
-      def full_screen_effect_did_close(effect)
-        windows.delete(effect)
-        @effect = nil if @effect == effect
-        refresh_window_stack#(force: true)
-        render_window_stack # Effect sequences may block the game loop's redrawing
       end
 
       def refresh_window_stack(force: false)
