@@ -2,7 +2,11 @@ module TermQuickRPG
   module UI
     module Window
       def needs_render
-        @needs_render ||= true
+        if @needs_render.nil?
+          @needs_render = true
+        else
+          @needs_render
+        end
       end
 
       def needs_render=(value)
@@ -10,11 +14,11 @@ module TermQuickRPG
       end
 
       def needs_render!
-        needs_render = true
+        @needs_render = true
       end
 
       def render
-        needs_render = false
+        @needs_render = false
       end
     end
   end

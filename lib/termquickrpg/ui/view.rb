@@ -6,6 +6,8 @@ module TermQuickRPG
     module View
       def superview=(superview)
         @superview = WeakRef.new(superview)
+      ensure
+        needs_display!
       end
 
       def superview
