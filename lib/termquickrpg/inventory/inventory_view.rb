@@ -19,10 +19,6 @@ module TermQuickRPG
         @title = title || TITLE
       end
 
-      def border
-        superview.border
-      end
-
       def render(border_window: nil, canvas: nil, **opts)
         raise unless border_window && canvas
         draw_title(canvas)

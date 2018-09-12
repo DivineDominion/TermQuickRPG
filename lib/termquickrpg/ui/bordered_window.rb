@@ -1,4 +1,5 @@
 require "curses"
+require "forwardable"
 require "termquickrpg/ui/window"
 require "termquickrpg/ext/curses/curses-resize"
 require "termquickrpg/ext/curses/window-draw_box"
@@ -11,10 +12,11 @@ module TermQuickRPG
     class BorderedWindow
       include Observable
       include UI::Window
+      extend Forwardable
 
       BORDER_WIDTH = 1
 
-      attr_accessor :border
+      def_delegators :border_window, :style_name, :style_name=
       attr_reader :frame, :border_window, :content
 
       def initialize(**attrs)
@@ -25,12 +27,12 @@ module TermQuickRPG
         }.merge(attrs)
 
         @frame = ResponsiveFrame.new(attrs)
-        @border = attrs[:border]
 
         width, height = @frame.size
         x, y = @frame.origin
 
         @border_window = Curses::Window.new(height, width, y, x)
+        @border_window.style_name = attrs[:border]
         if window_attrs = attrs[:window_attrs]
           @border_window.attrset(window_attrs)
         end
@@ -89,7 +91,7 @@ module TermQuickRPG
 
         @border_window.clear
         @border_window.touch # Touch before refreshing subwindows
-        @border_window.draw_box(border)
+        @border_window.draw_box
 
         subviews.each do |subview|
           subview.render(frame: @frame, border_window: @border_window, canvas: @content)
