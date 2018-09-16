@@ -53,6 +53,7 @@ module TermQuickRPG
 
       module Pair
         DEFAULT = Color.new(1, Curses::COLOR_WHITE, Curses::COLOR_BLACK)
+        BATTLE_UI = Color.new(50, Curses::COLOR_WHITE, Curses::COLOR_RED)
         PLAYER = Color.new(100, Curses::COLOR_YELLOW, Curses::COLOR_BLACK)
         FLASH = Color.new(255, WHITE_BRIGHT, WHITE_BRIGHT)
       end

@@ -48,6 +48,9 @@ module TermQuickRPG
             offset = controller.move_picker(Control::DIRECTION_KEYS[input])
             x,y = origin[0]-radius+offset[0], origin[1]-radius+offset[1]
 
+          when ?f, ?F, ?m, ?M
+            controller.toggle_mode
+
           else
             Audio::Sound::beep
           end

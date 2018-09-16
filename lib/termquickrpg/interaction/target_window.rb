@@ -14,7 +14,7 @@ module TermQuickRPG
       attr_reader :window, :map_cutout, :target_view
       def_delegators :target_view, :target_offset, :target_offset=
 
-      def initialize(map_cutout, origin, size)
+      def initialize(map_cutout, origin, size, mode = :use)
         x, y = origin
         width, height = size
         super(Control::WindowRegistry.create_bordered_window(
@@ -24,6 +24,18 @@ module TermQuickRPG
           window_attrs: Curses::A_BOLD))
         @target_view = TargetView.new(map_cutout)
         add_subview(target_view)
+        self.mode = mode
+      end
+
+      def mode
+        @mode
+      end
+
+      def mode=(value)
+        @mode = value
+        self.target_view.mode = value
+        self.border_color = target_view.color
+        self.needs_render!
       end
     end
   end

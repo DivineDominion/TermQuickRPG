@@ -30,6 +30,10 @@ module TermQuickRPG
         @window = nil
       end
 
+      def toggle_mode
+        window.mode = window.mode == :use ? :attack : :use
+      end
+
       private
 
       def change_offset(new_offset)
