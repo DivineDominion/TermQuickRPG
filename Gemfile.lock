@@ -3,7 +3,7 @@ PATH
   specs:
     termquickrpg (0.1.0)
       curses (~> 1.2.4)
-      terminal-size (~> 0.0.6)
+      tty-screen (~> 0.6.5)
 
 GEM
   remote: https://rubygems.org/
@@ -24,7 +24,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.8.0)
     rspec-support (3.8.0)
-    terminal-size (0.0.6)
+    tty-screen (0.6.5)
 
 PLATFORMS
   ruby
@@ -36,4 +36,4 @@ DEPENDENCIES
   termquickrpg!
 
 BUNDLED WITH
-   1.16.0
+   1.16.4

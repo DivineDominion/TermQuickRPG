@@ -1,37 +1,35 @@
-require "terminal-size"
+require "singleton"
+require "tty-screen"
 require "termquickrpg/observable"
 require "termquickrpg/control/run_loop"
 
 module TermQuickRPG
   module UI
     class Screen
-      class << self
-        def main
-          @@main ||= Screen.new(post_initial_size: true)
-        end
+      include Singleton
 
-        def width;  main.width;  end
-        def height; main.height; end
+      class << self
+        def main; instance; end
+        def width;  instance.width;  end
+        def height; instance.height; end
       end
 
-      private :initialize
+      def initialize
+        super
+        @post_initial_size = true
+
+        # Setting our own handler disables ncurses's `Curses::Key::RESIZE`
+        Signal.trap('SIGWINCH') { update_screen_size } # FIXME: causes race conditions; enqueue updates on run loop
+        update_screen_size
+      end
 
       include Observable
       SCREEN_SIZE_DID_CHANGE_EVENT = :screen_size_did_change
 
       attr_accessor :post_initial_size
       attr_reader :size
-      def width;  size[:width];  end
-      def height; size[:height]; end
-
-      def initialize(**attrs)
-        attrs = { post_initial_size: false }.merge(attrs)
-        attrs.each { |k, v| send "#{k}=", v }
-
-        # Setting our own handler disables ncurses's `Curses::Key::RESIZE`
-        Signal.trap('SIGWINCH') { update_screen_size } # FIXME: causes race conditions; enqueue updates on run loop
-        update_screen_size
-      end
+      def width;  size[1];  end
+      def height; size[0]; end
 
       def add_listener(listener)
         super(listener)
@@ -42,7 +40,7 @@ module TermQuickRPG
       end
 
       def update_screen_size
-        @size = Terminal.size
+        @size = TTY::Screen.size
         Control::RunLoop.main.enqueue { notify_listeners(SCREEN_SIZE_DID_CHANGE_EVENT, width, height) }
       end
     end
