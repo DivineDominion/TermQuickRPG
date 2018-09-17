@@ -21,7 +21,7 @@ module TermQuickRPG
       def call_block(block, sender)
         if block.arity == 2
           block.call(self, sender)
-        elsif block.arity  == 1
+        elsif block.arity == 1
           block.call(self)
         else
           raise "Don't know how to call scripts blocks with arity of #{block.arity}."

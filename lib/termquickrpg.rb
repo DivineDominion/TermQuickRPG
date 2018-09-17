@@ -9,7 +9,7 @@ module TermQuickRPG
       main_path = File.join(game_dir, main_script_filename)
       raise "Main script executable not found: #{main_path}" unless File.exist?(main_path)
 
-      bootstrap = Bootstrap.new(game_dir: game_dir, launch: -> { eval(File.read(main_path)) })
+      bootstrap = Bootstrap.new(game_dir: game_dir, launch: ->(ctx) { eval(File.read(main_path)) })
       bootstrap.run
     end
   end
