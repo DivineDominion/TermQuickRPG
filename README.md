@@ -24,6 +24,14 @@ After installing with `gem install`, you can run it from your `PATH` as:
 
     $ termquickrpg
 
+### Ubuntu Installation Troubleshooting
+
+On a fresh Ubuntu you'll probably need:
+
+    sudo apt install git ruby ruby-dev ruby-bundler build-essential libncurses-dev
+
+Then you should be able to run the ruby scripts at all.
+
 ## Local testing
 
 To run the built-in game from this directory without installation, install dependencies and run `exe/termquickrpg`:
