@@ -1,8 +1,10 @@
 # TermQuickRPG
 
-Terminal QuickRPG port.
+Terminal QuickRPG port using ncurses.
 
 - See [the Gosu port](https://github.com/DivineDominion/quickrpg-clone) of the graphical game from 2001.
+
+![](github_assets/screenshot.png)
 
 ## Installation
 
@@ -45,7 +47,7 @@ Alternatively:
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment. 
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
@@ -82,8 +84,8 @@ Note that scripts accept 1 or 2 parameters. The first one is always the script c
 ```ruby
 {
 characters: [
-  { 
-    location: [x, y], char: "☺", name: "Bob", talk: -> (ctx, bob) { 
+  {
+    location: [x, y], char: "☺", name: "Bob", talk: -> (ctx, bob) {
       ctx.run
         # Use regular script commands
         move bob, :up
@@ -91,7 +93,7 @@ characters: [
         # Access `bob`'s properties and methods to change his face
         bob.replace_char "☹"
       end
-    } 
+    }
   }, # more character definitions here ...
 ], # rest of the map data ...
 }
